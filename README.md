@@ -217,7 +217,7 @@ public class CPHInline
 ### ⚙️ Prerequisiti
 Prima di iniziare, assicurati di avere a disposizione:
 1. **Emulatore BizHawk & ROM di RogueMON**:
-   * Fai riferimento alla [Guida Video di Setup Ufficiale di RogueMON creata da SevenSaske](https://www.youtube.com/watch?v=4rUprb1IhLg) per configurare emulatore, tracker e file di gioco. In alternativa, visita la sezione dei crediti in fondo per accedere al Discord ufficiale del creatore, dove troverai tutti i file necessari.
+   * Fai riferimento alla [Guida Video Italiana di RogueMON creata da SevenSaske](https://www.youtube.com/watch?v=4rUprb1IhLg) per configurare emulatore, tracker e file di gioco. In alternativa, visita la sezione dei crediti in fondo per accedere al Discord ufficiale del creatore, dove troverai tutti i file necessari.
 2. **Streamer.bot**:
    * Scarica l'ultima versione di Streamer.bot dal [sito ufficiale](https://streamer.bot/).
 
