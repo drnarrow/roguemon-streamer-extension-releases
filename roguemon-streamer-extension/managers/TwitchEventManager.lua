@@ -512,7 +512,11 @@ function RoguemonStreamer.checkForUpdatesQuery()
     print("[RogueMon Streamer] Checking for updates on GitHub...")
     
     local token = ""
-    if RoguemonStreamer.settings and RoguemonStreamer.settings.githubToken then
+    local diskSettings = FileManager.decodeJsonFile(RoguemonStreamer.settingsPath)
+    if diskSettings and diskSettings.githubToken then
+        token = diskSettings.githubToken
+    end
+    if token == "" and RoguemonStreamer.settings and RoguemonStreamer.settings.githubToken then
         token = RoguemonStreamer.settings.githubToken
     end
     
@@ -542,7 +546,7 @@ function RoguemonStreamer.checkForUpdatesQuery()
     end
     
     local cleanTag = latestTag:gsub("^[vV]", "")
-    local currentVersion = "3.0.0"
+    local currentVersion = "3.0.1"
     if RoguemonStreamer.selfObject and RoguemonStreamer.selfObject.version then
         currentVersion = RoguemonStreamer.selfObject.version
     end
@@ -562,7 +566,11 @@ function RoguemonStreamer.downloadAndInstallUpdate()
     print("[RogueMon Streamer] Starting update download and install...")
     
     local token = ""
-    if RoguemonStreamer.settings and RoguemonStreamer.settings.githubToken then
+    local diskSettings = FileManager.decodeJsonFile(RoguemonStreamer.settingsPath)
+    if diskSettings and diskSettings.githubToken then
+        token = diskSettings.githubToken
+    end
+    if token == "" and RoguemonStreamer.settings and RoguemonStreamer.settings.githubToken then
         token = RoguemonStreamer.settings.githubToken
     end
     
@@ -1207,6 +1215,9 @@ function RoguemonStreamer.loadSettings()
     if decoded then
         RoguemonStreamer.settings = decoded
         RoguemonStreamer.settings.enabled = true
+        if RoguemonStreamer.settings.githubToken == nil then
+            RoguemonStreamer.settings.githubToken = ""
+        end
         if RoguemonStreamer.settings.debug == nil then
             RoguemonStreamer.settings.debug = false
         end
