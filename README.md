@@ -276,6 +276,7 @@ Prima di iniziare, assicurati di avere a disposizione:
 ## 🎮 Events Catalog / Catalogo degli Eventi
 
 🇬🇧 This section catalogs all positive, negative, and channel point events, followed by the lists of events contained in each Twitch sub and channel point pool.
+
 🇮🇹 Questa sezione mostra la lista di tutti gli eventi esistenti seguita dal dettaglio di quali eventi possono attivarsi con i rispettivi Sub Gift o Punti Canale.
 
 ---
