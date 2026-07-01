@@ -692,33 +692,34 @@ function RoguemonStreamer.initialize(extensionSelf)
 
     -- Dynamically inject UI controls into SingleExtensionScreen.Buttons
     if SingleExtensionScreen and SingleExtensionScreen.Buttons then
-        SingleExtensionScreen.Buttons.CheckUpdates = {
-            type = Constants.ButtonTypes.FULL_BORDER,
-            getText = function(self) return "Check Updates" end,
-            box = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 6, Constants.SCREEN.MARGIN + 120, 78, 11 },
-            isVisible = function(self)
-                return SingleExtensionScreen.extension ~= nil and SingleExtensionScreen.extension.selfObject.name == "RogueMon Streamer"
-            end,
-            onClick = function(self)
-                local isUpdateAvailable, updateUrl = RoguemonStreamer.checkForUpdatesQuery()
-                if isUpdateAvailable then
-                    SingleExtensionScreen.updateConfirmationPrompt(self, updateUrl)
+        if SingleExtensionScreen.Buttons.CheckForUpdates then
+            RoguemonStreamer.originalCheckForUpdates = RoguemonStreamer.originalCheckForUpdates or {
+                box = {
+                    SingleExtensionScreen.Buttons.CheckForUpdates.box[1],
+                    SingleExtensionScreen.Buttons.CheckForUpdates.box[2],
+                    SingleExtensionScreen.Buttons.CheckForUpdates.box[3],
+                    SingleExtensionScreen.Buttons.CheckForUpdates.box[4]
+                },
+                getText = SingleExtensionScreen.Buttons.CheckForUpdates.getText,
+            }
+            SingleExtensionScreen.Buttons.CheckForUpdates.box = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 3, Constants.SCREEN.MARGIN + 120, 61, 11 }
+            SingleExtensionScreen.Buttons.CheckForUpdates.getText = function(self)
+                if self.updateStatus == "Available" then
+                    return "Update!"
+                elseif self.updateStatus == "No Update" then
+                    return "No Update"
+                elseif self.updateStatus == "Unchecked" then
+                    return "Check Updates"
                 else
-                    local currentVersion = "3.0.0"
-                    if RoguemonStreamer.selfObject and RoguemonStreamer.selfObject.version then
-                        currentVersion = RoguemonStreamer.selfObject.version
-                    end
-                    RoguemonStreamer.notifyStreamer("You are up to date! (v" .. currentVersion .. ")", "magikarp.png")
+                    return self.updateStatus
                 end
-            end,
-        }
-        SingleExtensionScreen.Buttons.CheckUpdates.textColor = SingleExtensionScreen.Colors.text
-        SingleExtensionScreen.Buttons.CheckUpdates.boxColors = { SingleExtensionScreen.Colors.border, SingleExtensionScreen.Colors.boxFill }
+            end
+        end
 
         SingleExtensionScreen.Buttons.ResetRun = {
             type = Constants.ButtonTypes.FULL_BORDER,
             getText = function(self) return "Reset" end,
-            box = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 14, Constants.SCREEN.MARGIN + 135, 31, 11 },
+            box = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 66, Constants.SCREEN.MARGIN + 120, 26, 11 },
             isVisible = function(self)
                 return SingleExtensionScreen.extension ~= nil and SingleExtensionScreen.extension.selfObject.name == "RogueMon Streamer"
             end,
@@ -1010,6 +1011,11 @@ function RoguemonStreamer.shutdown()
 
     -- Restore SingleExtensionScreen UI elements
     if SingleExtensionScreen and SingleExtensionScreen.Buttons then
+        if SingleExtensionScreen.Buttons.CheckForUpdates and RoguemonStreamer.originalCheckForUpdates then
+            SingleExtensionScreen.Buttons.CheckForUpdates.box = RoguemonStreamer.originalCheckForUpdates.box
+            SingleExtensionScreen.Buttons.CheckForUpdates.getText = RoguemonStreamer.originalCheckForUpdates.getText
+            RoguemonStreamer.originalCheckForUpdates = nil
+        end
         SingleExtensionScreen.Buttons.CheckUpdates = nil
         SingleExtensionScreen.Buttons.ResetRun = nil
         SingleExtensionScreen.Buttons.ToggleTwitchSub = nil
