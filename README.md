@@ -10,6 +10,12 @@ Un'estensione interattiva e ricca di funzionalità creata per rendere la chat di
 
 ---
 
+> [!IMPORTANT]
+> *   **🇬🇧 Leaderboard Notice**: Since this extension introduces external chat integration, the official RogueMON leaderboard is automatically disabled while this extension is active to prevent unfair advantages or ranking manipulation.
+> *   **🇮🇹 Avviso Classifica**: Poiché questa estensione introduce aiuti esterni ed interazione attiva con la chat, la classifica ufficiale (leaderboard) di RogueMON viene automaticamente disattivata quando l'estensione è attiva per evitare vantaggi sleali o manipolazioni dei punteggi.
+
+---
+
 ## 🇬🇧 English Guide
 
 ### ⚙️ Prerequisites
@@ -275,7 +281,7 @@ This catalog defines all positive and negative events available. Events are spli
 
 ### 🟢 Positive Events / Eventi Positivi
 
-#### 1. Cumulative Sub Pool Events / Eventi dei Pool Cumulativi Sub
+#### 1. Cumulative Sub Pool Events / Pool Eventi delle Sub Cumulative
 *   **Restore PP**
     *   *EN*: Restores the PP of one random move of your active Pokémon.
     *   *IT*: Ripristina i PP di una mossa casuale del tuo Pokémon attivo.
@@ -310,7 +316,7 @@ This catalog defines all positive and negative events available. Events are spli
     *   *EN*: Prompts the player to permanently replace a chosen move with a random move (Gen 1-9), or choose "Random" to replace a random move slot with a random damaging move.
     *   *IT*: Apre un menu per sostituire permanentemente una mossa a scelta con una casuale (Gen 1-9), o scegliere "Random" per sostituire uno slot casuale con una mossa offensiva casuale.
 
-#### 2. Milestone Pools (5, 10, 20, 50 Subs) / Eventi delle Milestone Sub
+#### 2. Milestone Pools (5, 10, 20, 50 Subs) / Eventi dei pacchetti Sub Gift (5, 10, 20, 50)
 *   **Restore PP**
     *   *EN*: Restores the PP of all moves of your active Pokémon.
     *   *IT*: Ripristina i PP di tutte le mosse del Pokémon attivo.
@@ -465,16 +471,14 @@ Additionally, there are three **Exclusive Random Changes** that ignore the posit
 
 ---
 
-## 🏆 Credits & Acknowledgements / Ringraziamenti
+## 🏆 Credits / Crediti
 
 ### 🇬🇧 English
 This streamer extension is designed to run alongside **RogueMON**, the incredibly polished Roguelike Pokémon Challenge created by **Crozwords**. 
-We are deeply grateful for his amazing work and dedication in developing the RogueMON hack and tracker expansion.
 *   **Official Website**: Visit [roguemon.gg](https://www.roguemon.gg/) to track runs and view leaderboards.
 *   **Official Discord**: Join the community for setup resources, guides, and updates: [https://discord.gg/C88N88yfCP](https://discord.gg/C88N88yfCP).
 
 ### 🇮🇹 Italiano
 Questa estensione per streamer è progettata per essere utilizzata insieme a **RogueMON**, l'incredibile sfida Pokémon in stile Roguelike creata da **Crozwords**.
-Siamo immensamente grati per il suo splendido lavoro e dedizione nello sviluppo della ROM Hack e dell'espansione del tracker di RogueMON.
 *   **Sito Web Ufficiale**: Visita [roguemon.gg](https://www.roguemon.gg/) per seguire le run e vedere le classifiche globali.
 *   **Discord Ufficiale**: Entra nella community per risorse di installazione, guide e novità: [https://discord.gg/C88N88yfCP](https://discord.gg/C88N88yfCP).
