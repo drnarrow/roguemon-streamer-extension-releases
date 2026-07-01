@@ -579,30 +579,23 @@ function RoguemonStreamer.downloadAndInstallUpdate()
         authHeader = string.format('-H "Authorization: Bearer %s" ', token)
     end
     
-    local githubRepoUrl = "https://github.com/drnarrow/roguemon-streamer-extension-releases"
-    local tarUrl = githubRepoUrl .. "/archive/main.tar.gz"
-    local tarArchiveName = "roguemon-streamer-extension-releases-main"
-    local archiveFilePath = tarArchiveName .. ".tar.gz"
+    local tarUrl = "https://api.github.com/repos/drnarrow/roguemon-streamer-extension-releases/tarball/main"
+    local archiveFilePath = "update.tar.gz"
     
     local destinationFolder = FileManager.getExtensionsFolderPath()
     local isOnWindows = (FileManager.slash == "\\")
-    local workingDir = FileManager.prependDir("")
     
     local commands = {}
     if isOnWindows then
-        table.insert(commands, string.format('cd "%s"', workingDir))
+        table.insert(commands, string.format('cd "%s"', destinationFolder))
         table.insert(commands, string.format('curl -k -L %s"%s" -o "%s" --ssl-no-revoke', authHeader, tarUrl, archiveFilePath))
-        table.insert(commands, string.format('tar -xzf "%s"', archiveFilePath))
+        table.insert(commands, string.format('tar -xzf "%s" --strip-components=1', archiveFilePath))
         table.insert(commands, string.format('del "%s"', archiveFilePath))
-        table.insert(commands, string.format('xcopy "%s" "%s" /s /y /q /c', tarArchiveName, destinationFolder))
-        table.insert(commands, string.format('rmdir "%s" /s /q', tarArchiveName))
     else
-        table.insert(commands, string.format('cd "%s"', workingDir))
-        table.insert(commands, string.format('curl -k -L %s"%s" -o "%s" --ssl-no-revoke', authHeader, tarUrl, archiveFilePath))
-        table.insert(commands, string.format('tar -xzf "%s" --overwrite', archiveFilePath))
+        table.insert(commands, string.format('cd "%s"', destinationFolder))
+        table.insert(commands, string.format('curl -k -L %s"%s" -o "%s"', authHeader, tarUrl, archiveFilePath))
+        table.insert(commands, string.format('tar -xzf "%s" --strip-components=1', archiveFilePath))
         table.insert(commands, string.format('rm -f "%s"', archiveFilePath))
-        table.insert(commands, string.format('cp -fr "%s/." "%s"', tarArchiveName, destinationFolder))
-        table.insert(commands, string.format('rm -rf "%s"', tarArchiveName))
     end
     
     local fullCmd = table.concat(commands, " && ")
