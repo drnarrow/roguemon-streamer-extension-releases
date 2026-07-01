@@ -200,8 +200,8 @@ public class CPHInline
 5. In the middle-right panel (**Triggers**), link your Twitch events:
    * **Subscription triggers**: Right-click -> **Twitch** -> **Subscriptions** -> Add **Subscription**, **Re-Subscription**, **Gift Subscription**, and **Gift Bomb**.
    * **Channel Point triggers**: Right-click -> **Twitch** -> **Channel Reward** -> **Reward Redemption** -> Select your custom Twitch Channel Point reward.
-   * > [!IMPORTANT]
-   * > **Twitch Channel Point Title Requirement**: The title of the reward on your Twitch creator dashboard **MUST** contain the exact name of the event you wish to trigger (case-insensitive, e.g., "Roguemon - Let's Dance" or "RogueMON - Restore HP"). Otherwise, the connection cannot parse the event and it will fail to activate.
+> [!IMPORTANT]
+> **Twitch Channel Point Reward Title Requirement**: The title of the reward on your Twitch creator dashboard **MUST** contain the exact name of the event you wish to trigger (case-insensitive, e.g., "Roguemon - Let's Dance" or "RogueMON - Restore HP"). Otherwise, the connection cannot parse the event and it will fail to activate.
 
 #### Step 4: Install and Activate the RogueMon Streamer Extension
 1. Extract the `roguemon-streamer-extension_3.0.0.zip` file directly into the `extensions` folder of your Ironmon-Tracker installation directory.
@@ -255,8 +255,8 @@ Prima di iniziare, assicurati di avere a disposizione:
 5. Nel pannello al centro (**Triggers**), associa i tuoi eventi di Twitch:
    * **Trigger per gli Abbonamenti (Subs)**: Fai clic destro -> **Twitch** -> **Subscriptions** -> Aggiungi **Subscription**, **Re-Subscription**, **Gift Subscription** e **Gift Bomb**.
    * **Trigger per i Punti Canale (Channel Points)**: Fai clic destro -> **Twitch** -> **Channel Reward** -> **Reward Redemption** -> Seleziona il riscatto punti canale creato su Twitch.
-   * > [!IMPORTANT]
-   * > **Requisito del Titolo dei Punti Canale**: Il titolo del riscatto creato sul pannello Twitch del creator **DEVE** contenere il nome esatto dell'evento che desideri attivare (case-insensitive, ad esempio "Roguemon - Let's Dance" o "RogueMON - Restore HP"). In caso contrario, l'estensione non riconoscerà l'evento e non si attiverà.
+> [!IMPORTANT]
+> **Requisito del Titolo dei Reward per i Punti Canale**: Il titolo del riscatto creato sul pannello Twitch del creator **DEVE** contenere il nome esatto dell'evento che desideri attivare (case-insensitive, ad esempio "Roguemon - Let's Dance" o "RogueMON - Restore HP"). In caso contrario, l'estensione non riconoscerà l'evento e non si attiverà.
 
 #### Passo 4: Installare e Abilitare l'Estensione RogueMon Streamer
 1. Estrai il file `roguemon-streamer-extension_3.0.0.zip` direttamente nella cartella `extensions` della directory di installazione del tuo Ironmon-Tracker.
