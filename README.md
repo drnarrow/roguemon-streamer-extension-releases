@@ -468,4 +468,4 @@ This streamer extension is designed to run alongside **RogueMON**, the incredibl
 ### 🇮🇹 Italiano
 Questa estensione per streamer è progettata per essere utilizzata insieme a **RogueMON**, l'incredibile sfida Pokémon in stile Roguelike creata da **Crozwords**.
 *   **Sito Web Ufficiale**: Visita [roguemon.gg](https://www.roguemon.gg/) per seguire le run e vedere le classifiche globali.
-*   **Discord Ufficiale**: Entra nella community per risorse di installazione, guide e novità: [https://discord.gg/C88N88yfCP](https://discord.gg/C88N88yfCP).
+*   **Discord Ufficiale**: Entra nella community per trovare le risorse d'installazione, guide e novità: [https://discord.gg/C88N88yfCP](https://discord.gg/C88N88yfCP).
