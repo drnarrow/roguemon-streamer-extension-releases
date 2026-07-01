@@ -275,31 +275,38 @@ Prima di iniziare, assicurati di avere a disposizione:
 
 ## 🎮 Events Catalog / Catalogo degli Eventi
 
-This catalog defines all positive and negative events available. Events are split into **Cumulative Pools** (sub count accumulations), **Milestone Pools** (single large sub events), and **Channel Points Rewards**.
+🇬🇧 This section catalogs all positive, negative, and channel point events, followed by the lists of events contained in each Twitch sub and channel point pool.
+🇮🇹 Questa sezione mostra la lista di tutti gli eventi esistenti seguita dal dettaglio di quali eventi possono attivarsi con i rispettivi Sub Gift o Punti Canale.
 
 ---
 
-### 🟢 Positive Events / Eventi Positivi
+### 📋 List of Events / Elenco degli Eventi
 
-#### 1. Cumulative Sub Pool Events / Pool Eventi delle Sub Cumulative
-*   **Restore PP**
-    *   *EN*: Restores the PP of one random move of your active Pokémon.
-    *   *IT*: Ripristina i PP di una mossa casuale del tuo Pokémon attivo.
-*   **Cure Status**
-    *   *EN*: Fully cures any active status condition (poison, burn, sleep, paralysis, freeze).
-    *   *IT*: Cura qualsiasi stato alterato (veleno, scottatura, sonno, paralisi, congelamento).
+#### 🟢 Positive Events / Eventi Positivi
 *   **Restore HP**
     *   *EN*: Instantly heals your active Pokémon's HP back to full.
     *   *IT*: Cura istantaneamente tutti gli HP del Pokémon attivo.
+*   **Restore PP**
+    *   *EN*: Restores the PP of one random move (or all moves for Milestones) of your active Pokémon.
+    *   *IT*: Ripristina i PP di una mossa casuale (o di tutte le mosse per le Milestone) del Pokémon attivo.
+*   **Cure Status**
+    *   *EN*: Fully cures any active status condition (poison, burn, sleep, paralysis, freeze).
+    *   *IT*: Cura qualsiasi stato alterato (veleno, scottatura, sonno, paralisi, congelamento).
+*   **Full Restore**
+    *   *EN*: Fully restores HP, status, and PP, and immediately clears active negative streamer curses.
+    *   *IT*: Ripristina completamente HP, PP e stato del Pokémon attivo, rimuovendo le maledizioni degli spettatori.
 *   **Give Healing Item**
-    *   *EN*: Gifts a small healing item (e.g., Potion, Super Potion, Berry Juice) to your bag.
-    *   *IT*: Aggiunge alla borsa uno strumento di cura minore (es. Pozione, Super Pozione).
+    *   *EN*: Gifts a healing item (potion, hyper potion, full restore, etc.) directly to your bag.
+    *   *IT*: Regala uno strumento di cura (pozione, iperpozione, ecc.) in borsa.
 *   **Give Status Item**
-    *   *EN*: Gifts a status curing item (e.g., Antidote, Paralyze Heal) to your bag.
-    *   *IT*: Aggiunge uno strumento di cura dello stato (es. Antidoto, Antiparalisi) in borsa.
+    *   *EN*: Gifts a status curing item (antidote, full heal, etc.) to your bag.
+    *   *IT*: Regala uno strumento di cura dello stato (antidoto, cura totale, ecc.) in borsa.
 *   **Give PP Item**
-    *   *EN*: Gifts a PP restore item (e.g., Leppa Berry, Ether, PP Up) to your bag.
-    *   *IT*: Regala uno strumento di ripristino PP (es. Etere, Baccacedro) in borsa.
+    *   *EN*: Gifts a PP restoring item (ether, elixir, max elixir, etc.) to your bag.
+    *   *IT*: Regala uno strumento per ripristinare i PP (etere, elisir, ecc.) in borsa.
+*   **Give Utility Item / Items**
+    *   *EN*: Gifts a Rare Candy or utility item directly to your bag.
+    *   *IT*: Regala una Caramella Rara o uno strumento di utilità in borsa.
 *   **Stat Boost**
     *   *EN*: Grants a persistent +1 stage boost in a random stat for a set number of battles.
     *   *IT*: Aumenta una statistica casuale di +1 stadio per un numero definito di lotte.
@@ -309,83 +316,65 @@ This catalog defines all positive and negative events available. Events are spli
 *   **Speed Boost**
     *   *EN*: Grants a +1 stage boost in Speed for 1 battle.
     *   *IT*: Aumenta la Velocità di +1 stadio per 1 lotta.
-*   **PP Up**
-    *   *EN*: Increases the maximum PP of one eligible move of your active Pokémon.
-    *   *IT*: Aumenta i PP massimi di una mossa idonea del Pokémon attivo.
-*   **Let's Dance**
-    *   *EN*: Prompts the player to permanently replace a chosen move with a random move (Gen 1-9), or choose "Random" to replace a random move slot with a random damaging move.
-    *   *IT*: Apre un menu per sostituire permanentemente una mossa a scelta con una casuale (Gen 1-9), o scegliere "Random" per sostituire uno slot casuale con una mossa offensiva casuale.
-
-#### 2. Milestone Pools (5, 10, 20, 50 Subs) / Eventi dei pacchetti Sub Gift (5, 10, 20, 50)
-*   **Restore PP**
-    *   *EN*: Restores the PP of all moves of your active Pokémon.
-    *   *IT*: Ripristina i PP di tutte le mosse del Pokémon attivo.
-*   **Full Restore**
-    *   *EN*: Fully restores HP, status, and PP, and immediately clears active streamer curses.
-    *   *IT*: Ripristina completamente HP/PP/Stato e cancella tutte le maledizioni attive.
-*   **Give Healing Item**
-    *   *EN*: Gifts major healing items (e.g., Hyper Potion, Max Potion, Full Restore) to your bag.
-    *   *IT*: Regala uno strumento di cura primario (es. Iperpozione, Ricarica Totale) in borsa.
-*   **Give Utility Item / Items**
-    *   *EN*: Gifts valuable items like Rare Candies or Full Heals to your bag.
-    *   *IT*: Aggiunge Caramelle Rare o Cure Totali alla borsa del giocatore.
-*   **Give PP Item**
-    *   *EN*: Gifts rare PP items (e.g., Elixir, Max Elixir, PP Max) to your bag.
-    *   *IT*: Regala uno strumento raro per i PP (es. Elisir, Max Elisir, PP Max) in borsa.
-*   **Stat Boost**
-    *   *EN*: Grants a persistent +1 stage boost in a random stat for multiple battles.
-    *   *IT*: Aumenta una statistica casuale di +1 stadio per numerose lotte.
-*   **Permanent Type Change**
-    *   *EN*: Permanently changes your Pokémon's typing to a random, beneficial combination.
-    *   *IT*: Modifica permanentemente il tipo del Pokémon in una combinazione vantaggiosa.
-*   **Permanent Nature Change**
-    *   *EN*: Permanently changes your Pokémon's nature to a beneficial nature.
-    *   *IT*: Modifica permanentemente la natura del Pokémon attivo in una favorevole.
-*   **Permanent Ability Change**
-    *   *EN*: Permanently changes your Pokémon's ability to a beneficial ability.
-    *   *IT*: Modifica permanentemente l'abilità del Pokémon attivo in una favorevole.
 *   **Powerhouse Boost**
     *   *EN*: Grants a +1 stage boost in both Speed and primary offensive stat for multiple battles.
     *   *IT*: Aumenta Velocità e statistica offensiva di +1 stadio per molteplici lotte.
+*   **Omniboost**
+    *   *EN*: Grants a +1 stage boost to all stats for 1 battle.
+    *   *IT*: Aumenta tutte le statistiche del Pokémon attivo di +1 stadio per 1 lotta.
+*   **PP Up**
+    *   *EN*: Increases the maximum PP of one eligible move of your active Pokémon.
+    *   *IT*: Aumenta i PP massimi di una mossa idonea del Pokémon attivo.
 *   **No Guard Plus**
     *   *EN*: Grants your active Pokémon the No Guard effect (100% accuracy) for multiple battles.
     *   *IT*: Attiva l'effetto Nullodifesa (precisione 100%) sul tuo Pokémon per più lotte.
 *   **Turbo Genetics**
-    *   *EN*: Restricts evolution candidates to the top 10 species with the highest BST.
-    *   *IT*: Limita le possibili evoluzioni del Pokémon visualizzato alle top 10 con BST più alto.
-*   **Let's Dance**
-    *   *EN*: Opens the interactive move selection wheel to permanently dance and replace moves.
-    *   *IT*: Apre la ruota interattiva per ballare e sostituire permanentemente le mosse.
-*   **Game Changer (Milestone 5+)**
+    *   *EN*: Restricts evolution candidates of your Pokémon to the top 10 species with the highest BST.
+    *   *IT*: Limita le possibili evoluzioni del tuo Pokémon alle top 10 con BST più alto.
+*   **Evolution Power**
+    *   *EN*: Gifts 1 Roguestone directly to your bag to evolve your Pokémon.
+    *   *IT*: Regala 1 Pietra Roguestone in borsa per far evolvere il tuo Pokémon.
+*   **Increase Healing Limit**
+    *   *EN*: Increases the carrying limit of HP healing items in your bag.
+    *   *IT*: Aumenta il limite massimo di strumenti di cura HP trasportabili.
+*   **Increase Status Limit**
+    *   *EN*: Increases the carrying limit of status-curing items in your bag.
+    *   *IT*: Aumenta il limite massimo di strumenti cura stato trasportabili.
+*   **Game Changer**
     *   *EN*: Grants +2 critical hit stage for multiple battles.
     *   *IT*: Attiva Messa a Fuoco (+2 stadi di brutto colpo) per molteplici lotte.
-*   **Try Harder (Milestone 5+)**
+*   **Try Harder**
     *   *EN*: Makes your active Pokémon immune to stat drops for multiple battles.
     *   *IT*: Rende il tuo Pokémon attivo immune ai cali di statistica per molteplici lotte.
+*   **Let's Dance**
+    *   *EN*: Opens an interactive menu to permanently replace a chosen move with a random one, or choose the "Random" option to replace a random move with a damaging one.
+    *   *IT*: Apre un menu a scelta per sostituire permanentemente una mossa a scelta con una casuale, o scegliere "Random" per sostituire una mossa casuale con una mossa offensiva.
 
----
-
-### 🔴 Negative Events / Eventi Negativi (Curses)
-
-#### 1. Cumulative Sub Pool Events / Maledizioni dei Pool Cumulativi Sub
+#### 🔴 Negative Events / Eventi Negativi (Curses)
 *   **Inflict Status**
     *   *EN*: Inflicts a random status condition (poison, burn, sleep, paralysis, freeze).
     *   *IT*: Infligge uno stato alterato casuale (avvelenamento, paralisi, scottatura, congelamento, sonno).
 *   **Disable Move**
-    *   *EN*: Disables one random move slot of your active Pokémon for 3 battles.
-    *   *IT*: Inibisce l'uso di una delle mosse del tuo Pokémon attivo per 3 lotte.
+    *   *EN*: Disables one random move slot of your active Pokémon for a set number of battles/turns.
+    *   *IT*: Inibisce l'uso di una delle mosse del tuo Pokémon attivo per un certo numero di lotte/turni.
+*   **Empowered Disable**
+    *   *EN*: Disables one of your Pokémon's moves for a massive 10 battles.
+    *   *IT*: Inibisce l'uso di una delle tue mosse per ben 10 lotte consecutive.
 *   **Power Debuff**
-    *   *EN*: Inflicts a persistent -1 stage penalty in primary offensive stat for 1 battle.
-    *   *IT*: Penalizza la statistica offensiva primaria di -1 stadio per 1 lotta.
+    *   *EN*: Inflicts a persistent -1 stage penalty in primary offensive stat for a set number of battles.
+    *   *IT*: Penalizza la statistica offensiva primaria di -1 stadio per un certo numero di lotte.
 *   **Speed Debuff**
-    *   *EN*: Inflicts a persistent -1 stage penalty in Speed for 1 battle.
-    *   *IT*: Riduce la Velocità di -1 stadio per 1 lotta.
+    *   *EN*: Inflicts a persistent -1 stage penalty in Speed for a set number of battles.
+    *   *IT*: Riduce la Velocità di -1 stadio per un certo numero di lotte.
 *   **PP Cut**
     *   *EN*: Halves the current PP of one random move slot of your active Pokémon.
     *   *IT*: Dimezza i PP attuali di una mossa casuale del tuo Pokémon attivo.
 *   **Stat Debuff**
-    *   *EN*: Inflicts a persistent -1 stage penalty in a random stat for 1 battle.
-    *   *IT*: Riduce una statistica casuale di -1 stadio per 1 lotta.
+    *   *EN*: Inflicts a persistent -1 stage penalty in a random stat for a set number of battles.
+    *   *IT*: Riduce una statistica casuale di -1 stadio per un certo numero di lotte.
+*   **Empowered Debuff**
+    *   *EN*: Inflicts a persistent -1 stage penalty in a random stat for 10 battles.
+    *   *IT*: Applica una penalità persistente di -1 a una statistica per 10 lotte.
 *   **Temp Type Change**
     *   *EN*: Temporarily overrides your Pokémon's typing for 1 battle.
     *   *IT*: Sostituisce temporaneamente i tipi del tuo Pokémon per 1 lotta.
@@ -395,25 +384,17 @@ This catalog defines all positive and negative events available. Events are spli
 *   **Remove Status Item**
     *   *EN*: Discards a status curing item from your bag.
     *   *IT*: Rimuove uno strumento di cura dello stato dal tuo inventario.
+*   **Remove Big Healing Item**
+    *   *EN*: Discards major healing items (e.g., Full Restore, Max Potion) from your bag.
+    *   *IT*: Rimuove uno strumento di cura primario (es. Ricarica Totale) dalla borsa.
+*   **Remove Utility Item / Items**
+    *   *EN*: Discards valuable utility items (Rare Candy, Max Elixirs, PP Max) from your bag.
+    *   *IT*: Scarta strumenti di utilità preziosi (Caramelle Rare, PP Max, Max Elisir) dalla borsa.
 *   **Overwhelmed**
-    *   *EN*: Immediately reduces your Pokémon's HP by a percentage and applies confusion.
-    *   *IT*: Riduce istantaneamente gli HP del Pokémon di una percentuale applicando confusione.
-*   **Let's Dance**
-    *   *EN*: Interactive move replacement menu (serves as a chaotic change).
-    *   *IT*: Menu interattivo di sostituzione mosse (funge da cambiamento caotico).
-
-#### 2. Milestone Pools (5, 10, 20, 50 Subs) / Maledizioni delle Milestone Sub
-*   **Overwhelmed**
-    *   *EN*: Deals heavy percentage damage, confusion, and triggers a persistent PP depletion penalty.
-    *   *IT*: Infligge gravi danni percentuali, confusione e aumenta di +1 il consumo dei PP per più lotte.
-*   **Empowered Disable**
-    *   *EN*: Disables one of your Pokémon's moves for a massive 10 battles.
-    *   *IT*: Inibisce l'uso di una delle tue mosse per ben 10 lotte consecutive.
-*   **Empowered Debuff**
-    *   *EN*: Inflicts a persistent -1 stage penalty in a random stat for 10 battles.
-    *   *IT*: Applica una penalità persistente di -1 a una statistica per 10 lotte.
+    *   *EN*: Reduces your Pokémon's HP by a percentage and triggers a persistent extra PP usage penalty (same as Pressure ability effect).
+    *   *IT*: Riduce gli HP del Pokémon di una percentuale e applica una penalità sul consumo extra di PP (uguale all'effetto dell'abilità Pressione).
 *   **PP Deplete**
-    *   *EN*: Reduces the PP of all moves of your active Pokémon (20%, 50%, or 100%).
+    *   *EN*: Reduces the PP of all moves of your active Pokémon by a percentage (20%, 50%, or 100%).
     *   *IT*: Riduce i PP di tutte le mosse del Pokémon attivo (del 20%, 50% o 100%).
 *   **Permanent Type Change**
     *   *EN*: Permanently alters your Pokémon's typing to a randomized (detrimental) combination.
@@ -424,50 +405,55 @@ This catalog defines all positive and negative events available. Events are spli
 *   **Permanent Ability Change**
     *   *EN*: Permanently alters your Pokémon's ability to a random (detrimental) ability.
     *   *IT*: Cambia permanentemente l'abilità del Pokémon attivo in una svantaggiosa.
-*   **Remove Big Healing Item**
-    *   *EN*: Discards major healing items (e.g., Full Restore, Max Potion) from your bag.
-    *   *IT*: Rimuove uno strumento di cura primario (es. Ricarica Totale) dalla borsa.
-*   **Remove Utility Item / Items**
-    *   *EN*: Discards valuable utility items (Rare Candy, Max Elixirs, PP Max) from your bag.
-    *   *IT*: Scarta strumenti di utilità preziosi (Caramelle Rare, PP Max, Max Elisir) dalla borsa.
 *   **Out of Control**
-    *   *EN*: Confuses your Pokémon and locks move choices, forcing random actions for multiple battles.
-    *   *IT*: Confonde e costringe il Pokémon ad agire usando mosse a caso per più lotte.
+    *   *EN*: Your Pokémon doesn't obey you anymore and may attack with a random move of his moveset or stand still for multiple turns.
+    *   *IT*: Il tuo Pokémon non ti obbedisce più e può attaccare con una mossa a caso di quelle conosciute o stare fermo per più turni.
 *   **Omnimalus**
     *   *EN*: Lowers all stats of your active Pokémon by -1 stage for multiple battles.
     *   *IT*: Abbassa tutte le statistiche del Pokémon attivo di -1 stadio per più lotte.
 *   **No Guard Minus**
     *   *EN*: Grants your opponent the No Guard effect (100% accuracy) for multiple battles.
     *   *IT*: Attiva l'effetto Nullodifesa (precisione 100%) sui Pokémon avversari per più lotte.
-*   **No Guard Minus**
-    *   *EN*: Grants your opponent the No Guard effect (100% accuracy) for multiple battles.
-    *   *IT*: Attiva l'effetto Nullodifesa (precisione 100%) sui Pokémon avversari per più lotte.
 *   **Mystification**
-    *   *EN*: Viewers cast Trick Room (slower Pokémon move first) for multiple battles.
-    *   *IT*: Attiva l'effetto Distortozona in battaglia per un determinato numero di lotte.
-*   **Let's Dance**
-    *   *EN*: Interactive move replacement menu (serves as a chaotic change).
-    *   *IT*: Menu interattivo di sostituzione mosse (funge da cambiamento caotico).
+    *   *EN*: Activates Trick Room (slower Pokémon move first) for multiple battles.
+    *   *IT*: Attiva l'effetto Distortozona in battaglia per più lotte.
+
+#### 🔵 Channel Points Exclusive Random Events / Riscatti Casuali Esclusivi
+*   **Type Change**
+    *   *EN*: Changes the typing of your Pokémon permanently to a completely random single or dual type.
+    *   *IT*: Sostituisce il tipo del tuo Pokémon con uno singolo o doppio completamente casuale.
+*   **Nature Change**
+    *   *EN*: Changes the nature of your Pokémon permanently to a completely random one.
+    *   *IT*: Sostituisce la natura del tuo Pokémon con una completamente casuale.
+*   **Ability Change**
+    *   *EN*: Changes the ability of your Pokémon permanently to a completely random one.
+    *   *IT*: Sostituisce l'abilità del tuo Pokémon con una completamente casuale.
 
 ---
 
-### 🔵 Twitch Channel Points Mapped Rewards / Riscatti dei Punti Canale
+### 🎁 Event Pools / Composizione dei Pool
 
-Viewers can redeem custom Twitch Channel Point rewards with titles matching the event names. Positive/Negative effects scale to a **1 battle** duration (or **3 turns** for *Disable Move*).
+This section defines which events are grouped in each pool.
 
-Additionally, there are three **Exclusive Random Changes** that ignore the positive/negative categories:
-*   **Type Change**
-    *   *EN*: Changes the typing of the viewed Pokémon permanently to a completely random single or dual type.
-    *   *IT*: Sostituisce il tipo del Pokémon visualizzato con uno singolo o doppio completamente casuale.
-*   **Nature Change**
-    *   *EN*: Changes the nature of the active Pokémon permanently to a completely random nature.
-    *   *IT*: Sostituisce la natura del Pokémon attivo con una completamente casuale.
-*   **Ability Change**
-    *   *EN*: Changes the ability of the viewed Pokémon permanently to a completely random ability.
-    *   *IT*: Sostituisce l'abilità del Pokémon visualizzato con una completamente casuale.
-*   **Let's Dance**
-    *   *EN*: Triggers the move choice wheel to permanently dance and replace moves.
-    *   *IT*: Attiva la ruota di scelta mossa per ballare e sostituire permanentemente le mosse.
+#### 1. Cumulative Sub Pools / Pool Sub Cumulative
+*   **🟢 Positive Pool (Helps)**:
+    *   Restore PP, Cure Status, Restore HP, Give Healing Item, Give Status Item, Give PP Item, Stat Boost, Power Boost, Speed Boost, PP Up, Let's Dance.
+*   **🔴 Negative Pool (Curses)**:
+    *   Inflict Status, Disable Move, Power Debuff, Speed Debuff, PP Cut, Stat Debuff, Temp Type Change, Remove Healing Item, Remove Status Item, Overwhelmed, Let's Dance.
+
+#### 2. Milestone Sub Pools / Pool delle Sub Gift (5, 10, 20, 50)
+*   **🟢 Positive Pool (Milestone Rewards)**:
+    *   Restore PP, Full Restore, Give Healing Item, Give Utility Item, Give PP Item, Stat Boost, Permanent Type Change, Permanent Nature Change, Permanent Ability Change, Powerhouse Boost, No Guard Plus, Turbo Genetics, Let's Dance, Game Changer, Try Harder.
+*   **🔴 Negative Pool (Milestone Curses)**:
+    *   Overwhelmed, Empowered Disable, Empowered Debuff, PP Deplete, Permanent Type Change, Permanent Nature Change, Permanent Ability Change, Remove Big Healing Item, Remove Utility Item, Out of Control, Omnimalus, No Guard Minus, Mystification, Let's Dance.
+
+#### 3. Twitch Channel Points Rewards / Riscatti dei Punti Canale
+*   **🟢 Positive Options**:
+    *   Restore HP, Restore PP, Cure Status, Full Restore, Give Healing Item, Give Status Item, Give PP Item, Give Utility Item, Stat Boost, Power Boost, Speed Boost, PP Up, No Guard Plus, Powerhouse Boost, Turbo Genetics, Omniboost, Evolution Power, Increase Healing Limit, Increase Status Limit, Game Changer, Try Harder, Let's Dance.
+*   **🔴 Negative Options**:
+    *   Inflict Status, Disable Move, Empowered Disable, Power Debuff, Speed Debuff, PP Cut, Temp Type Change, Remove Healing Item, Remove Status Item, Remove Big Healing Item, Remove Utility Item, Stat Debuff, Empowered Debuff, PP Deplete, Mystification, Omnimalus, No Guard Minus, Out of Control, Overwhelmed, Let's Dance.
+*   **🔵 Exclusive Random Options**:
+    *   Type Change, Nature Change, Ability Change.
 
 ---
 
