@@ -481,11 +481,13 @@ This section defines which events are grouped in each pool.
 ## 🏆 Credits / Crediti
 
 ### 🇬🇧 English
-This streamer extension is designed to run alongside **RogueMON**, the incredibly polished Roguelike Pokémon Challenge created by **Crozwords**. 
+*   **Extension Creator**: Developed by **DrNarrow** (Discord: `@DrNarrow`). If you need support, want to report bugs, or have suggestions, feel free to reach out directly on Discord!
+*   **RogueMON Challenge**: This streamer extension is designed to run alongside **RogueMON**, the incredibly polished Roguelike Pokémon Challenge created by **Crozwords**. 
 *   **Official Website**: Visit [roguemon.gg](https://www.roguemon.gg/) to track runs and view leaderboards.
 *   **Official Discord**: Join the community for setup resources, guides, and updates: [https://discord.gg/C88N88yfCP](https://discord.gg/C88N88yfCP).
 
 ### 🇮🇹 Italiano
-Questa estensione per streamer è progettata per essere utilizzata insieme a **RogueMON**, l'incredibile sfida Pokémon in stile Roguelike creata da **Crozwords**.
+*   **Creatore dell'Estensione**: Sviluppata da **DrNarrow** (Discord: `@DrNarrow`). Se hai bisogno di supporto, vuoi segnalare bug o proporre suggerimenti, sentiti libero di scrivermi direttamente su Discord!
+*   **Sfida RogueMON**: Questa estensione per streamer è progettata per essere utilizzata insieme a **RogueMON**, l'incredibile sfida Pokémon in stile Roguelike creata da **Crozwords**.
 *   **Sito Web Ufficiale**: Visita [roguemon.gg](https://www.roguemon.gg/) per seguire le run e vedere le classifiche globali.
 *   **Discord Ufficiale**: Entra nella community per trovare le risorse d'installazione, guide e novità: [https://discord.gg/C88N88yfCP](https://discord.gg/C88N88yfCP).
