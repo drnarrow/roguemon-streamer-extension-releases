@@ -546,9 +546,10 @@ function RoguemonStreamer.checkForUpdatesQuery()
     end
     
     local cleanTag = latestTag:gsub("^[vV]", "")
-    local currentVersion = "3.0.1"
-    if RoguemonStreamer.selfObject and RoguemonStreamer.selfObject.version then
-        currentVersion = RoguemonStreamer.selfObject.version
+    local currentVersion = RoguemonStreamer.selfObject and RoguemonStreamer.selfObject.version
+    if not currentVersion then
+        print("[RogueMon Streamer] Error: Extension version not found (metadata object missing).")
+        return false, nil
     end
     
     local requiresUpdate = Utils.isNewerVersion(cleanTag, currentVersion)

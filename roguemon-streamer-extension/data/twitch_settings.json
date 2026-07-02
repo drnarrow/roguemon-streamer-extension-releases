@@ -1,8 +1,8 @@
 {
   "githubToken": "",
   "enabled": true,
-  "enableTwitchSub": true,
   "goodChance": 50,
+  "debug": false,
   "enableAnimations": false,
   "alteredAbilities": {
     "0xAD3766E": 22,
@@ -21,6 +21,7 @@
     "totalSubs": 0,
     "totalEvents": 0
   },
+  "enableTwitchSub": true,
   "alteredTypes": {
     "0xE2B928C5": [
       14,
@@ -31,7 +32,6 @@
       4
     ]
   },
-  "debug": false,
   "enableChannelPoints": true,
   "currentProgress": 0,
   "cumulativeGoal": 5,
@@ -46,15 +46,15 @@
         "species": 22528
       }
     },
-    "pendingRemovals": {
-      "utility_status": 0,
-      "healing": 0,
-      "utility_valuable": 0,
-      "big_healing": 0
-    },
+    "queuedStatuses": [],
     "hpCapBoost": 0,
     "statBuffs": [],
-    "queuedStatuses": [],
+    "pendingRemovals": {
+      "utility_valuable": 0,
+      "utility_status": 0,
+      "healing": 0,
+      "big_healing": 0
+    },
     "pidMappings": {
       "0x130FD202": "0x130FD172",
       "0x130FD24A": "0x130FD202",
@@ -63,12 +63,12 @@
       "0xE2B92E65": "0xE2B92D45",
       "0xE2B92AED": "0xE2B929B5"
     },
-    "statusCapBoost": 0,
+    "queuedOutOfControlTurns": 0,
     "queuedNoGuards": [],
     "queuedDamageAndStatus": [],
     "queuedOmnimalusCount": 0,
     "queuedDisableTurns": [],
-    "queuedOutOfControlTurns": 0,
+    "statusCapBoost": 0,
     "outOfControlTurns": 0,
     "queuedOverwhelmedCount": 0
   }
