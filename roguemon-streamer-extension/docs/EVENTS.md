@@ -1,8 +1,8 @@
-# RogueMon Streamer Extension - Events Catalog / Catalogo degli Eventi
+# RogueMon Streamer Extension - Events Catalog / Lista degli Eventi
 
 ---
 
-## 📋 List of Events / Elenco degli Eventi
+## 📋 List of Events / Lista degli Eventi
 
 ### 🟢 Positive Events / Eventi Positivi
 *   **Restore HP**
@@ -72,7 +72,7 @@
     *   *EN*: Opens an interactive menu to permanently replace a chosen move with a random one, or choose the "Random" option to replace a random move with a damaging one.
     *   *IT*: Apre un menu a scelta per sostituire permanentemente una mossa a scelta con una casuale, o scegliere "Random" per sostituire una mossa casuale con una mossa offensiva.
 
-### 🔴 Negative Events / Eventi Negativi (Curses)
+### 🔴 Negative Events / Eventi Negativi
 *   **Inflict Status**
     *   *EN*: Inflicts a random status condition (poison, burn, sleep, paralysis, freeze).
     *   *IT*: Infligge uno stato alterato casuale (avvelenamento, paralisi, scottatura, congelamento, sonno).
@@ -140,7 +140,7 @@
     *   *EN*: Activates Trick Room (slower Pokémon move first) for multiple battles.
     *   *IT*: Attiva l'effetto Distortozona in battaglia per più lotte.
 
-### 🔵 Channel Points Exclusive Random Events / Riscatti Casuali Esclusivi
+### 🔵 Channel Points Exclusive Random Events / Riscatti Eventi Casuali Esclusivi
 *   **Type Change**
     *   *EN*: Changes the typing of your Pokémon permanently to a completely random single or dual type.
     *   *IT*: Sostituisce il tipo del tuo Pokémon con uno singolo o doppio completamente casuale.
