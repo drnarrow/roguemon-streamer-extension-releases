@@ -3445,11 +3445,32 @@ generateNature = function(partyIndex, scale, isGood)
         end
         
         if isGood then
-            -- Positive: Defense (+DEF or +SPDEF), decrease unused attack
-            if isDefHigher then
-                return isPhysical and 8 or 5 -- 8: Impish (+Def, -SpA), 5: Bold (+Def, -Atk)
+            -- Positive: Increase highest attack, decrease lowest attack
+            if baseAtk ~= baseSpa or currentAtk ~= currentSpa then
+                local highestAtkIsPhysical = true
+                if baseAtk ~= baseSpa then
+                    highestAtkIsPhysical = (baseAtk > baseSpa)
+                else
+                    highestAtkIsPhysical = (currentAtk > currentSpa)
+                end
+                return highestAtkIsPhysical and 3 or 15 -- 3: Adamant (+Atk, -SpA), 15: Modest (+SpA, -Atk)
             else
-                return isPhysical and 23 or 20 -- 23: Careful (+SpD, -SpA), 20: Calm (+SpD, -Atk)
+                -- If they are equal, do + to a random attack stat, and - to the highest defense stat
+                local plusAtk = (RoguemonStreamer.random(1, 2) == 1)
+                local minusDef = true
+                if baseDef ~= baseSpd then
+                    minusDef = (baseDef > baseSpd)
+                elseif currentDef ~= currentSpd then
+                    minusDef = (currentDef > currentSpd)
+                else
+                    minusDef = (RoguemonStreamer.random(1, 2) == 1)
+                end
+                
+                if plusAtk then
+                    return minusDef and 1 or 4 -- 1: Lonely (+Atk, -Def), 4: Naughty (+Atk, -SpD)
+                else
+                    return minusDef and 16 or 19 -- 16: Mild (+SpA, -Def), 19: Rash (+SpA, -SpD)
+                end
             end
         else
             -- Negative: Decreased = higher attack, Increased = higher defense (If DEF > SPDEF then DEF positive, else SPDEF)
@@ -4552,7 +4573,7 @@ wrapGetPokemonTypes = function()
         return
     end
     _G.RoguemonStreamer_Backups = _G.RoguemonStreamer_Backups or {}
-    if not _G.RoguemonStreamer_Backups.getPokemonTypes then
+    if Program.getPokemonTypes ~= RoguemonStreamer.wrappedGetPokemonTypes then
         _G.RoguemonStreamer_Backups.getPokemonTypes = Program.getPokemonTypes
     end
     RoguemonStreamer.wrappedGetPokemonTypes = function(isOwn, isLeft)
@@ -4576,7 +4597,7 @@ wrapBuildTrackerScreenDisplay = function()
         return
     end
     _G.RoguemonStreamer_Backups = _G.RoguemonStreamer_Backups or {}
-    if not _G.RoguemonStreamer_Backups.buildTrackerScreenDisplay then
+    if DataHelper.buildTrackerScreenDisplay ~= RoguemonStreamer.wrappedBuildDisplay then
         _G.RoguemonStreamer_Backups.buildTrackerScreenDisplay = DataHelper.buildTrackerScreenDisplay
     end
     RoguemonStreamer.wrappedBuildDisplay = function(forceView)
@@ -4601,7 +4622,7 @@ wrapDrawMovesArea = function()
         return
     end
     _G.RoguemonStreamer_Backups = _G.RoguemonStreamer_Backups or {}
-    if not _G.RoguemonStreamer_Backups.drawMovesArea then
+    if TrackerScreen.drawMovesArea ~= RoguemonStreamer.wrappedDrawMovesArea then
         _G.RoguemonStreamer_Backups.drawMovesArea = TrackerScreen.drawMovesArea
     end
     RoguemonStreamer.wrappedDrawMovesArea = function(data)
@@ -4681,7 +4702,7 @@ wrapGetAbilityId = function()
         return
     end
     _G.RoguemonStreamer_Backups = _G.RoguemonStreamer_Backups or {}
-    if not _G.RoguemonStreamer_Backups.getAbilityId then
+    if PokemonData.getAbilityId ~= RoguemonStreamer.wrappedGetAbilityId then
         _G.RoguemonStreamer_Backups.getAbilityId = PokemonData.getAbilityId
     end
     RoguemonStreamer.wrappedGetAbilityId = function(pokemonID, abilityIndex)
@@ -4775,7 +4796,7 @@ wrapGetEffectiveness = function()
         return
     end
     _G.RoguemonStreamer_Backups = _G.RoguemonStreamer_Backups or {}
-    if not _G.RoguemonStreamer_Backups.getEffectiveness then
+    if PokemonData.getEffectiveness ~= RoguemonStreamer.wrappedGetEffectiveness then
         _G.RoguemonStreamer_Backups.getEffectiveness = PokemonData.getEffectiveness
     end
     RoguemonStreamer.wrappedGetEffectiveness = function(pokemonID)
@@ -4839,7 +4860,7 @@ wrapBuildPokemonInfoDisplay = function()
         return
     end
     _G.RoguemonStreamer_Backups = _G.RoguemonStreamer_Backups or {}
-    if not _G.RoguemonStreamer_Backups.buildPokemonInfoDisplay then
+    if DataHelper.buildPokemonInfoDisplay ~= RoguemonStreamer.wrappedBuildPokemonInfoDisplay then
         _G.RoguemonStreamer_Backups.buildPokemonInfoDisplay = DataHelper.buildPokemonInfoDisplay
     end
     RoguemonStreamer.wrappedBuildPokemonInfoDisplay = function(pokemonID)
@@ -4883,7 +4904,7 @@ wrapCheckForGameOver = function()
         return
     end
     _G.RoguemonStreamer_Backups = _G.RoguemonStreamer_Backups or {}
-    if not _G.RoguemonStreamer_Backups.checkForGameOver then
+    if GameOverScreen.checkForGameOver ~= RoguemonStreamer.wrappedCheckForGameOver then
         _G.RoguemonStreamer_Backups.checkForGameOver = GameOverScreen.checkForGameOver
     end
     RoguemonStreamer.wrappedCheckForGameOver = function(lastBattleStatus, lastTrainerId)

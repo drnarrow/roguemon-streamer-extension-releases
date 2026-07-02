@@ -3,9 +3,10 @@
   "alteredAbilities": {
     "0xEF433ECC": 40,
     "0xE2B92E65": 74,
-    "0xE36186D6": 220,
+    "0x11101830": 15,
+    "0xAD3766E": 22,
     "0x702D3DF3": 308,
-    "0xAD3766E": 22
+    "0xE36186D6": 220
   },
   "githubToken": "",
   "cumulativeGoal": 5,
@@ -21,44 +22,41 @@
   },
   "enableAnimations": false,
   "stats": {
-    "totalSubs": 0,
-    "totalEvents": 0
+    "totalEvents": 9,
+    "totalSubs": 261
   },
   "enableTwitchSub": true,
-  "debug": false,
+  "currentProgress": 0,
   "enabled": true,
   "milestones": {
     "50": true,
-    "5": true,
+    "20": true,
     "10": true,
-    "20": true
+    "5": true
   },
   "enableChannelPoints": true,
-  "currentProgress": 0,
+  "debug": false,
   "persistent": {
-    "queuedOverwhelmedCount": 0,
     "pidMappings": {
       "0xE2B92AED": "0xE2B929B5",
       "0xE2B92E65": "0xE2B92D45",
-      "0xE2B929B5": "0xE2B928C5",
+      "0x11101680": "0x11101470",
       "0xE2B92D45": "0xE2B92AED",
       "0x130FD202": "0x130FD172",
-      "0x130FD24A": "0x130FD202"
+      "0x130FD24A": "0x130FD202",
+      "0xE2B929B5": "0xE2B928C5",
+      "0x11101470": "0x111012F0",
+      "0x11101830": "0x11101680"
     },
-    "queuedDisableTurns": [],
-    "pendingRemovals": {
-      "utility_valuable": 0,
-      "big_healing": 0,
-      "healing": 0,
-      "utility_status": 0
-    },
+    "queuedOmnimalusCount": 0,
+    "outOfControlTurns": 0,
     "queuedDamageAndStatus": [],
     "statBuffs": [],
-    "queuedTempTypes": [],
-    "statusCapBoost": 0,
-    "queuedStatuses": [],
-    "outOfControlTurns": 0,
+    "queuedDisableTurns": [],
     "originalMonData": {
+      "0x111012F0": {
+        "species": 37434
+      },
       "0x130FD172": {
         "species": 22528
       },
@@ -66,10 +64,19 @@
         "species": 22528
       }
     },
+    "statusCapBoost": 0,
+    "queuedStatuses": [],
+    "pendingRemovals": {
+      "utility_valuable": 0,
+      "big_healing": 0,
+      "healing": 0,
+      "utility_status": 0
+    },
+    "queuedOverwhelmedCount": 0,
     "hpCapBoost": 0,
-    "queuedOmnimalusCount": 0,
-    "queuedNoGuards": [],
     "queuedOutOfControlTurns": 0,
+    "queuedNoGuards": [],
+    "queuedTempTypes": [],
     "lastTrainerID": 14464
   }
 }
