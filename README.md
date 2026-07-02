@@ -37,11 +37,11 @@ Un'estensione interattiva e ricca di funzionalità creata per rendere la chat di
 
 ### ⚙️ Prerequisites & Setup Guide
 To install and configure the extension (including Twitch connection, Streamer.bot integration, C# scripts, and options), please refer to the step-by-step guide:
-👉 **[Setup and Installation Guide (roguemon-streamer-extension/docs/SETUP.md)](roguemon-streamer-extension/docs/SETUP.md)**
+👉 **[Setup and Installation Guide](roguemon-streamer-extension/docs/SETUP.md)**
 
 ### 🎮 Events Catalog & Pools
 To view the descriptions of all positive and negative gameplay events, and which events are included in each subscriber or channel point pool, please refer to:
-👉 **[Events Catalog & Pools (roguemon-streamer-extension/docs/EVENTS.md)](roguemon-streamer-extension/docs/EVENTS.md)**
+👉 **[Events Catalog & Pools](roguemon-streamer-extension/docs/EVENTS.md)**
 
 ---
 
@@ -49,11 +49,11 @@ To view the descriptions of all positive and negative gameplay events, and which
 
 ### ⚙️ Prerequisiti & Guida all'Installazione
 Per installare e configurare l'estensione (inclusi il collegamento con Twitch, l'integrazione di Streamer.bot, gli script C# e le opzioni), fai riferimento alla guida dettagliata:
-👉 **[Guida all'Installazione e Configurazione (roguemon-streamer-extension/docs/SETUP.md)](roguemon-streamer-extension/docs/SETUP.md)**
+👉 **[Guida all'Installazione e Configurazione](roguemon-streamer-extension/docs/SETUP.md)**
 
-### 🎮 Catalogo degli Eventi & Pool
+### 🎮 Lista degli Eventi & Pool
 Per visualizzare la descrizione dettagliata di tutti gli eventi positivi e negativi e vedere la composizione dei vari pool di sub e punti canale, fai riferimento a:
-👉 **[Catalogo degli Eventi e dei Pool (roguemon-streamer-extension/docs/EVENTS.md)](roguemon-streamer-extension/docs/EVENTS.md)**
+👉 **[Lista degli Eventi e dei Pool](roguemon-streamer-extension/docs/EVENTS.md)**
 
 ---
 
