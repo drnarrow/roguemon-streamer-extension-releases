@@ -267,7 +267,7 @@ Prima di iniziare, assicurati di avere a disposizione:
    * **Execute C# Code**:
      * Fai clic destro nel pannello e seleziona **Add -> Core -> C# -> Execute C# Code**.
      * Fai doppio clic sulla sub-action appena creata per aprire l'editor C#.
-     * Copia il codice dello script C# (riportato al Passo 2 della sezione in inglese) e incollalo nell'editor.
+     * Copia il codice dello script C# (riportato allo Step 3 della sezione in inglese) e incollalo nell'editor.
      * **Importante**: All'interno del codice C#, individua la riga del percorso predefinito (cerca `YOUR_STREAMERBOT_PATH`):
        `: @"C:\YOUR_STREAMERBOT_PATH\data\";`
        Sostituisci `"C:\YOUR_STREAMERBOT_PATH\data\"` con il percorso assoluto corretto della cartella `data` di Streamer.bot (lo stesso percorso che hai configurato nella sub-action *Set Argument*).
