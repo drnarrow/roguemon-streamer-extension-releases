@@ -843,6 +843,10 @@ function RoguemonStreamer.initialize(extensionSelf)
             confirmEnableWithOpenBookOff = Roguemon.Leaderboard.confirmEnableWithOpenBookOff,
         }
 
+        if Roguemon.Leaderboard.LeaderboardUtils and not RoguemonStreamer.originalLeaderboardFuncs.isLeaderboardEnabled then
+            RoguemonStreamer.originalLeaderboardFuncs.isLeaderboardEnabled = Roguemon.Leaderboard.LeaderboardUtils.isLeaderboardEnabled
+        end
+
         -- Override to disable all leaderboard operations and allow rewind/Open Book
         Roguemon.Leaderboard.init = function() end
         Roguemon.Leaderboard.onRomEvent = function() end
@@ -850,6 +854,11 @@ function RoguemonStreamer.initialize(extensionSelf)
         Roguemon.Leaderboard.confirmLogViewWillEndRun = function() return true end
         Roguemon.Leaderboard.confirmOpenBookWillEndRun = function() return true end
         Roguemon.Leaderboard.confirmEnableWithOpenBookOff = function() return true end
+        if Roguemon.Leaderboard.LeaderboardUtils then
+            Roguemon.Leaderboard.LeaderboardUtils.isLeaderboardEnabled = function() return false end
+        end
+
+        Roguemon.Leaderboard.disabled = true
 
         _G.print("[RogueMon Streamer] Leaderboard disabled because Streamer Extension is active.")
         if client and type(client.enablerewind) == "function" then
@@ -1004,6 +1013,9 @@ function RoguemonStreamer.shutdown()
         Roguemon.Leaderboard.confirmLogViewWillEndRun = RoguemonStreamer.originalLeaderboardFuncs.confirmLogViewWillEndRun
         Roguemon.Leaderboard.confirmOpenBookWillEndRun = RoguemonStreamer.originalLeaderboardFuncs.confirmOpenBookWillEndRun
         Roguemon.Leaderboard.confirmEnableWithOpenBookOff = RoguemonStreamer.originalLeaderboardFuncs.confirmEnableWithOpenBookOff
+        if Roguemon.Leaderboard.LeaderboardUtils and RoguemonStreamer.originalLeaderboardFuncs.isLeaderboardEnabled then
+            Roguemon.Leaderboard.LeaderboardUtils.isLeaderboardEnabled = RoguemonStreamer.originalLeaderboardFuncs.isLeaderboardEnabled
+        end
 
         -- Re-initialize the leaderboard now that the extension is disabled
         Roguemon.Leaderboard.disabled = false
@@ -6586,6 +6598,32 @@ isActionSelectionPhaseActive = function()
 end
 
 function RoguemonStreamer.afterRedraw()
+    -- Enforce leaderboard disable if the streamer extension is active and leaderboard got re-enabled/reloaded
+    if Roguemon and Roguemon.Leaderboard and not Roguemon.Leaderboard.disabled then
+        RoguemonStreamer.originalLeaderboardFuncs = {
+            init = Roguemon.Leaderboard.init,
+            onRomEvent = Roguemon.Leaderboard.onRomEvent,
+            checkForFrameSkip = Roguemon.Leaderboard.checkForFrameSkip,
+            confirmLogViewWillEndRun = Roguemon.Leaderboard.confirmLogViewWillEndRun,
+            confirmOpenBookWillEndRun = Roguemon.Leaderboard.confirmOpenBookWillEndRun,
+            confirmEnableWithOpenBookOff = Roguemon.Leaderboard.confirmEnableWithOpenBookOff,
+        }
+        if Roguemon.Leaderboard.LeaderboardUtils then
+            RoguemonStreamer.originalLeaderboardFuncs.isLeaderboardEnabled = Roguemon.Leaderboard.LeaderboardUtils.isLeaderboardEnabled
+            Roguemon.Leaderboard.LeaderboardUtils.isLeaderboardEnabled = function() return false end
+        end
+
+        Roguemon.Leaderboard.init = function() end
+        Roguemon.Leaderboard.onRomEvent = function() end
+        Roguemon.Leaderboard.checkForFrameSkip = function() end
+        Roguemon.Leaderboard.confirmLogViewWillEndRun = function() return true end
+        Roguemon.Leaderboard.confirmOpenBookWillEndRun = function() return true end
+        Roguemon.Leaderboard.confirmEnableWithOpenBookOff = function() return true end
+
+        Roguemon.Leaderboard.disabled = true
+        _G.print("[RogueMon Streamer] Leaderboard disabled (re-enforced).")
+    end
+
     -- If choice request overlay is active and we are not on StreamerChoiceScreen, show it
     if RoguemonStreamer.ActiveChoiceRequest and Program.currentScreen ~= StreamerChoiceScreen then
         StreamerChoiceScreen.show(RoguemonStreamer.ActiveChoiceRequest)

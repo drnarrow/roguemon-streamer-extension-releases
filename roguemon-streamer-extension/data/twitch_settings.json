@@ -1,43 +1,63 @@
 {
-  "githubToken": "",
-  "enabled": true,
   "goodChance": 50,
-  "debug": false,
-  "enableAnimations": false,
   "alteredAbilities": {
-    "0xAD3766E": 22,
-    "0xE36186D6": 220,
     "0xEF433ECC": 40,
     "0xE2B92E65": 74,
-    "0x702D3DF3": 308
+    "0xE36186D6": 220,
+    "0x702D3DF3": 308,
+    "0xAD3766E": 22
   },
-  "milestones": {
-    "10": true,
-    "5": true,
-    "50": true,
-    "20": true
+  "githubToken": "",
+  "cumulativeGoal": 5,
+  "alteredTypes": {
+    "0xEF433ECC": [
+      2,
+      4
+    ],
+    "0xE2B928C5": [
+      14,
+      3
+    ]
   },
+  "enableAnimations": false,
   "stats": {
     "totalSubs": 0,
     "totalEvents": 0
   },
   "enableTwitchSub": true,
-  "alteredTypes": {
-    "0xE2B928C5": [
-      14,
-      3
-    ],
-    "0xEF433ECC": [
-      2,
-      4
-    ]
+  "debug": false,
+  "enabled": true,
+  "milestones": {
+    "50": true,
+    "5": true,
+    "10": true,
+    "20": true
   },
   "enableChannelPoints": true,
   "currentProgress": 0,
-  "cumulativeGoal": 5,
   "persistent": {
+    "queuedOverwhelmedCount": 0,
+    "pidMappings": {
+      "0xE2B92AED": "0xE2B929B5",
+      "0xE2B92E65": "0xE2B92D45",
+      "0xE2B929B5": "0xE2B928C5",
+      "0xE2B92D45": "0xE2B92AED",
+      "0x130FD202": "0x130FD172",
+      "0x130FD24A": "0x130FD202"
+    },
+    "queuedDisableTurns": [],
+    "pendingRemovals": {
+      "utility_valuable": 0,
+      "big_healing": 0,
+      "healing": 0,
+      "utility_status": 0
+    },
+    "queuedDamageAndStatus": [],
+    "statBuffs": [],
     "queuedTempTypes": [],
-    "lastTrainerID": 14464,
+    "statusCapBoost": 0,
+    "queuedStatuses": [],
+    "outOfControlTurns": 0,
     "originalMonData": {
       "0x130FD172": {
         "species": 22528
@@ -46,30 +66,10 @@
         "species": 22528
       }
     },
-    "queuedStatuses": [],
     "hpCapBoost": 0,
-    "statBuffs": [],
-    "pendingRemovals": {
-      "utility_valuable": 0,
-      "utility_status": 0,
-      "healing": 0,
-      "big_healing": 0
-    },
-    "pidMappings": {
-      "0x130FD202": "0x130FD172",
-      "0x130FD24A": "0x130FD202",
-      "0xE2B929B5": "0xE2B928C5",
-      "0xE2B92D45": "0xE2B92AED",
-      "0xE2B92E65": "0xE2B92D45",
-      "0xE2B92AED": "0xE2B929B5"
-    },
-    "queuedOutOfControlTurns": 0,
-    "queuedNoGuards": [],
-    "queuedDamageAndStatus": [],
     "queuedOmnimalusCount": 0,
-    "queuedDisableTurns": [],
-    "statusCapBoost": 0,
-    "outOfControlTurns": 0,
-    "queuedOverwhelmedCount": 0
+    "queuedNoGuards": [],
+    "queuedOutOfControlTurns": 0,
+    "lastTrainerID": 14464
   }
 }
