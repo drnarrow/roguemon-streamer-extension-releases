@@ -46,9 +46,21 @@ Before getting started, ensure you have the following ready:
 #### Step 3: Configure Streamer.bot Actions and Triggers
 1. Go to the **Actions** tab in Streamer.bot.
 2. Under the **Tracker Integration** action group, select **`RogueMON Streamer Event`**.
-3. In the bottom-right panel (**Sub-Actions**), configure the two actions:
-   * **Set Argument**: Set the variable `%trackerNetworkPath%` to the absolute path of your Streamer.bot's `data` folder (e.g. `C:\Streamer.bot\data\`). Make sure it ends with a backslash `\`.
-   * **Execute Code**: Ensure the C# script is present. For reference, here is the script code:
+3. In the bottom-right panel (**Sub-Actions**), configure the two sub-actions:
+   * **Set Argument**:
+     * Right-click inside the panel and select **Add -> Core -> Arguments -> Set Argument**.
+     * Set **Variable Name** to `trackerNetworkPath`.
+     * Set **Value** to the absolute path of your Streamer.bot's `data` folder (e.g. `C:\Streamer.bot\data\`). **Important**: Make sure it ends with a trailing backslash `\`.
+   * **Execute C# Code**:
+     * Right-click inside the panel and select **Add -> Core -> C# -> Execute C# Code**.
+     * Double-click the newly created sub-action to open the C# Editor.
+     * Copy the C# script code shown below and paste it into the editor.
+     * **Important**: Inside the script, locate the path fallback (search for `YOUR_STREAMERBOT_PATH`):
+       `: @"C:\YOUR_STREAMERBOT_PATH\data\";`
+       Replace `"C:\YOUR_STREAMERBOT_PATH\data\"` with the correct absolute path to your Streamer.bot `data` folder (matching the path you configured in the *Set Argument* sub-action).
+     * Click **Compile** to compile the C# script (verify the **Compiling Log** says **Compiled successfully**), then click **Save and Compile**.
+
+For reference, here is the script code:
 ```csharp
 using System;
 using System.IO;
@@ -196,15 +208,14 @@ public class CPHInline
     }
 }
 ```
-4. Click **Compile** at the bottom of the code window (verify the green compilation success popup) and click **Save**.
-5. In the middle-right panel (**Triggers**), link your Twitch events:
+4. In the top-right panel (**Triggers**), link your Twitch events:
    * **Subscription triggers**: Right-click -> **Twitch** -> **Subscriptions** -> Add **Subscription**, **Re-Subscription**, **Gift Subscription**, and **Gift Bomb**.
    * **Channel Point triggers**: Right-click -> **Twitch** -> **Channel Reward** -> **Reward Redemption** -> Select your custom Twitch Channel Point reward.
 > [!IMPORTANT]
 > **Twitch Channel Point Reward Title Requirement**: The title of the reward on your Twitch creator dashboard **MUST** contain the exact name of the event you wish to trigger (case-insensitive, e.g., "Roguemon - Let's Dance" or "RogueMON - Restore HP"). Otherwise, the connection cannot parse the event and it will fail to activate.
 
 #### Step 4: Install and Activate the RogueMon Streamer Extension
-1. Extract the `roguemon-streamer-extension_3.0.0.zip` file directly into the `extensions` folder of your Ironmon-Tracker installation directory.
+1. Extract the `roguemon-streamer-extension_X.X.X.zip` file directly into the `extensions` folder of your Ironmon-Tracker installation directory.
 2. In the tracker, open Settings (gear icon) -> click **Extensions** -> select **General** tab.
 3. Click **Install a new extension**, navigate to your extensions folder, select `roguemon-streamer-extension`, and install it.
 
@@ -248,11 +259,20 @@ Prima di iniziare, assicurati di avere a disposizione:
 #### Passo 3: Configurare Azioni e Trigger su Streamer.bot
 1. Seleziona la scheda **Actions** in Streamer.bot.
 2. Sotto il gruppo di azioni `Tracker Integration`, seleziona l'azione **`RogueMON Streamer Event`**.
-3. Nel pannello in basso a destra (**Sub-Actions**), configura le due sub-action presenti:
-   * **Set Argument**: Imposta la variabile `%trackerNetworkPath%` indicando il percorso assoluto della cartella `data` di Streamer.bot (es. `C:\Streamer.bot\data\`). Assicurati che termini con una barra rovesciata `\`.
-   * **Execute Code**: Assicurati che il codice C# sia presente (fai riferimento allo script C# fornito al Passo 2 della sezione inglese).
-4. Fai clic su **Compile** in fondo alla finestra del codice (verifica la comparsa del popup verde di successo) e premi **Save**.
-5. Nel pannello al centro (**Triggers**), associa i tuoi eventi di Twitch:
+3. Nel pannello in basso a destra (**Sub-Actions**), configura le due sub-action:
+   * **Set Argument**:
+     * Fai clic destro nel pannello e seleziona **Add -> Core -> Arguments -> Set Argument**.
+     * Imposta **Variable Name** su `trackerNetworkPath`.
+     * Imposta **Value** con il percorso assoluto della cartella `data` del tuo Streamer.bot (es. `C:\Streamer.bot\data\`). **Importante**: Assicurati che termini con il backslash finale `\`.
+   * **Execute C# Code**:
+     * Fai clic destro nel pannello e seleziona **Add -> Core -> C# -> Execute C# Code**.
+     * Fai doppio clic sulla sub-action appena creata per aprire l'editor C#.
+     * Copia il codice dello script C# (riportato al Passo 2 della sezione in inglese) e incollalo nell'editor.
+     * **Importante**: All'interno del codice C#, individua la riga del percorso predefinito (cerca `YOUR_STREAMERBOT_PATH`):
+       `: @"C:\YOUR_STREAMERBOT_PATH\data\";`
+       Sostituisci `"C:\YOUR_STREAMERBOT_PATH\data\"` con il percorso assoluto corretto della cartella `data` di Streamer.bot (lo stesso percorso che hai configurato nella sub-action *Set Argument*).
+     * Clicca su **Compile** in fondo alla finestra (verifica che non ci sono errori in **Compiling Log** e che esca **Compiled successfully**) e premi **Save and Compile**.
+4. Nel pannello in alto a destra (**Triggers**), associa i tuoi eventi di Twitch:
    * **Trigger per gli Abbonamenti (Subs)**: Fai clic destro -> **Twitch** -> **Subscriptions** -> Aggiungi **Subscription**, **Re-Subscription**, **Gift Subscription** e **Gift Bomb**.
    * **Trigger per i Punti Canale (Channel Points)**: Fai clic destro -> **Twitch** -> **Channel Reward** -> **Reward Redemption** -> Seleziona il riscatto punti canale creato su Twitch.
 > [!IMPORTANT]
