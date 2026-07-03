@@ -299,6 +299,16 @@ local POSITIVE_EVENTS_MILESTONE = {
 }
 
 local function pickPositiveMilestoneEvent(subCount)
+    -- Check if active mon is already filtered for evolution events
+    local leadMon = Battle.getViewedPokemon(true)
+    local isFiltered = false
+    if leadMon and leadMon.personality then
+        local phex = string.format("0x%X", leadMon.personality)
+        if RoguemonStreamer.settings.persistent.evolutionFilteredPids and RoguemonStreamer.settings.persistent.evolutionFilteredPids[phex] then
+            isFiltered = true
+        end
+    end
+
     if subCount >= 50 then
         local roll = RoguemonStreamer.random(1, 100)
         if roll <= 5 then
@@ -306,7 +316,16 @@ local function pickPositiveMilestoneEvent(subCount)
         elseif roll <= 10 then
             return "Increase Status Limit"
         elseif roll <= 20 then
-            return "Darwinism"
+            if isFiltered then
+                local others = {
+                    "Give Healing Item", "Give Utility Items", "Give PP Item",
+                    "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
+                    "Powerhouse Boost", "No Guard Plus", "Omniboost", "Game Changer", "Try Harder", "Let's Dance"
+                }
+                return others[RoguemonStreamer.random(1, #others)]
+            else
+                return "Darwinism"
+            end
         else
             local others = {
                 "Give Healing Item", "Give Utility Items", "Give PP Item",
@@ -324,7 +343,17 @@ local function pickPositiveMilestoneEvent(subCount)
         elseif roll <= 13 then
             return "Increase Status Limit"
         elseif roll <= 18 then
-            return "Darwinism"
+            if isFiltered then
+                local others = {
+                    "Give Healing Item", "Give Utility Items", "Give PP Item", "Stat Boost",
+                    "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
+                    "Powerhouse Boost", "No Guard Plus", "Omniboost", "Evolution Power",
+                    "Game Changer", "Try Harder", "Let's Dance"
+                }
+                return others[RoguemonStreamer.random(1, #others)]
+            else
+                return "Darwinism"
+            end
         else
             local others = {
                 "Give Healing Item", "Give Utility Items", "Give PP Item", "Stat Boost",
@@ -332,6 +361,14 @@ local function pickPositiveMilestoneEvent(subCount)
                 "Powerhouse Boost", "No Guard Plus", "Omniboost", "Evolution Power", "Turbo Genetics",
                 "Game Changer", "Try Harder", "Let's Dance"
             }
+            if isFiltered then
+                for idx, name in ipairs(others) do
+                    if name == "Turbo Genetics" then
+                        table.remove(others, idx)
+                        break
+                    end
+                end
+            end
             return others[RoguemonStreamer.random(1, #others)]
         end
     else
@@ -349,6 +386,14 @@ local function pickPositiveMilestoneEvent(subCount)
                 "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
                 "Powerhouse Boost", "No Guard Plus", "Turbo Genetics", "Evolution Power", "Let's Dance"
             }
+            if isFiltered then
+                for idx, name in ipairs(others) do
+                    if name == "Turbo Genetics" then
+                        table.remove(others, idx)
+                        break
+                    end
+                end
+            end
             return others[RoguemonStreamer.random(1, #others)]
         end
     end
@@ -1319,6 +1364,7 @@ function RoguemonStreamer.loadSettings()
         RoguemonStreamer.settings.persistent.queuedStatuses = RoguemonStreamer.settings.persistent.queuedStatuses or {}
         RoguemonStreamer.settings.persistent.queuedOutOfControlTurns = RoguemonStreamer.settings.persistent.queuedOutOfControlTurns or 0
         RoguemonStreamer.settings.persistent.queuedOverwhelmedCount = RoguemonStreamer.settings.persistent.queuedOverwhelmedCount or 0
+        RoguemonStreamer.settings.persistent.evolutionFilteredPids = RoguemonStreamer.settings.persistent.evolutionFilteredPids or {}
         RoguemonStreamer.settings.persistent.pendingRemovals = RoguemonStreamer.settings.persistent.pendingRemovals or {
             healing = 0,
             utility_status = 0,
@@ -3275,7 +3321,15 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
         detail = "Evolution Power ( +1 Roguestone )"
     elseif eventName == "Turbo Genetics" then
         local leadMon = Battle.getViewedPokemon(true)
-        if leadMon and leadMon.pokemonID and leadMon.pokemonID > 0 then
+        local alreadyFiltered = false
+        if leadMon and leadMon.personality then
+            local phex = string.format("0x%X", leadMon.personality)
+            if RoguemonStreamer.settings.persistent.evolutionFilteredPids and RoguemonStreamer.settings.persistent.evolutionFilteredPids[phex] then
+                alreadyFiltered = true
+            end
+        end
+
+        if leadMon and leadMon.pokemonID and leadMon.pokemonID > 0 and not alreadyFiltered then
             local pokemonID = leadMon.pokemonID
             
             PokemonRevoData.tryLoadData()
@@ -3396,6 +3450,14 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
                     local chosenName = PokemonData.Pokemon[chosenId] and PokemonData.Pokemon[chosenId].name or "Chosen candidate"
                     print(string.format("[RogueMon Streamer] - Turbo Genetics applied to %s. Evolution target secretly locked to %s.", monName, chosenName))
                     detail = string.format("Turbo Genetics ( Restricted %s's evolution pool to top 10 BST )", trim(monName))
+                    
+                    -- Record successful application to prevent future reruns
+                    if leadMon and leadMon.personality then
+                        local phex = string.format("0x%X", leadMon.personality)
+                        RoguemonStreamer.settings.persistent.evolutionFilteredPids = RoguemonStreamer.settings.persistent.evolutionFilteredPids or {}
+                        RoguemonStreamer.settings.persistent.evolutionFilteredPids[phex] = true
+                        RoguemonStreamer.saveSettings()
+                    end
                 else
                     print("[RogueMon Streamer] - Turbo Genetics failed to filter: Fallback giving items")
                     if scale and scale >= 50 then
@@ -3423,21 +3485,43 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
                 end
             end
         else
-            print("[RogueMon Streamer] - Turbo Genetics: No viewed Pokemon. Fallback giving items.")
-            if scale and scale >= 50 then
-                local fullRestoreId = Roguemon.ItemManager.getItemIdByName("Full Restore") or 19
-                local rareCandyId = Roguemon.ItemManager.getItemIdByName("Rare Candy") or 68
-                grantItem(fullRestoreId, 2)
-                grantItem(rareCandyId, 1)
-                detail = "Turbo Genetics ( No Pokemon viewed -> +2 Full Restore, +1 Rare Candy )"
+            if alreadyFiltered then
+                print("[RogueMon Streamer] - Turbo Genetics: Active Pokémon already has filtered evolutions. Fallback giving items.")
+                if scale and scale >= 50 then
+                    local fullRestoreId = Roguemon.ItemManager.getItemIdByName("Full Restore") or 19
+                    local rareCandyId = Roguemon.ItemManager.getItemIdByName("Rare Candy") or 68
+                    grantItem(fullRestoreId, 2)
+                    grantItem(rareCandyId, 1)
+                    detail = "Turbo Genetics ( Already filtered -> +2 Full Restore, +1 Rare Candy )"
+                else
+                    grantItem(ITEMS.HYPER_POTION, 1)
+                    detail = "Turbo Genetics ( Already filtered -> +1 Hyper Potion )"
+                end
             else
-                grantItem(ITEMS.HYPER_POTION, 1)
-                detail = "Turbo Genetics ( No Pokemon viewed -> +1 Hyper Potion )"
+                print("[RogueMon Streamer] - Turbo Genetics: No viewed Pokemon. Fallback giving items.")
+                if scale and scale >= 50 then
+                    local fullRestoreId = Roguemon.ItemManager.getItemIdByName("Full Restore") or 19
+                    local rareCandyId = Roguemon.ItemManager.getItemIdByName("Rare Candy") or 68
+                    grantItem(fullRestoreId, 2)
+                    grantItem(rareCandyId, 1)
+                    detail = "Turbo Genetics ( No Pokemon viewed -> +2 Full Restore, +1 Rare Candy )"
+                else
+                    grantItem(ITEMS.HYPER_POTION, 1)
+                    detail = "Turbo Genetics ( No Pokemon viewed -> +1 Hyper Potion )"
+                end
             end
         end
     elseif eventName == "Darwinism" then
         local leadMon = Battle.getViewedPokemon(true)
-        if leadMon and leadMon.pokemonID and leadMon.pokemonID > 0 then
+        local alreadyFiltered = false
+        if leadMon and leadMon.personality then
+            local phex = string.format("0x%X", leadMon.personality)
+            if RoguemonStreamer.settings.persistent.evolutionFilteredPids and RoguemonStreamer.settings.persistent.evolutionFilteredPids[phex] then
+                alreadyFiltered = true
+            end
+        end
+
+        if leadMon and leadMon.pokemonID and leadMon.pokemonID > 0 and not alreadyFiltered then
             local pokemonID = leadMon.pokemonID
             
             PokemonRevoData.tryLoadData()
@@ -3628,6 +3712,14 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
                     local chosenName = PokemonData.Pokemon[chosenId] and PokemonData.Pokemon[chosenId].name or "Chosen candidate"
                     print(string.format("[RogueMon Streamer] - Darwinism applied to %s. Evolution target secretly locked to %s.", monName, chosenName))
                     detail = string.format("Darwinism ( Restricted %s's evolution pool to top 5 Darwinian candidates )", trim(monName))
+                    
+                    -- Record successful application to prevent future reruns
+                    if leadMon and leadMon.personality then
+                        local phex = string.format("0x%X", leadMon.personality)
+                        RoguemonStreamer.settings.persistent.evolutionFilteredPids = RoguemonStreamer.settings.persistent.evolutionFilteredPids or {}
+                        RoguemonStreamer.settings.persistent.evolutionFilteredPids[phex] = true
+                        RoguemonStreamer.saveSettings()
+                    end
                 else
                     print("[RogueMon Streamer] - Darwinism failed to filter: Fallback giving items")
                     if scale and scale >= 50 then
@@ -3655,16 +3747,30 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
                 end
             end
         else
-            print("[RogueMon Streamer] - Darwinism: No viewed Pokemon. Fallback giving items.")
-            if scale and scale >= 50 then
-                local fullRestoreId = Roguemon.ItemManager.getItemIdByName("Full Restore") or 19
-                local rareCandyId = Roguemon.ItemManager.getItemIdByName("Rare Candy") or 68
-                grantItem(fullRestoreId, 2)
-                grantItem(rareCandyId, 1)
-                detail = "Darwinism ( No Pokemon viewed -> +2 Full Restore, +1 Rare Candy )"
+            if alreadyFiltered then
+                print("[RogueMon Streamer] - Darwinism: Active Pokémon already has filtered evolutions. Fallback giving items.")
+                if scale and scale >= 50 then
+                    local fullRestoreId = Roguemon.ItemManager.getItemIdByName("Full Restore") or 19
+                    local rareCandyId = Roguemon.ItemManager.getItemIdByName("Rare Candy") or 68
+                    grantItem(fullRestoreId, 2)
+                    grantItem(rareCandyId, 1)
+                    detail = "Darwinism ( Already filtered -> +2 Full Restore, +1 Rare Candy )"
+                else
+                    grantItem(ITEMS.HYPER_POTION, 1)
+                    detail = "Darwinism ( Already filtered -> +1 Hyper Potion )"
+                end
             else
-                grantItem(ITEMS.HYPER_POTION, 1)
-                detail = "Darwinism ( No Pokemon viewed -> +1 Hyper Potion )"
+                print("[RogueMon Streamer] - Darwinism: No viewed Pokemon. Fallback giving items.")
+                if scale and scale >= 50 then
+                    local fullRestoreId = Roguemon.ItemManager.getItemIdByName("Full Restore") or 19
+                    local rareCandyId = Roguemon.ItemManager.getItemIdByName("Rare Candy") or 68
+                    grantItem(fullRestoreId, 2)
+                    grantItem(rareCandyId, 1)
+                    detail = "Darwinism ( No Pokemon viewed -> +2 Full Restore, +1 Rare Candy )"
+                else
+                    grantItem(ITEMS.HYPER_POTION, 1)
+                    detail = "Darwinism ( No Pokemon viewed -> +1 Hyper Potion )"
+                end
             end
         end
     elseif eventName == "Game Changer" then
@@ -4947,7 +5053,25 @@ function RoguemonStreamer.applyLetsDanceChange(slot, isRandomOption)
 
         -- Get a random damaging move
         local damagingMoves = getDamagingMoveIds()
-        newMoveId = damagingMoves[RoguemonStreamer.random(#damagingMoves)]
+        -- Filter out currently known moves (this inherently prevents rolling the same move)
+        local filteredDamaging = {}
+        for _, mid in ipairs(damagingMoves) do
+            local alreadyKnown = false
+            for idx = 1, 4 do
+                if moves[idx] == mid then
+                    alreadyKnown = true
+                    break
+                end
+            end
+            if not alreadyKnown then
+                table.insert(filteredDamaging, mid)
+            end
+        end
+        if #filteredDamaging > 0 then
+            newMoveId = filteredDamaging[RoguemonStreamer.random(#filteredDamaging)]
+        else
+            newMoveId = damagingMoves[RoguemonStreamer.random(#damagingMoves)]
+        end
     else
         -- Replace a specific slot chosen by the player
         if not targetSlot or targetSlot < 1 or targetSlot > 4 or not moves[targetSlot] or moves[targetSlot] <= 0 then
@@ -4958,7 +5082,25 @@ function RoguemonStreamer.applyLetsDanceChange(slot, isRandomOption)
 
         -- Get any random valid move
         local validMoves = getValidMoveIds()
-        newMoveId = validMoves[RoguemonStreamer.random(#validMoves)]
+        -- Filter out currently known moves (this inherently prevents rolling the same move)
+        local filteredValid = {}
+        for _, mid in ipairs(validMoves) do
+            local alreadyKnown = false
+            for idx = 1, 4 do
+                if moves[idx] == mid then
+                    alreadyKnown = true
+                    break
+                end
+            end
+            if not alreadyKnown then
+                table.insert(filteredValid, mid)
+            end
+        end
+        if #filteredValid > 0 then
+            newMoveId = filteredValid[RoguemonStreamer.random(#filteredValid)]
+        else
+            newMoveId = validMoves[RoguemonStreamer.random(#validMoves)]
+        end
     end
 
     if newMoveId > 0 and targetSlot then
@@ -8917,4 +9059,5 @@ if RandomizerLog and PokemonData then
         end
     end
 end
+
 

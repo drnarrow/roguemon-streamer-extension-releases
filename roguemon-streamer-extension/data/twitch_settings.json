@@ -1,46 +1,47 @@
 {
-  "debug": false,
-  "alteredAbilities": [],
-  "milestones": {
-    "5": true,
-    "50": true,
-    "20": true,
-    "10": true
-  },
-  "enabled": true,
   "enableAnimations": false,
-  "goodChance": 50,
-  "enableChannelPoints": true,
-  "cumulativeGoal": 5,
-  "enableTwitchSub": true,
-  "githubToken": "",
-  "persistent": {
-    "outOfControlTurns": 0,
-    "queuedTempTypes": [],
-    "queuedDamageAndStatus": [],
-    "queuedNoGuards": [],
-    "statBuffs": [],
-    "queuedStatuses": [],
-    "queuedOverwhelmedCount": 0,
-    "originalMonData": [],
-    "statusCapBoost": 0,
-    "hpCapBoost": 0,
-    "pidMappings": [],
-    "lastTrainerID": 0,
-    "queuedOutOfControlTurns": 0,
-    "pendingRemovals": {
-      "big_healing": 0,
-      "utility_valuable": 0,
-      "healing": 0,
-      "utility_status": 0
-    },
-    "queuedOmnimalusCount": 0,
-    "queuedDisableTurns": []
-  },
-  "alteredTypes": [],
+  "alteredTypes": {},
   "stats": {
     "totalEvents": 0,
     "totalSubs": 0
   },
-  "currentProgress": 0
+  "alteredAbilities": {},
+  "persistent": {
+    "queuedOverwhelmedCount": 0,
+    "outOfControlTurns": 0,
+    "hpCapBoost": 0,
+    "queuedTempTypes": [],
+    "queuedDisableTurns": [],
+    "queuedDamageAndStatus": [],
+    "queuedOutOfControlTurns": 0,
+    "statBuffs": [],
+    "pendingRemovals": {
+      "utility_status": 0,
+      "healing": 0,
+      "big_healing": 0,
+      "utility_valuable": 0
+    },
+    "queuedOmnimalusCount": 0,
+    "lastTrainerID": 0,
+    "pidMappings": {},
+    "originalMonData": {},
+    "statusCapBoost": 0,
+    "queuedStatuses": [],
+    "queuedNoGuards": [],
+    "evolutionFilteredPids": {}
+  },
+  "githubToken": "",
+  "milestones": {
+    "5": true,
+    "10": true,
+    "20": true,
+    "50": true
+  },
+  "cumulativeGoal": 5,
+  "currentProgress": 0,
+  "enabled": true,
+  "enableTwitchSub": true,
+  "enableChannelPoints": true,
+  "debug": false,
+  "goodChance": 50
 }
