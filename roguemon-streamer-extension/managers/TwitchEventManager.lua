@@ -288,34 +288,49 @@ local STAT_LABELS = {
 local POSITIVE_EVENTS_CUMULATIVE = {
     "Restore PP", "Cure Status", "Restore HP",
     "Give Healing Item", "Give Status Item", "Give PP Item", "Stat Boost",
-    "Power Boost", "Speed Boost", "PP Up", "Let's Dance"
+    "Power Boost", "Speed Boost", "PP Up"
 }
 
 local POSITIVE_EVENTS_MILESTONE = {
     "Restore PP", "Full Restore",
     "Give Healing Item", "Give Utility Item", "Give Utility Items", "Give PP Item", "Stat Boost",
     "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
-    "Powerhouse Boost", "No Guard Plus", "Turbo Genetics", "Let's Dance"
+    "Powerhouse Boost", "No Guard Plus", "Turbo Genetics", "Darwinism", "Let's Dance"
 }
 
 local function pickPositiveMilestoneEvent(subCount)
-    if subCount >= 10 then
+    if subCount >= 50 then
         local roll = RoguemonStreamer.random(1, 100)
         if roll <= 5 then
+            return "Increase Healing Limit"
+        elseif roll <= 10 then
+            return "Increase Status Limit"
+        elseif roll <= 20 then
+            return "Darwinism"
+        else
+            local others = {
+                "Give Healing Item", "Give Utility Items", "Give PP Item",
+                "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
+                "Powerhouse Boost", "No Guard Plus", "Omniboost", "Game Changer", "Try Harder", "Let's Dance"
+            }
+            return others[RoguemonStreamer.random(1, #others)]
+        end
+    elseif subCount >= 10 then
+        local roll = RoguemonStreamer.random(1, 100)
+        if roll <= 7 then
             return "Full Restore"
         elseif roll <= 10 then
             return "Increase Healing Limit"
-        elseif roll <= 15 then
+        elseif roll <= 13 then
             return "Increase Status Limit"
-        elseif roll <= 20 then
-            return "Evolution Power"
-        elseif roll <= 25 then
-            return "Turbo Genetics"
+        elseif roll <= 18 then
+            return "Darwinism"
         else
             local others = {
-                "Restore PP", "Give Healing Item", "Give Utility Items", "Give PP Item", "Stat Boost",
+                "Give Healing Item", "Give Utility Items", "Give PP Item", "Stat Boost",
                 "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
-                "Powerhouse Boost", "No Guard Plus", "Omniboost", "Let's Dance"
+                "Powerhouse Boost", "No Guard Plus", "Omniboost", "Evolution Power", "Turbo Genetics",
+                "Game Changer", "Try Harder", "Let's Dance"
             }
             return others[RoguemonStreamer.random(1, #others)]
         end
@@ -332,7 +347,7 @@ local function pickPositiveMilestoneEvent(subCount)
             local others = {
                 "Restore PP", "Give Healing Item", "Give Utility Item", "Give PP Item", "Stat Boost",
                 "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
-                "Powerhouse Boost", "No Guard Plus", "Let's Dance"
+                "Powerhouse Boost", "No Guard Plus", "Turbo Genetics", "Evolution Power", "Let's Dance"
             }
             return others[RoguemonStreamer.random(1, #others)]
         end
@@ -340,29 +355,47 @@ local function pickPositiveMilestoneEvent(subCount)
 end
 
 local function pickNegativeMilestoneEvent(subCount)
-    if subCount >= 10 then
+    if subCount >= 50 then
         local roll = RoguemonStreamer.random(1, 100)
         if roll <= 10 then
             return "Out of Control"
         elseif roll <= 20 then
             return "Omnimalus"
         elseif roll <= 30 then
-            return "Remove Utility Items"
+            return "Mystification"
         else
             local others = {
-                "Overwhelmed", "Empowered Disable", "Empowered Debuff", "PP Deplete",
+                "Disable Move", "Stat Debuff", "PP Deplete",
                 "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
-                "Remove Big Healing Item", "No Guard Minus", "Mystification", "Let's Dance"
+                "Remove Big Healing Item", "Remove Utility Items", "No Guard Minus", "Overwhelmed"
+            }
+            return others[RoguemonStreamer.random(1, #others)]
+        end
+    elseif subCount >= 10 then
+        local roll = RoguemonStreamer.random(1, 100)
+        if roll <= 10 then
+            return "Out of Control"
+        elseif roll <= 20 then
+            return "Omnimalus"
+        elseif roll <= 30 then
+            return "Mystification"
+        elseif roll <= 40 then
+            return "Overwhelmed"
+        else
+            local others = {
+                "Disable Move", "Stat Debuff", "PP Deplete",
+                "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
+                "Remove Big Healing Item", "Remove Utility Items", "No Guard Minus", "Let's Dance"
             }
             return others[RoguemonStreamer.random(1, #others)]
         end
     else
         -- Standard Milestone (5-9 subs)
         local others = {
-            "Overwhelmed", "Empowered Disable", "Empowered Debuff", "PP Deplete",
+            "Overwhelmed", "Disable Move", "Stat Debuff", "PP Deplete",
             "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
             "Remove Big Healing Item", "Remove Utility Item", "Out of Control",
-            "Omnimalus", "No Guard Minus", "Mystification", "Let's Dance"
+            "No Guard Minus", "Mystification", "Let's Dance"
         }
         return others[RoguemonStreamer.random(1, #others)]
     end
@@ -408,14 +441,14 @@ end
 local NEGATIVE_EVENTS_CUMULATIVE = {
     "Inflict Status", "Disable Move", "Power Debuff", "Speed Debuff",
     "PP Cut", "Stat Debuff", "Temp Type Change",
-    "Remove Healing Item", "Remove Status Item", "Overwhelmed", "Let's Dance"
+    "Remove Healing Item", "Remove Status Item", "Overwhelmed"
 }
 
 local NEGATIVE_EVENTS_MILESTONE = {
-    "Overwhelmed", "Empowered Disable", "Empowered Debuff", "PP Deplete",
+    "Overwhelmed", "Disable Move", "Stat Debuff", "PP Deplete",
     "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
     "Remove Big Healing Item", "Remove Utility Item", "Remove Utility Items",
-    "Out of Control", "Omnimalus", "No Guard Minus", "Let's Dance"
+    "Out of Control", "Omnimalus", "No Guard Minus", "Mystification", "Let's Dance"
 }
 
 local getPartyMonMoves
@@ -436,6 +469,8 @@ local generateTyping
 local isActionSelectionPhaseActive
 
 function RoguemonStreamer.resetRunState(isSilent)
+    RoguemonStreamer.outcomeWatchRegistered = nil
+    RoguemonStreamer.lastBattleOutcome = nil
     if not RoguemonStreamer.settings or not RoguemonStreamer.settings.persistent then
         return
     end
@@ -1004,7 +1039,9 @@ end
 
 function RoguemonStreamer.shutdown()
     RoguemonStreamer.initialized = false
+    RoguemonStreamer.outcomeWatchRegistered = nil
     pcall(event.unregisterbyname, "RoguemonNoGuardFlags")
+    pcall(event.unregisterbyname, "RoguemonStreamer_gBattleOutcome")
     if Roguemon and Roguemon.Leaderboard and RoguemonStreamer.originalLeaderboardFuncs then
         -- Restore original functions
         Roguemon.Leaderboard.init = RoguemonStreamer.originalLeaderboardFuncs.init
@@ -1566,6 +1603,7 @@ local cp_event_mapping = {
     ["no guard plus"] = { fn = "executePositiveEvent", name = "No Guard Plus", scale = 1 },
     ["powerhouse boost"] = { fn = "executePositiveEvent", name = "Powerhouse Boost", scale = 2 }, -- results in duration = 1 battle
     ["turbo genetics"] = { fn = "executePositiveEvent", name = "Turbo Genetics", scale = 10 },
+    ["darwinism"] = { fn = "executePositiveEvent", name = "Darwinism", scale = 10 },
     ["omniboost"] = { fn = "executePositiveEvent", name = "Omniboost", scale = 10 },
     ["evolution power"] = { fn = "executePositiveEvent", name = "Evolution Power", scale = 10 },
     ["increase healing limit"] = { fn = "executePositiveEvent", name = "Increase Healing Limit", scale = 1 },
@@ -1577,7 +1615,7 @@ local cp_event_mapping = {
     -- Negative Events
     ["inflict status"] = { fn = "executeNegativeEvent", name = "Inflict Status", scale = 1 },
     ["disable move"] = { fn = "executeNegativeEvent", name = "Disable Move", scale = 3 }, -- 3 turns
-    ["empowered disable"] = { fn = "executeNegativeEvent", name = "Empowered Disable", scale = 10 },
+    ["empowered disable"] = { fn = "executeNegativeEvent", name = "Disable Move", scale = 10 },
     ["power debuff"] = { fn = "executeNegativeEvent", name = "Power Debuff", scale = 1 },
     ["speed debuff"] = { fn = "executeNegativeEvent", name = "Speed Debuff", scale = 1 },
     ["pp cut"] = { fn = "executeNegativeEvent", name = "PP Cut", scale = 1 },
@@ -1588,17 +1626,14 @@ local cp_event_mapping = {
     ["remove utility item"] = { fn = "executeNegativeEvent", name = "Remove Utility Item", scale = 5 },
     ["remove utility items"] = { fn = "executeNegativeEvent", name = "Remove Utility Items", scale = 10 },
     ["stat debuff"] = { fn = "executeNegativeEvent", name = "Stat Debuff", scale = 1 },
-    ["empowered debuff"] = { fn = "executeNegativeEvent", name = "Empowered Debuff", scale = 10 },
+    ["empowered debuff"] = { fn = "executeNegativeEvent", name = "Stat Debuff", scale = 10 },
     ["pp deplete"] = { fn = "executeNegativeEvent", name = "PP Deplete", scale = 1 },
     ["mystification"] = { fn = "executeNegativeEvent", name = "Mystification", scale = 1 },
     ["trick room"] = { fn = "executeNegativeEvent", name = "Mystification", scale = 1 },
     ["omnimalus"] = { fn = "executeNegativeEvent", name = "Omnimalus", scale = 5 },
     ["no guard minus"] = { fn = "executeNegativeEvent", name = "No Guard Minus", scale = 1 },
     ["out of control"] = { fn = "executeNegativeEvent", name = "Out of Control", scale = 2 }, -- 1 battle
-    ["overwhelmed"] = { fn = "executeNegativeEvent", name = "Damage and Status", scale = 5 },
-    ["damage and status"] = { fn = "executeNegativeEvent", name = "Damage and Status", scale = 5 },
-    ["status & damages"] = { fn = "executeNegativeEvent", name = "Damage and Status", scale = 5 },
-    ["danni e status"] = { fn = "executeNegativeEvent", name = "Damage and Status", scale = 5 },
+    ["overwhelmed"] = { fn = "executeNegativeEvent", name = "Overwhelmed", scale = 5 },
 
     -- Completely Random Type/Nature/Ability Changes (CP unique names)
     ["type change"] = { fn = "executeRandomChange", name = "Type Change", scale = 1 },
@@ -1910,8 +1945,6 @@ function RoguemonStreamer.processRequest(request)
             local displayName = eventName
             if eventName == "Altera status" or eventName == "Inflict status" or eventName == "Inflict Status" then
                 displayName = "Inflict status"
-            elseif eventName == "Danni e status" or eventName == "Status & Damages" or eventName == "Damage and Status" then
-                displayName = "Status & Damages"
             end
             table.insert(eventsTriggered, string.format("%s (%s)", displayName, outcome))
             RoguemonStreamer.settings.stats.totalEvents = RoguemonStreamer.settings.stats.totalEvents + 1
@@ -2576,7 +2609,7 @@ function RoguemonStreamer.queueOrActivateMoveEvent(eventName, scale)
             RoguemonStreamer.saveSettings()
             print(string.format("[RogueMon Streamer] Queued Out of Control event for %d turns.", scale))
             return string.format("Out of Control ( %d turns )", scale)
-        elseif eventName == "Disable Move" or eventName == "Empowered Disable" then
+        elseif eventName == "Disable Move" then
             table.insert(p.queuedDisableTurns, { turns = scale })
             RoguemonStreamer.saveSettings()
             print(string.format("[RogueMon Streamer] Queued %s event for %d turns.", eventName, scale))
@@ -2589,7 +2622,7 @@ function RoguemonStreamer.queueOrActivateMoveEvent(eventName, scale)
             RoguemonStreamer.saveSettings()
             print(string.format("[RogueMon Streamer] Activated Out of Control event immediately for %d turns.", scale))
             return string.format("Out of Control ( %d turns )", scale)
-        elseif eventName == "Disable Move" or eventName == "Empowered Disable" then
+        elseif eventName == "Disable Move" then
             -- Pick a random move from the active battler in battle RAM
             local activeIdx = getActivePartyIndex()
             local battleSlot = nil
@@ -2650,39 +2683,29 @@ function RoguemonStreamer.queueOrActivateNoGuardEvent(eventName, scale)
     if not p then return "Failed" end
 
     local btlCount = 1
-    if scale and scale >= 50 then
+    if scale and scale >= 10 then
         btlCount = math.floor(scale / 2)
     end
+    if RoguemonStreamer.isChannelPointsExecution then
+        btlCount = 1
+    end
 
-    p.queuedNoGuards = p.queuedNoGuards or {}
-    local inBattle = Battle.inActiveBattle()
-    local isAnyActive = p.noGuardPlusActive or p.noGuardMinusActive
-
-    if not inBattle or isAnyActive then
-        local suffix = (eventName == "No Guard Plus") and "Plus" or "Minus"
-        if btlCount > 1 then
-            table.insert(p.queuedNoGuards, { type = suffix, count = btlCount })
-        else
-            table.insert(p.queuedNoGuards, suffix)
-        end
+    if eventName == "No Guard Plus" then
+        local current = p.noGuardPlusActive or 0
+        if type(current) ~= "number" then current = 0 end
+        p.noGuardPlusActive = current + btlCount
+        p.noGuardPlusApplied = false
         RoguemonStreamer.saveSettings()
-        print(string.format("[RogueMon Streamer] Queued %s event for %d battles.", eventName, btlCount))
-        local detailSuffix = (eventName == "No Guard Plus") and "Player moves cannot miss" or "Enemies cannot miss"
-        return string.format("%s ( %s for %d btl )", eventName, detailSuffix, btlCount)
+        print(string.format("[RogueMon Streamer] Added No Guard Plus for %d battles.", btlCount))
+        return string.format("No Guard Plus ( Player moves cannot miss for %d btl )", p.noGuardPlusActive)
     else
-        if eventName == "No Guard Plus" then
-            p.noGuardPlusActive = btlCount
-            p.noGuardPlusApplied = false
-            RoguemonStreamer.saveSettings()
-            print(string.format("[RogueMon Streamer] Activated No Guard Plus event immediately for %d battles.", btlCount))
-            return string.format("No Guard Plus ( Player moves cannot miss for %d btl )", btlCount)
-        else
-            p.noGuardMinusActive = btlCount
-            p.noGuardMinusApplied = false
-            RoguemonStreamer.saveSettings()
-            print(string.format("[RogueMon Streamer] Activated No Guard Minus event immediately for %d battles.", btlCount))
-            return string.format("No Guard Minus ( Enemies cannot miss for %d btl )", btlCount)
-        end
+        local current = p.noGuardMinusActive or 0
+        if type(current) ~= "number" then current = 0 end
+        p.noGuardMinusActive = current + btlCount
+        p.noGuardMinusApplied = false
+        RoguemonStreamer.saveSettings()
+        print(string.format("[RogueMon Streamer] Added No Guard Minus for %d battles.", btlCount))
+        return string.format("No Guard Minus ( Enemies cannot miss for %d btl )", p.noGuardMinusActive)
     end
 end
 
@@ -2694,7 +2717,70 @@ function RoguemonStreamer.queueOrActivateTempTypeChange(scale)
     local inBattle = Battle.inActiveBattle()
     local isAnyActive = p.tempTypeChange ~= nil
 
-    local t1, t2 = generateTyping(scale, false)
+    -- Dynamically build typing pools from ALL mono and dual-type combinations.
+    -- Uses actual type effectiveness data to classify each combination into:
+    --   opPool:      no x4, max 2 x2 weaknesses, ≥2 resistances (x0.5/x0.25), ≥1 immunity (x0)
+    --   goodPool:    no x4, max 3 x2, ≥3 total defensive (res+imm combined)
+    --   badPool:     at least 1 x4 weakness
+    --   neutralPool: everything else
+    local allTypeIds = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19 }
+    local opPool, goodPool, badPool, neutralPool = {}, {}, {}, {}
+
+    if MoveData and MoveData.TypeToEffectiveness then
+        local function getDefenseStats(typeId1, typeId2)
+            local t1 = string.lower(PokemonData.TypeIndexMap[typeId1] or "")
+            local t2 = string.lower(PokemonData.TypeIndexMap[typeId2] or "")
+            local isMono = (typeId1 == typeId2)
+            local x0, x025, x05, x2, x4 = 0, 0, 0, 0, 0
+            for _, eff in pairs(MoveData.TypeToEffectiveness) do
+                local m = (eff[t1] or 1)
+                if not isMono then m = m * (eff[t2] or 1) end
+                if     m == 0   then x0   = x0   + 1
+                elseif m < 0.3  then x025 = x025 + 1   -- 0.25
+                elseif m < 0.9  then x05  = x05  + 1   -- 0.5
+                elseif m > 3.5  then x4   = x4   + 1   -- 4
+                elseif m > 1.5  then x2   = x2   + 1   -- 2
+                end
+            end
+            return x0, x025, x05, x2, x4
+        end
+
+        for i = 1, #allTypeIds do
+            for j = i, #allTypeIds do   -- j starts at i so i==j = mono-type
+                local t1, t2 = allTypeIds[i], allTypeIds[j]
+                local x0, x025, x05, x2, x4 = getDefenseStats(t1, t2)
+                local pureRes  = x025 + x05        -- resistances only (x0.5 + x0.25)
+                local totalDef = x0 + x025 + x05   -- all defensive (res + immunity)
+
+                if x4 >= 1 then
+                    -- bad: at least 1 x4 weakness
+                    table.insert(badPool, { t1, t2 })
+                elseif x2 <= 2 and pureRes >= 2 and x0 >= 1 then
+                    -- op: no x4, max 2 x2, ≥2 resistances (x0.5/x0.25), ≥1 immunity
+                    table.insert(opPool, { t1, t2 })
+                elseif x2 <= 3 and totalDef >= 3 then
+                    -- good: no x4, max 3 x2, ≥3 combined defensive
+                    table.insert(goodPool, { t1, t2 })
+                else
+                    -- neutral: everything else
+                    table.insert(neutralPool, { t1, t2 })
+                end
+            end
+        end
+    else
+        -- Fallback if MoveData not available: use original hardcoded lists
+        badPool    = { {6,16},{13,16},{13,7},{6,13},{16,7},{15,13},{16,5} }
+        neutralPool= { {1,1},{7,7},{16,16},{15,15},{13,13},{6,6},{16,15},{6,12},{6,5},{7,3},{11,6},{1,3},{13,18},{11,7} }
+    end
+
+    -- Temp type change draws from bad+neutral combined with equal probability per typing
+    local combined = {}
+    for _, v in ipairs(badPool)     do table.insert(combined, v) end
+    for _, v in ipairs(neutralPool) do table.insert(combined, v) end
+    if #combined == 0 then combined = { {6, 16} } end  -- ultimate fallback
+
+    local picked = combined[RoguemonStreamer.random(#combined)]
+    local t1, t2 = picked[1], picked[2]
     local t1Name = PokemonData.TypeIndexMap[t1] or "Unknown"
     local t2Name = PokemonData.TypeIndexMap[t2] or "Unknown"
     local typingStr = (t1Name == t2Name) and t1Name or (t1Name .. "/" .. t2Name)
@@ -2708,7 +2794,7 @@ function RoguemonStreamer.queueOrActivateTempTypeChange(scale)
         p.tempTypeChange = { t1, t2 }
         p.tempTypeApplied = false
         RoguemonStreamer.saveSettings()
-        
+
         -- Write to GBA battle RAM immediately if we are in battle
         local activeIdx = getActivePartyIndex()
         local battleSlot = RoguemonStreamer.getBattleSlot(activeIdx)
@@ -2721,6 +2807,7 @@ function RoguemonStreamer.queueOrActivateTempTypeChange(scale)
         return string.format("Temp Type Change ( %s, 1 btl )", trim(typingStr))
     end
 end
+
 
 -- POSITIVE EVENT EXECUTION
 function RoguemonStreamer.executePositiveEvent(eventName, scale)
@@ -2794,6 +2881,30 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
         -- Clear Omnimalus
         RoguemonStreamer.settings.persistent.omnimalusActive = nil
         RoguemonStreamer.settings.persistent.queuedOmnimalusCount = 0
+
+        -- Clear Mystification
+        RoguemonStreamer.settings.persistent.mystificationActive = nil
+        RoguemonStreamer.settings.persistent.mystificationApplied = nil
+        local fsAddr = GameSettings.fieldStatusesAddr
+        local ftAddr = GameSettings.fieldTimersAddr
+        local ftOff = GameSettings.fieldTimerTerrainOffset
+        if fsAddr and fsAddr ~= 0 and ftAddr and ftAddr ~= 0 and ftOff then
+            local fs = Memory.readdword(fsAddr) or 0
+            fs = Utils.bit_and(fs, 0xFFFFFFFD)
+            Memory.writedword(fsAddr, fs)
+            if ftOff == 12 then
+                Memory.writeword(ftAddr + 8, 0)
+            elseif ftOff == 6 then
+                Memory.writebyte(ftAddr + 4, 0)
+            else
+                local off16 = ftOff - 4
+                local off8 = ftOff - 2
+                if off16 >= 0 then Memory.writebyte(ftAddr + off16, 0) end
+                if off8 >= 0 then Memory.writebyte(ftAddr + off8, 0) end
+            end
+            RoguemonStreamer.isTrickRoomActivePrev = false
+            print("[RogueMon Streamer] Full Restore: Cleared Mystification/Trick Room from battle RAM.")
+        end
 
         -- Resolve battle variables if in battle
         local battleSlot = nil
@@ -3016,11 +3127,15 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
     elseif eventName == "Stat Boost" then
         local statKeys = { "atk", "def", "spe", "spa", "spd", "acc", "eva" }
         local stat = statKeys[RoguemonStreamer.random(1, #statKeys)]
-        RoguemonStreamer.addStatBuff(stat, 1, scale)
+        local duration = scale
+        if scale and scale >= 5 and scale <= 9 then
+            duration = 5
+        end
+        RoguemonStreamer.addStatBuff(stat, 1, duration)
         local statName = STAT_NAMES[stat] or stat
-        local btlStr = scale == 1 and "btl" or "btls"
-        print(string.format("[RogueMon Streamer] - Applied persistent Stat Boost: %s +1 stage for %d battles", stat, scale))
-        detail = string.format("Stat Boost ( %s +1 ) for %d %s", trim(STAT_LABELS[stat] or stat), scale, btlStr)
+        local btlStr = duration == 1 and "btl" or "btls"
+        print(string.format("[RogueMon Streamer] - Applied persistent Stat Boost: %s +1 stage for %d battles", stat, duration))
+        detail = string.format("Stat Boost ( %s +1 ) for %d %s", trim(STAT_LABELS[stat] or stat), duration, btlStr)
     elseif eventName == "Power Boost" then
         local stats = getPartyMonStats(activeIdx)
         local stat = "atk"
@@ -3053,6 +3168,9 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
         end
         local duration = math.floor(scale / 2)
         if duration < 1 then duration = 1 end -- Safety fallback
+        if RoguemonStreamer.isChannelPointsExecution then
+            duration = 1
+        end
         RoguemonStreamer.addStatBuff(stat, 1, duration)
         RoguemonStreamer.addStatBuff("spe", 1, duration)
         local btlStr = duration == 1 and "battle" or "battles"
@@ -3140,6 +3258,9 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
         local duration = 1
         if scale and scale >= 50 then
             duration = math.floor(scale / 2)
+        end
+        if RoguemonStreamer.isChannelPointsExecution then
+            duration = 1
         end
         local stats = { "atk", "def", "spe", "spa", "spd", "acc", "eva" }
         for _, stat in ipairs(stats) do
@@ -3314,58 +3435,270 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
                 detail = "Turbo Genetics ( No Pokemon viewed -> +1 Hyper Potion )"
             end
         end
-    elseif eventName == "Game Changer" then
-        local btlCount = 1
-        local isPermanent = false
-        if scale and scale >= 50 then
-            btlCount = 9999
-            isPermanent = true
-        elseif scale and scale >= 20 then
-            btlCount = 10
-        end
-        
-        if isPermanent then
-            RoguemonStreamer.settings.persistent.gameChangerActive = 9999
-        else
-            local current = RoguemonStreamer.settings.persistent.gameChangerActive or 0
-            if current >= 5000 then
-                RoguemonStreamer.settings.persistent.gameChangerActive = 9999
+    elseif eventName == "Darwinism" then
+        local leadMon = Battle.getViewedPokemon(true)
+        if leadMon and leadMon.pokemonID and leadMon.pokemonID > 0 then
+            local pokemonID = leadMon.pokemonID
+            
+            PokemonRevoData.tryLoadData()
+            
+            if PokemonRevoData.RevoData and PokemonRevoData.RevoData[pokemonID] then
+                local options = PokemonRevoData.getEvoOptions(pokemonID)
+                local hasFiltered = false
+                
+                -- Determine viewed species base stats to check offensive profile
+                local baseAtk = 0
+                local baseSpa = 0
+                local pkData = PokemonData.Pokemon[pokemonID]
+                if pkData and pkData.baseStats then
+                    baseAtk = pkData.baseStats.atk or 0
+                    baseSpa = pkData.baseStats.spa or 0
+                end
+                
+                local P_isPhysical = true
+                if baseAtk ~= baseSpa then
+                    P_isPhysical = (baseAtk > baseSpa)
+                elseif leadMon.stats and leadMon.stats.atk and leadMon.stats.spa then
+                    P_isPhysical = (leadMon.stats.atk >= leadMon.stats.spa)
+                end
+                
+                local function filterDarwinEvoList(evoList)
+                    if not evoList or #evoList == 0 then return false end
+                    local tempList = {}
+                    local matchCount = 0
+                    
+                    for _, entry in ipairs(evoList) do
+                        if entry.id then
+                            local cData = PokemonData.Pokemon[entry.id]
+                            local bst = 0
+                            local cAtk = 0
+                            local cSpa = 0
+                            local cDef = 0
+                            local cSpd = 0
+                            local cSpe = 0
+                            
+                            if cData then
+                                bst = tonumber(cData.bst) or cData.bstCalculated or 0
+                                if cData.baseStats then
+                                    cAtk = cData.baseStats.atk or 0
+                                    cSpa = cData.baseStats.spa or 0
+                                    cDef = cData.baseStats.def or 0
+                                    cSpd = cData.baseStats.spd or 0
+                                    cSpe = cData.baseStats.spe or 0
+                                end
+                            end
+                            
+                            local C_isPhysical = (cAtk >= cSpa)
+                            local matchesProfile = (C_isPhysical == P_isPhysical)
+                            if matchesProfile then
+                                matchCount = matchCount + 1
+                            end
+                            
+                            table.insert(tempList, {
+                                id = entry.id,
+                                perc = entry.perc or 0,
+                                bst = bst,
+                                atk = cAtk,
+                                spa = cSpa,
+                                def = cDef,
+                                spd = cSpd,
+                                spe = cSpe,
+                                isPhysical = C_isPhysical,
+                                matchesProfile = matchesProfile
+                            })
+                        end
+                    end
+                    
+                    if #tempList == 0 then return false end
+                    
+                    -- Calculate Darwinian Score for each candidate
+                    for _, cand in ipairs(tempList) do
+                        local score = cand.bst
+                        
+                        -- Offensive Profile check
+                        if matchCount > 0 and not cand.matchesProfile then
+                            score = score - 10000
+                        end
+                        
+                        -- Speed preference
+                        score = score + cand.spe
+                        
+                        -- Defense balance
+                        local defDiff = math.abs(cand.def - cand.spd)
+                        score = score - (defDiff * 1.5)
+                        
+                        -- Low defense limit penalty
+                        local lowDefPenalty = 0
+                        if cand.def < 50 then lowDefPenalty = lowDefPenalty + (50 - cand.def) * 4 end
+                        if cand.spd < 50 then lowDefPenalty = lowDefPenalty + (50 - cand.spd) * 4 end
+                        score = score - lowDefPenalty
+                        
+                        cand.score = score
+                    end
+                    
+                    table.sort(tempList, function(a, b)
+                        return a.score > b.score
+                    end)
+                    
+                    local targetSize = math.min(5, #tempList)
+                    local newList = {}
+                    local totalPerc = 0
+                    for i = 1, targetSize do
+                        table.insert(newList, tempList[i])
+                        totalPerc = totalPerc + tempList[i].perc
+                    end
+                    
+                    if totalPerc > 0 then
+                        for i = 1, targetSize do
+                            newList[i].perc = (newList[i].perc / totalPerc) * 100
+                        end
+                    else
+                        for i = 1, targetSize do
+                            newList[i].perc = 100 / targetSize
+                        end
+                    end
+                    
+                    -- Roll a weighted random candidate from the top 5
+                    local roll = RoguemonStreamer.random(10000) / 100.0
+                    local chosenCandidate = newList[1]
+                    local runningSum = 0
+                    for i = 1, targetSize do
+                        runningSum = runningSum + newList[i].perc
+                        if roll <= runningSum then
+                            chosenCandidate = newList[i]
+                            break
+                        end
+                    end
+                    
+                    -- Write the chosen candidate to the GBA evolution table in memory
+                    local base = GameSettings.gSpeciesInfo
+                    local size = GameSettings.sizeofBaseStatsPokemon
+                    local offset = GameSettings.offsetSpeciesEvolutions
+                    local wroteToGBA = false
+                    
+                    if base and base ~= 0 and size and offset then
+                        local ptr = Memory.readdword(base + (size * pokemonID) + offset)
+                        if ptr and ptr ~= 0 then
+                            for cursor = 0, 9 do
+                                local evoType = Memory.readword(ptr + (cursor * 12))
+                                if evoType == 0xFFFF or evoType == 0 then break end
+                                Memory.writedword(ptr + (cursor * 12) + 4, chosenCandidate.id)
+                            end
+                            wroteToGBA = true
+                            print(string.format("[RogueMon Streamer] Darwinism: Overwrote GBA evolution target for species %d to %d", pokemonID, chosenCandidate.id))
+                        end
+                    end
+                    
+                    if not wroteToGBA then
+                        print("[RogueMon Streamer] Darwinism: Warning - failed to write evolution target to GBA memory.")
+                    end
+                    
+                    -- Clear original list
+                    for k = #evoList, 1, -1 do
+                        table.remove(evoList, k)
+                    end
+                    -- Add all top 5 candidates with their normalized percentages to the Lua table
+                    for i = 1, targetSize do
+                        table.insert(evoList, { id = newList[i].id, perc = newList[i].perc })
+                    end
+                    return true, chosenCandidate.id
+                end
+                
+                local chosenId = nil
+                if options and #options > 0 then
+                    for _, targetEvoId in ipairs(options) do
+                        local evoList = PokemonRevoData.RevoData[pokemonID][targetEvoId]
+                        local success, cid = filterDarwinEvoList(evoList)
+                        if success then
+                            hasFiltered = true
+                            chosenId = cid
+                        end
+                    end
+                else
+                    local evoList = PokemonRevoData.RevoData[pokemonID]
+                    local success, cid = filterDarwinEvoList(evoList)
+                    if success then
+                        hasFiltered = true
+                        chosenId = cid
+                    end
+                end
+                
+                if hasFiltered and chosenId then
+                    local monName = PokemonData.Pokemon[pokemonID] and PokemonData.Pokemon[pokemonID].name or "Pokemon"
+                    local chosenName = PokemonData.Pokemon[chosenId] and PokemonData.Pokemon[chosenId].name or "Chosen candidate"
+                    print(string.format("[RogueMon Streamer] - Darwinism applied to %s. Evolution target secretly locked to %s.", monName, chosenName))
+                    detail = string.format("Darwinism ( Restricted %s's evolution pool to top 5 Darwinian candidates )", trim(monName))
+                else
+                    print("[RogueMon Streamer] - Darwinism failed to filter: Fallback giving items")
+                    if scale and scale >= 50 then
+                        local fullRestoreId = Roguemon.ItemManager.getItemIdByName("Full Restore") or 19
+                        local rareCandyId = Roguemon.ItemManager.getItemIdByName("Rare Candy") or 68
+                        grantItem(fullRestoreId, 2)
+                        grantItem(rareCandyId, 1)
+                        detail = "Darwinism ( Failed -> +2 Full Restore, +1 Rare Candy )"
+                    else
+                        grantItem(ITEMS.HYPER_POTION, 1)
+                        detail = "Darwinism ( Failed -> +1 Hyper Potion )"
+                    end
+                end
             else
-                RoguemonStreamer.settings.persistent.gameChangerActive = current + btlCount
+                print(string.format("[RogueMon Streamer] - Darwinism: Species %d has no evolutions. Fallback giving items.", pokemonID))
+                if scale and scale >= 50 then
+                    local fullRestoreId = Roguemon.ItemManager.getItemIdByName("Full Restore") or 19
+                    local rareCandyId = Roguemon.ItemManager.getItemIdByName("Rare Candy") or 68
+                    grantItem(fullRestoreId, 2)
+                    grantItem(rareCandyId, 1)
+                    detail = "Darwinism ( Fully evolved -> +2 Full Restore, +1 Rare Candy )"
+                else
+                    grantItem(ITEMS.HYPER_POTION, 1)
+                    detail = "Darwinism ( Fully evolved -> +1 Hyper Potion )"
+                end
+            end
+        else
+            print("[RogueMon Streamer] - Darwinism: No viewed Pokemon. Fallback giving items.")
+            if scale and scale >= 50 then
+                local fullRestoreId = Roguemon.ItemManager.getItemIdByName("Full Restore") or 19
+                local rareCandyId = Roguemon.ItemManager.getItemIdByName("Rare Candy") or 68
+                grantItem(fullRestoreId, 2)
+                grantItem(rareCandyId, 1)
+                detail = "Darwinism ( No Pokemon viewed -> +2 Full Restore, +1 Rare Candy )"
+            else
+                grantItem(ITEMS.HYPER_POTION, 1)
+                detail = "Darwinism ( No Pokemon viewed -> +1 Hyper Potion )"
             end
         end
+    elseif eventName == "Game Changer" then
+        local btlCount = 1
+        if scale and scale >= 50 then
+            btlCount = math.floor(scale / 2)
+        elseif scale and scale >= 10 then
+            btlCount = 10
+        elseif scale and scale >= 5 and scale <= 9 then
+            btlCount = 3
+        end
+        
+        local current = RoguemonStreamer.settings.persistent.gameChangerActive or 0
+        RoguemonStreamer.settings.persistent.gameChangerActive = current + btlCount
         RoguemonStreamer.settings.persistent.gameChangerApplied = false
         RoguemonStreamer.saveSettings()
         
-        local activeCount = RoguemonStreamer.settings.persistent.gameChangerActive
-        local countStr = activeCount >= 5000 and "Perma" or string.format("%d btl", activeCount)
-        detail = string.format("Game Changer ( Critical hit stage +2 for %s )", countStr)
+        detail = string.format("Game Changer ( Critical hit stage +2 for %d btl )", RoguemonStreamer.settings.persistent.gameChangerActive)
     elseif eventName == "Try Harder" then
         local btlCount = 1
-        local isPermanent = false
         if scale and scale >= 50 then
-            btlCount = 9999
-            isPermanent = true
-        elseif scale and scale >= 20 then
+            btlCount = math.floor(scale / 2)
+        elseif scale and scale >= 10 then
             btlCount = 10
+        elseif scale and scale >= 5 and scale <= 9 then
+            btlCount = 3
         end
         
-        if isPermanent then
-            RoguemonStreamer.settings.persistent.tryHarderActive = 9999
-        else
-            local current = RoguemonStreamer.settings.persistent.tryHarderActive or 0
-            if current >= 5000 then
-                RoguemonStreamer.settings.persistent.tryHarderActive = 9999
-            else
-                RoguemonStreamer.settings.persistent.tryHarderActive = current + btlCount
-            end
-        end
+        local current = RoguemonStreamer.settings.persistent.tryHarderActive or 0
+        RoguemonStreamer.settings.persistent.tryHarderActive = current + btlCount
         RoguemonStreamer.settings.persistent.tryHarderApplied = false
         RoguemonStreamer.saveSettings()
         
-        local activeCount = RoguemonStreamer.settings.persistent.tryHarderActive
-        local countStr = activeCount >= 5000 and "Perma" or string.format("%d btl", activeCount)
-        detail = string.format("Try Harder ( Immune to stat lowering for %s )", countStr)
+        detail = string.format("Try Harder ( Immune to stat lowering for %d btl )", RoguemonStreamer.settings.persistent.tryHarderActive)
     elseif eventName == "Let's Dance" then
         print("[RogueMon Streamer] - Triggering Let's Dance choice menu")
         RoguemonStreamer.ActiveLetsDanceRequest = {
@@ -3399,7 +3732,89 @@ end
 
 generateNature = function(partyIndex, scale, isGood)
     local stats = getPartyMonStats(partyIndex)
+    if not stats or not stats.atk or stats.atk == 0 then
+        local baseAtk, baseSpa, baseSpe, baseDef, baseSpd = 0, 0, 0, 0, 0
+        local partyAddress = GameSettings.pstats + (partyIndex - 1) * 100
+        local oldPID = Memory.readdword(partyAddress)
+        local otid = Memory.readdword(partyAddress + 4)
+        local oldMagic = Utils.bit_xor(oldPID, otid)
+        local encSpecies = Memory.readdword(partyAddress + 0x20)
+        local decrypted1 = Utils.bit_xor(encSpecies, oldMagic)
+        local species = Utils.getbits(decrypted1, 0, 16)
+        if species and species > 0 and PokemonData and PokemonData.Pokemon then
+            local pkData = PokemonData.Pokemon[species]
+            if pkData and pkData.baseStats then
+                baseAtk = pkData.baseStats.atk or 0
+                baseSpa = pkData.baseStats.spa or 0
+                baseSpe = pkData.baseStats.spe or 0
+                baseDef = pkData.baseStats.def or 0
+                baseSpd = pkData.baseStats.spd or 0
+            end
+        end
+        stats = { atk = baseAtk, spa = baseSpa, spe = baseSpe, def = baseDef, spd = baseSpd }
+    end
+    
     local neutralNatures = { 0, 6, 12, 18, 24 }
+
+    if scale and scale >= 5 and scale <= 9 then
+        if not isGood then
+            -- Rule 6: always +def -spdef or +spdef -def
+            return RoguemonStreamer.random(1, 2) == 1 and 9 or 21
+        end
+    elseif scale and scale >= 10 and scale < 50 then
+        local curStats = stats or { atk = 0, spa = 0, spe = 0, def = 0, spd = 0 }
+        if isGood then
+            -- Rule 10: increase higher attack (if > speed) else speed; decrease higher defense
+            local highestAttack = math.max(curStats.atk or 0, curStats.spa or 0)
+            local speed = curStats.spe or 0
+            local incStat = "spe"
+            if highestAttack > speed then
+                incStat = ((curStats.atk or 0) >= (curStats.spa or 0)) and "atk" or "spa"
+            else
+                incStat = "spe"
+            end
+            
+            local decStat = "def"
+            if (curStats.spd or 0) > (curStats.def or 0) then
+                decStat = "spd"
+            end
+            
+            if incStat == "atk" then
+                return decStat == "def" and 1 or 4
+            elseif incStat == "spa" then
+                return decStat == "def" and 16 or 19
+            else
+                return decStat == "def" and 11 or 14
+            end
+        else
+            -- Rule 19: decrease higher attack (if > speed) else speed; increase higher defense
+            local highestAttack = math.max(curStats.atk or 0, curStats.spa or 0)
+            local speed = curStats.spe or 0
+            local decStat = "spe"
+            if highestAttack > speed then
+                decStat = ((curStats.atk or 0) >= (curStats.spa or 0)) and "atk" or "spa"
+            else
+                decStat = "spe"
+            end
+            
+            local incStat = "def"
+            if (curStats.spd or 0) > (curStats.def or 0) then
+                incStat = "spd"
+            end
+            
+            if incStat == "def" then
+                if decStat == "atk" then return 5
+                elseif decStat == "spa" then return 8
+                else return 7
+                end
+            else
+                if decStat == "atk" then return 20
+                elseif decStat == "spa" then return 23
+                else return 22
+                end
+            end
+        end
+    end
 
     if scale and scale >= 50 then
         local baseAtk = 0
@@ -3473,11 +3888,21 @@ generateNature = function(partyIndex, scale, isGood)
                 end
             end
         else
-            -- Negative: Decreased = higher attack, Increased = higher defense (If DEF > SPDEF then DEF positive, else SPDEF)
-            if isDefHigher then
-                return isPhysical and 5 or 8 -- 5: Bold (+Def, -Atk), 8: Impish (+Def, -SpA)
+            -- Rule 3: opposite of positive 50
+            if baseAtk ~= baseSpa or currentAtk ~= currentSpa then
+                local highestAtkIsPhysical = true
+                if baseAtk ~= baseSpa then
+                    highestAtkIsPhysical = (baseAtk > baseSpa)
+                else
+                    highestAtkIsPhysical = (currentAtk > currentSpa)
+                end
+                return highestAtkIsPhysical and 15 or 3 -- Modest (-Atk, +SpA) if physical; Adamant (-SpA, +Atk) if special
             else
-                return isPhysical and 20 or 23 -- 20: Calm (+SpD, -Atk), 23: Careful (+SpD, -SpA)
+                if isDefHigher then
+                    return isPhysical and 5 or 8 -- 5: Bold (+Def, -Atk), 8: Impish (+Def, -SpA)
+                else
+                    return isPhysical and 20 or 23 -- 20: Calm (+SpD, -Atk), 23: Careful (+SpD, -SpA)
+                end
             end
         end
     end
@@ -3654,75 +4079,132 @@ generateAbility = function(scale, isGood)
     end
 end
 
-generateTyping = function(scale, isGood)
-    local opTypes = {
-        { 9, 19 },  -- Steel / Fairy
-        { 9, 3 },   -- Steel / Flying
-        { 12, 5 },  -- Water / Ground
-        { 9, 17 },  -- Steel / Dragon
-        { 9, 8 },   -- Steel / Ghost
-        { 8, 1 },   -- Ghost / Normal
-        { 12, 19 }, -- Water / Fairy
-        { 14, 3 },  -- Electric / Flying
-        { 9, 12 },  -- Steel / Water
-        { 17, 19 }, -- Dragon / Fairy
-    }
-    local goodTypes = {
-        { 12, 17 }, -- Water / Dragon
-        { 11, 17 }, -- Fire / Dragon
-        { 12, 14 }, -- Water / Electric
-        { 12, 3 },  -- Water / Flying
-        { 11, 9 },  -- Fire / Steel
-        { 14, 9 },  -- Electric / Steel
-        { 13, 9 },  -- Grass / Steel
-        { 5, 9 },   -- Ground / Steel
-        { 8, 18 },  -- Ghost / Dark
-        { 19, 3 },  -- Fairy / Flying
-        { 5, 3 },   -- Ground / Flying
-        { 14, 16 }, -- Electric / Ice
-    }
-    local badTypes = {
-        { 6, 16 },  -- Rock / Ice
-        { 13, 16 }, -- Grass / Ice
-        { 13, 7 },  -- Grass / Bug
-        { 6, 13 },  -- Rock / Grass
-        { 16, 7 },  -- Ice / Bug
-        { 15, 13 }, -- Psychic / Grass
-        { 16, 5 },  -- Ice / Ground
-    }
-    local neutralTypes = {
-        { 1, 1 },   -- Pure Normal
-        { 7, 7 },   -- Pure Bug
-        { 16, 16 }, -- Pure Ice
-        { 15, 15 }, -- Pure Psychic
-        { 13, 13 }, -- Pure Grass
-        { 6, 6 },   -- Pure Rock
-        { 16, 15 }, -- Ice / Psychic
-        { 6, 12 },  -- Rock / Water
-        { 6, 5 },   -- Rock / Ground
-        { 7, 3 },   -- Bug / Flying
-        { 11, 6 },  -- Fire / Rock
-        { 1, 3 },   -- Normal / Flying
-        { 13, 18 }, -- Grass / Dark
-        { 11, 7 },  -- Fire / Bug
-    }
+local function getTypeWeaknesses(t1, t2)
+    local t1Name = PokemonData.TypeIndexMap[t1]
+    local t2Name = PokemonData.TypeIndexMap[t2]
+    if not t1Name then return {}, {} end
+    
+    local types = { "normal", "fighting", "flying", "poison", "ground", "rock", "bug", "ghost", "steel", "fire", "water", "grass", "electric", "psychic", "ice", "dragon", "dark", "fairy" }
+    local x4_weak = {}
+    local x2_weak = {}
+    
+    for _, atkType in ipairs(types) do
+        local eff1 = 1
+        if MoveData.TypeToEffectiveness[atkType] and MoveData.TypeToEffectiveness[atkType][t1Name] then
+            eff1 = MoveData.TypeToEffectiveness[atkType][t1Name]
+        end
+        local eff2 = 1
+        if t2Name and t2Name ~= t1Name and t2Name ~= "unknown" and t2Name ~= "empty" then
+            if MoveData.TypeToEffectiveness[atkType] and MoveData.TypeToEffectiveness[atkType][t2Name] then
+                eff2 = MoveData.TypeToEffectiveness[atkType][t2Name]
+            end
+        end
+        local totalEff = eff1 * eff2
+        if totalEff >= 4 then
+            table.insert(x4_weak, atkType)
+        elseif totalEff == 2 then
+            table.insert(x2_weak, atkType)
+        end
+    end
+    return x4_weak, x2_weak
+end
 
-    local targetList
+generateTyping = function(scale, isGood)
+    local allTypeIds = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19 }
+    local opPool, goodPool, badPool, neutralPool = {}, {}, {}, {}
+
+    if MoveData and MoveData.TypeToEffectiveness then
+        -- Compute full defensive stats for a type combination
+        local function getStats(typeId1, typeId2)
+            local t1 = string.lower(PokemonData.TypeIndexMap[typeId1] or "")
+            local t2 = string.lower(PokemonData.TypeIndexMap[typeId2] or "")
+            local mono = (typeId1 == typeId2)
+            local x0, x025, x05, x2, x4 = 0, 0, 0, 0, 0
+            for _, eff in pairs(MoveData.TypeToEffectiveness) do
+                local m = (eff[t1] or 1)
+                if not mono then m = m * (eff[t2] or 1) end
+                if     m == 0  then x0   = x0   + 1
+                elseif m < 0.3 then x025 = x025 + 1   -- 0.25
+                elseif m < 0.9 then x05  = x05  + 1   -- 0.5
+                elseif m > 3.5 then x4   = x4   + 1   -- 4
+                elseif m > 1.5 then x2   = x2   + 1   -- 2
+                end
+            end
+            return x0, x025, x05, x2, x4
+        end
+
+        -- Iterate all mono (i==j) and dual (i<j) type combinations
+        for i = 1, #allTypeIds do
+            for j = i, #allTypeIds do
+                local t1, t2 = allTypeIds[i], allTypeIds[j]
+                local x0, x025, x05, x2, x4 = getStats(t1, t2)
+                local pureRes  = x025 + x05        -- x0.5 + x0.25 only
+                local totalDef = x0 + x025 + x05   -- all defensive (res + immunity)
+                -- Store _x2 and _x4 for sub-pool filtering at selection time
+                local entry = { t1, t2, _x2 = x2, _x4 = x4 }
+
+                if x4 >= 1 then
+                    -- badPool: at least 1 x4 weakness
+                    table.insert(badPool, entry)
+                elseif x2 <= 2 and pureRes >= 2 and x0 >= 1 then
+                    -- opPool: no x4, max 2 x2, ≥2 resistances (x0.5/x0.25), ≥1 immunity
+                    table.insert(opPool, entry)
+                elseif x2 <= 3 and totalDef >= 3 then
+                    -- goodPool: no x4, max 3 x2, ≥3 combined defensive (res+imm)
+                    table.insert(goodPool, entry)
+                else
+                    -- neutralPool: everything else
+                    table.insert(neutralPool, entry)
+                end
+            end
+        end
+    else
+        -- Fallback: original hardcoded lists (used if MoveData not yet loaded)
+        opPool     = { {9,19},{9,3},{12,5},{9,17},{9,8},{8,1},{12,19},{14,3},{9,12},{17,19} }
+        goodPool   = { {12,17},{11,17},{12,14},{12,3},{11,9},{14,9},{13,9},{5,9},{8,18},{19,3},{5,3},{14,16} }
+        badPool    = { {6,16},{13,16},{13,7},{6,13},{16,7},{15,13},{16,5} }
+        neutralPool= { {1,1},{7,7},{16,16},{15,15},{13,13},{6,6},{16,15},{6,12},{6,5},{7,3},{11,6},{1,3},{13,18},{11,7} }
+    end
+
+    -- Select from the appropriate pool based on isGood and scale
+    local pool = {}
     if isGood then
         if scale >= 50 then
-            targetList = opTypes
+            -- Milestone +50: opPool filtered to x2 <= 1 (the absolute best typings)
+            for _, e in ipairs(opPool) do
+                if (e._x2 or 0) <= 1 then table.insert(pool, e) end
+            end
+            if #pool == 0 then pool = opPool end  -- fallback if filter too strict
+        elseif scale >= 10 then
+            -- Milestone +10 to +49: opPool + goodPool combined
+            for _, v in ipairs(opPool)   do table.insert(pool, v) end
+            for _, v in ipairs(goodPool) do table.insert(pool, v) end
         else
-            targetList = goodTypes
+            -- Milestone +5 to +9: goodPool only
+            pool = goodPool
         end
     else
         if scale >= 50 then
-            targetList = badTypes
+            -- Milestone -50: badPool filtered to x4 >= 2 (the absolute worst typings)
+            for _, e in ipairs(badPool) do
+                if (e._x4 or 0) >= 2 then table.insert(pool, e) end
+            end
+            if #pool == 0 then pool = badPool end  -- fallback if filter too strict
+        elseif scale >= 10 then
+            -- Milestone -10 to -49: badPool only
+            pool = badPool
         else
-            targetList = neutralTypes
+            -- Milestone -5 to -9: badPool + neutralPool combined
+            for _, v in ipairs(badPool)     do table.insert(pool, v) end
+            for _, v in ipairs(neutralPool) do table.insert(pool, v) end
         end
     end
 
-    local choice = targetList[RoguemonStreamer.random(#targetList)]
+    if #pool == 0 then
+        if isGood then return 8, 1 else return 6, 16 end
+    end
+
+    local choice = pool[RoguemonStreamer.random(#pool)]
     return choice[1], choice[2]
 end
 
@@ -3732,6 +4214,7 @@ function RoguemonStreamer.executeNegativeEvent(eventName, scale)
     local activeIdx = 1
     local partyAddress = GameSettings.pstats + (activeIdx - 1) * 100
     local inBattle = Battle.inActiveBattle()
+    local p = RoguemonStreamer.settings.persistent
     print(string.format("[RogueMon Streamer] Executing Negative Event: '%s' (Scale: %d, Active Party Index: %d)", eventName, scale, activeIdx))
 
     local battleSlot = RoguemonStreamer.getBattleSlot(activeIdx)
@@ -3767,9 +4250,18 @@ function RoguemonStreamer.executeNegativeEvent(eventName, scale)
             print(string.format("[RogueMon Streamer] - Inflicted status %s on active Pokemon", statusName))
             detail = string.format("Inflict status ( %s )", trim(statusName))
         end
-    elseif eventName == "Disable Move" or eventName == "Empowered Disable" then
-        local turns = (scale > 1) and scale or 3
-        detail = RoguemonStreamer.queueOrActivateMoveEvent(eventName, turns)
+    elseif eventName == "Disable Move" then
+        local turns = 3
+        if scale and scale >= 5 and scale <= 9 then
+            turns = 5
+        elseif scale and scale > 1 then
+            turns = math.floor(scale / 2)
+            if turns < 1 then turns = 1 end
+        end
+        if RoguemonStreamer.isChannelPointsExecution then
+            turns = 3
+        end
+        detail = RoguemonStreamer.queueOrActivateMoveEvent("Disable Move", turns)
     elseif eventName == "Stat Debuff (Power)" or eventName == "Power Debuff" then
         local stat = "atk"
         local stats = getPartyMonStats(activeIdx)
@@ -3786,18 +4278,26 @@ function RoguemonStreamer.executeNegativeEvent(eventName, scale)
         else
             stat = RoguemonStreamer.random(1, 2) == 1 and "atk" or "spa"
         end
-        RoguemonStreamer.addStatBuff(stat, -1, scale)
+        local duration = scale
+        if RoguemonStreamer.isChannelPointsExecution then
+            duration = 1
+        end
+        RoguemonStreamer.addStatBuff(stat, -1, duration)
         local statName = STAT_NAMES[stat] or stat
-        local btlStr = scale == 1 and "btl" or "btls"
-        print(string.format("[RogueMon Streamer] - Applied persistent Power Debuff: %s -1 stage for %d battles", stat, scale))
-        detail = string.format("Power Debuff ( %s -1 ) for %d %s", trim(STAT_LABELS[stat] or stat), scale, btlStr)
+        local btlStr = duration == 1 and "btl" or "btls"
+        print(string.format("[RogueMon Streamer] - Applied persistent Power Debuff: %s -1 stage for %d battles", stat, duration))
+        detail = string.format("Power Debuff ( %s -1 ) for %d %s", trim(STAT_LABELS[stat] or stat), duration, btlStr)
     elseif eventName == "Stat Debuff (Speed)" or eventName == "Speed Debuff" then
         local stat = "spe"
-        RoguemonStreamer.addStatBuff(stat, -1, scale)
+        local duration = scale
+        if RoguemonStreamer.isChannelPointsExecution then
+            duration = 1
+        end
+        RoguemonStreamer.addStatBuff(stat, -1, duration)
         local statName = STAT_NAMES[stat] or stat
-        local btlStr = scale == 1 and "btl" or "btls"
-        print(string.format("[RogueMon Streamer] - Applied persistent Speed Debuff: %s -1 stage for %d battles", stat, scale))
-        detail = string.format("Speed Debuff ( %s -1 ) for %d %s", trim(STAT_LABELS[stat] or stat), scale, btlStr)
+        local btlStr = duration == 1 and "btl" or "btls"
+        print(string.format("[RogueMon Streamer] - Applied persistent Speed Debuff: %s -1 stage for %d battles", stat, duration))
+        detail = string.format("Speed Debuff ( %s -1 ) for %d %s", trim(STAT_LABELS[stat] or stat), duration, btlStr)
     elseif eventName == "PP Cut" then
         local moveName = RoguemonStreamer.cutSingleRandomMovePP(activeIdx, 0.5)
         if moveName then
@@ -3820,7 +4320,7 @@ function RoguemonStreamer.executeNegativeEvent(eventName, scale)
             print("[RogueMon Streamer] - Remove Healing Item failed: none possessed")
             detail = "Remove Healing Item ( None possessed )"
         end
-    elseif eventName == "Remove Utility Item" or eventName == "Remove Status Item" then
+    elseif eventName == "Remove Status Item" then
         local pool = {
             ITEMS.AWAKENING, ITEMS.CHESTO_BERRY, ITEMS.ANTIDOTE, ITEMS.PECHA_BERRY,
             ITEMS.CHERI_BERRY, ITEMS.PARALYZE_HEAL, ITEMS.MENTAL_HERB, ITEMS.ASPEAR_BERRY,
@@ -3939,14 +4439,21 @@ function RoguemonStreamer.executeNegativeEvent(eventName, scale)
                 detail = "Remove Utility Item ( None possessed )"
             end
         end
-    elseif eventName == "Stat Debuff" or eventName == "Empowered Debuff" then
+    elseif eventName == "Stat Debuff" then
         local statKeys = { "atk", "def", "spe", "spa", "spd", "acc", "eva" }
         local stat = statKeys[RoguemonStreamer.random(1, #statKeys)]
-        RoguemonStreamer.addStatBuff(stat, -1, scale)
+        local duration = scale
+        if scale and scale >= 5 and scale <= 9 then
+            duration = 5
+        end
+        if RoguemonStreamer.isChannelPointsExecution then
+            duration = 1
+        end
+        RoguemonStreamer.addStatBuff(stat, -1, duration)
         local statName = STAT_NAMES[stat] or stat
-        local btlStr = scale == 1 and "btl" or "btls"
-        print(string.format("[RogueMon Streamer] - Applied persistent Stat Debuff: %s -1 stage for %d battles", stat, scale))
-        detail = string.format("Stat Debuff ( %s -1 ) for %d %s", trim(STAT_LABELS[stat] or stat), scale, btlStr)
+        local btlStr = duration == 1 and "btl" or "btls"
+        print(string.format("[RogueMon Streamer] - Applied persistent Stat Debuff: %s -1 stage for %d battles", stat, duration))
+        detail = string.format("Stat Debuff ( %s -1 ) for %d %s", trim(STAT_LABELS[stat] or stat), duration, btlStr)
     elseif eventName == "PP Deplete" then
         if scale >= 50 then
             print("[RogueMon Streamer] - Completely depleting PP of active Pokemon's moves to 0")
@@ -4044,8 +4551,7 @@ function RoguemonStreamer.executeNegativeEvent(eventName, scale)
             removedStr = removedStr .. " - Debt"
         end
         detail = string.format("Remove Utility Items ( %s )", trim(removedStr))
-    elseif eventName == "Damage and Status" or eventName == "Danni e status" or eventName == "Status & Damages" or eventName == "Overwhelmed" then
-        local p = RoguemonStreamer.settings.persistent
+    elseif eventName == "Overwhelmed" then
         local curHPOffset = GameSettings.pokemonCurHPOffset or 0x56
         local maxHPOffset = GameSettings.offsetPokemonStatsMaxHpAtk or 0x58
         local curHP = Memory.readword(partyAddress + curHPOffset)
@@ -4086,13 +4592,15 @@ function RoguemonStreamer.executeNegativeEvent(eventName, scale)
             detail = string.format("Overwhelmed ( -%d%% HP, PP used +1 for %d battle%s )", dmgPercent, duration, duration == 1 and "" or "s")
         end
     elseif eventName == "Out of Control" then
-        local turns
-        if scale >= 30 then
-            turns = 25
+        local turns = 3
+        if scale >= 50 then
+            turns = 20
+        elseif scale >= 20 then
+            turns = 10
         elseif scale >= 10 then
-            turns = scale
+            turns = 5
         else
-            turns = math.ceil(scale / 2)
+            turns = 3
         end
         if RoguemonStreamer.isChannelPointsExecution then
             RoguemonStreamer.settings.persistent.outOfControlCP = true
@@ -4102,9 +4610,12 @@ function RoguemonStreamer.executeNegativeEvent(eventName, scale)
     elseif eventName == "Omnimalus" then
         local inBattle = Battle.inActiveBattle()
         local isAnyActive = RoguemonStreamer.isAnyNegativeEventActive()
-        local duration = 1
+        local duration = 5
         if scale and scale >= 50 then
             duration = math.floor(scale / 2)
+        end
+        if RoguemonStreamer.isChannelPointsExecution then
+            duration = 1
         end
         
         if not inBattle or isAnyActive then
@@ -4125,9 +4636,18 @@ function RoguemonStreamer.executeNegativeEvent(eventName, scale)
     elseif eventName == "No Guard Minus" then
         detail = RoguemonStreamer.queueOrActivateNoGuardEvent("No Guard Minus", scale)
     elseif eventName == "Mystification" then
-        local btlCount = 1
+        local btlCount = 5
         if scale and scale >= 50 then
             btlCount = math.floor(scale / 2)
+        elseif scale and scale >= 20 then
+            btlCount = 10
+        elseif scale and scale >= 10 then
+            btlCount = 5
+        elseif scale and scale >= 5 and scale <= 9 then
+            btlCount = 3
+        end
+        if RoguemonStreamer.isChannelPointsExecution then
+            btlCount = 1
         end
         RoguemonStreamer.settings.persistent.mystificationActive = (RoguemonStreamer.settings.persistent.mystificationActive or 0) + btlCount
         RoguemonStreamer.settings.persistent.mystificationApplied = false
@@ -4146,8 +4666,6 @@ function RoguemonStreamer.executeNegativeEvent(eventName, scale)
     local displayName = eventName
     if eventName == "Altera status" or eventName == "Inflict status" or eventName == "Inflict Status" then
         displayName = "Inflict status"
-    elseif eventName == "Danni e status" or eventName == "Status & Damages" or eventName == "Damage and Status" then
-        displayName = "Status & Damages"
     end
     local finalMsg = "Bad Event: " .. (detail or displayName)
     RoguemonStreamer.notifyStreamer(finalMsg, scale)
@@ -4541,19 +5059,25 @@ function RoguemonStreamer.getViewedTypes(leadMon)
 
     if Battle.inActiveBattle() then
         local isActiveBattleMon = false
+        local battleSlotIndex = nil
         local leftOwnMon = Tracker.getPokemon(Battle.Combatants.LeftOwn, true)
         if leftOwnMon and leftOwnMon.personality == leadMon.personality then
             isActiveBattleMon = true
+            battleSlotIndex = 0  -- gBattleMons slot 0 = LeftOwn
         elseif Battle.numBattlers == 4 then
             local rightOwnMon = Tracker.getPokemon(Battle.Combatants.RightOwn, true)
             if rightOwnMon and rightOwnMon.personality == leadMon.personality then
                 isActiveBattleMon = true
+                battleSlotIndex = 2  -- gBattleMons slot 2 = RightOwn in doubles
             end
         end
 
         if isActiveBattleMon then
             local firstPartyMon = Tracker.getPokemon(1, true)
-            if firstPartyMon and firstPartyMon.personality == leadMon.personality then
+            local isMainMon = firstPartyMon and firstPartyMon.personality == leadMon.personality
+
+            -- PRIORITY 1: Event Temp Type (paid event, always wins in battle for main mon)
+            if isMainMon then
                 local tempTypes = RoguemonStreamer.settings.persistent.tempTypeChange
                 if tempTypes and #tempTypes == 2 then
                     return {
@@ -4562,9 +5086,50 @@ function RoguemonStreamer.getViewedTypes(leadMon)
                     }
                 end
             end
+
+            -- PRIORITY 2: Enemy-inflicted type (e.g. Soak, Forest's Curse)
+            -- Read actual battle RAM types and compare against what we expect
+            if battleSlotIndex ~= nil and GameSettings.gBattleMons then
+                local offset = GameSettings.offsetBattlePokemonTypes or 0x22
+                local sizeofBP = GameSettings.sizeofBattlePokemon or 0x58
+                local battleMonsAddress = GameSettings.gBattleMons + (battleSlotIndex * sizeofBP)
+                local ramType1 = Memory.readbyte(battleMonsAddress + offset) or 0
+                local ramType2 = Memory.readbyte(battleMonsAddress + offset + 1) or 0
+
+                -- Determine what the "expected" type is (alteredType or base species type)
+                local alteredEntry = nil
+                if RoguemonStreamer.settings.alteredTypes then
+                    local hex = string.format("0x%X", leadMon.personality)
+                    alteredEntry = RoguemonStreamer.settings.alteredTypes[hex]
+                end
+                local expectedT1, expectedT2
+                if alteredEntry then
+                    expectedT1, expectedT2 = alteredEntry[1], alteredEntry[2]
+                else
+                    -- Base species types (numeric IDs)
+                    local speciesTypes = PokemonData.Pokemon[leadMon.pokemonID] and PokemonData.Pokemon[leadMon.pokemonID].types or {}
+                    local function nameToId(name)
+                        for id, n in pairs(PokemonData.TypeIndexMap) do
+                            if n == name then return id end
+                        end
+                        return 0
+                    end
+                    expectedT1 = nameToId(speciesTypes[1] or "")
+                    expectedT2 = nameToId(speciesTypes[2] or speciesTypes[1] or "")
+                end
+
+                -- If RAM type differs from expected, an enemy changed it → use RAM type
+                if (ramType1 ~= expectedT1 or ramType2 ~= expectedT2) then
+                    local t1Name = PokemonData.TypeIndexMap[ramType1] or "Unknown"
+                    local t2Name = PokemonData.TypeIndexMap[ramType2] or "Unknown"
+                    return { t1Name, t2Name }
+                end
+            end
         end
     end
 
+    -- PRIORITY 3: Permanent event type (alteredTypes) — handled by getAlteredTypes
+    -- PRIORITY 4: Base species type — handled by the original getEffectiveness fallback
     return RoguemonStreamer.getAlteredTypes(leadMon.personality)
 end
 
@@ -4572,10 +5137,16 @@ wrapGetPokemonTypes = function()
     if not Program or not Program.getPokemonTypes then
         return
     end
-    _G.RoguemonStreamer_Backups = _G.RoguemonStreamer_Backups or {}
-    if Program.getPokemonTypes ~= RoguemonStreamer.wrappedGetPokemonTypes then
-        _G.RoguemonStreamer_Backups.getPokemonTypes = Program.getPokemonTypes
+    if Program.getPokemonTypes == RoguemonStreamer.wrappedGetPokemonTypes then
+        return
     end
+    _G.RoguemonStreamer_Wrappers = _G.RoguemonStreamer_Wrappers or {}
+    if _G.RoguemonStreamer_Wrappers[Program.getPokemonTypes] then
+        RoguemonStreamer.wrappedGetPokemonTypes = Program.getPokemonTypes
+        return
+    end
+    _G.RoguemonStreamer_Backups = _G.RoguemonStreamer_Backups or {}
+    _G.RoguemonStreamer_Backups.getPokemonTypes = Program.getPokemonTypes
     RoguemonStreamer.wrappedGetPokemonTypes = function(isOwn, isLeft)
         if isOwn then
             local leadMon = Battle.getViewedPokemon(true)
@@ -4588,6 +5159,7 @@ wrapGetPokemonTypes = function()
         end
         return _G.RoguemonStreamer_Backups.getPokemonTypes(isOwn, isLeft)
     end
+    _G.RoguemonStreamer_Wrappers[RoguemonStreamer.wrappedGetPokemonTypes] = true
     Program.getPokemonTypes = RoguemonStreamer.wrappedGetPokemonTypes
     print("[RogueMon Streamer] Wrapped Program.getPokemonTypes (Self-Healed)")
 end
@@ -4596,10 +5168,16 @@ wrapBuildTrackerScreenDisplay = function()
     if not DataHelper or not DataHelper.buildTrackerScreenDisplay then
         return
     end
-    _G.RoguemonStreamer_Backups = _G.RoguemonStreamer_Backups or {}
-    if DataHelper.buildTrackerScreenDisplay ~= RoguemonStreamer.wrappedBuildDisplay then
-        _G.RoguemonStreamer_Backups.buildTrackerScreenDisplay = DataHelper.buildTrackerScreenDisplay
+    if DataHelper.buildTrackerScreenDisplay == RoguemonStreamer.wrappedBuildDisplay then
+        return
     end
+    _G.RoguemonStreamer_Wrappers = _G.RoguemonStreamer_Wrappers or {}
+    if _G.RoguemonStreamer_Wrappers[DataHelper.buildTrackerScreenDisplay] then
+        RoguemonStreamer.wrappedBuildDisplay = DataHelper.buildTrackerScreenDisplay
+        return
+    end
+    _G.RoguemonStreamer_Backups = _G.RoguemonStreamer_Backups or {}
+    _G.RoguemonStreamer_Backups.buildTrackerScreenDisplay = DataHelper.buildTrackerScreenDisplay
     RoguemonStreamer.wrappedBuildDisplay = function(forceView)
         local data = _G.RoguemonStreamer_Backups.buildTrackerScreenDisplay(forceView)
         if data and data.p and data.x and data.x.viewingOwn then
@@ -4613,6 +5191,7 @@ wrapBuildTrackerScreenDisplay = function()
         end
         return data
     end
+    _G.RoguemonStreamer_Wrappers[RoguemonStreamer.wrappedBuildDisplay] = true
     DataHelper.buildTrackerScreenDisplay = RoguemonStreamer.wrappedBuildDisplay
     print("[RogueMon Streamer] Wrapped DataHelper.buildTrackerScreenDisplay (Self-Healed)")
 end
@@ -4621,10 +5200,16 @@ wrapDrawMovesArea = function()
     if not TrackerScreen or not TrackerScreen.drawMovesArea then
         return
     end
-    _G.RoguemonStreamer_Backups = _G.RoguemonStreamer_Backups or {}
-    if TrackerScreen.drawMovesArea ~= RoguemonStreamer.wrappedDrawMovesArea then
-        _G.RoguemonStreamer_Backups.drawMovesArea = TrackerScreen.drawMovesArea
+    if TrackerScreen.drawMovesArea == RoguemonStreamer.wrappedDrawMovesArea then
+        return
     end
+    _G.RoguemonStreamer_Wrappers = _G.RoguemonStreamer_Wrappers or {}
+    if _G.RoguemonStreamer_Wrappers[TrackerScreen.drawMovesArea] then
+        RoguemonStreamer.wrappedDrawMovesArea = TrackerScreen.drawMovesArea
+        return
+    end
+    _G.RoguemonStreamer_Backups = _G.RoguemonStreamer_Backups or {}
+    _G.RoguemonStreamer_Backups.drawMovesArea = TrackerScreen.drawMovesArea
     RoguemonStreamer.wrappedDrawMovesArea = function(data)
         if not data or not data.m or not data.m.moves then
             _G.RoguemonStreamer_Backups.drawMovesArea(data)
@@ -4693,6 +5278,7 @@ wrapDrawMovesArea = function()
             end
         end
     end
+    _G.RoguemonStreamer_Wrappers[RoguemonStreamer.wrappedDrawMovesArea] = true
     TrackerScreen.drawMovesArea = RoguemonStreamer.wrappedDrawMovesArea
     print("[RogueMon Streamer] Wrapped TrackerScreen.drawMovesArea (Self-Healed)")
 end
@@ -4701,10 +5287,16 @@ wrapGetAbilityId = function()
     if not PokemonData or not PokemonData.getAbilityId then
         return
     end
-    _G.RoguemonStreamer_Backups = _G.RoguemonStreamer_Backups or {}
-    if PokemonData.getAbilityId ~= RoguemonStreamer.wrappedGetAbilityId then
-        _G.RoguemonStreamer_Backups.getAbilityId = PokemonData.getAbilityId
+    if PokemonData.getAbilityId == RoguemonStreamer.wrappedGetAbilityId then
+        return
     end
+    _G.RoguemonStreamer_Wrappers = _G.RoguemonStreamer_Wrappers or {}
+    if _G.RoguemonStreamer_Wrappers[PokemonData.getAbilityId] then
+        RoguemonStreamer.wrappedGetAbilityId = PokemonData.getAbilityId
+        return
+    end
+    _G.RoguemonStreamer_Backups = _G.RoguemonStreamer_Backups or {}
+    _G.RoguemonStreamer_Backups.getAbilityId = PokemonData.getAbilityId
     RoguemonStreamer.wrappedGetAbilityId = function(pokemonID, abilityIndex)
         -- Real-time battle ability override (Skill Swap, Power Swap, Worry Seed, etc.)
         if Battle.inActiveBattle() and GameSettings.gBattleMons then
@@ -4787,6 +5379,7 @@ wrapGetAbilityId = function()
         end
         return _G.RoguemonStreamer_Backups.getAbilityId(pokemonID, abilityIndex)
     end
+    _G.RoguemonStreamer_Wrappers[RoguemonStreamer.wrappedGetAbilityId] = true
     PokemonData.getAbilityId = RoguemonStreamer.wrappedGetAbilityId
     print("[RogueMon Streamer] Wrapped PokemonData.getAbilityId (Self-Healed)")
 end
@@ -4795,17 +5388,33 @@ wrapGetEffectiveness = function()
     if not PokemonData or not PokemonData.getEffectiveness then
         return
     end
-    _G.RoguemonStreamer_Backups = _G.RoguemonStreamer_Backups or {}
-    if PokemonData.getEffectiveness ~= RoguemonStreamer.wrappedGetEffectiveness then
-        _G.RoguemonStreamer_Backups.getEffectiveness = PokemonData.getEffectiveness
+    if PokemonData.getEffectiveness == RoguemonStreamer.wrappedGetEffectiveness then
+        return
     end
+    _G.RoguemonStreamer_Wrappers = _G.RoguemonStreamer_Wrappers or {}
+    if _G.RoguemonStreamer_Wrappers[PokemonData.getEffectiveness] then
+        RoguemonStreamer.wrappedGetEffectiveness = PokemonData.getEffectiveness
+        return
+    end
+    _G.RoguemonStreamer_Backups = _G.RoguemonStreamer_Backups or {}
+    _G.RoguemonStreamer_Backups.getEffectiveness = PokemonData.getEffectiveness
     RoguemonStreamer.wrappedGetEffectiveness = function(pokemonID)
         local altered = nil
         
-        -- 1. Check viewed Pokemon
-        local viewed = Tracker.getViewedPokemon()
-        if viewed and viewed.pokemonID == pokemonID and viewed.personality then
-            altered = RoguemonStreamer.getViewedTypes(viewed)
+        -- In battle: check slot-1 party mon directly (Tracker.getViewedPokemon may return nil after screen change)
+        if Battle.inActiveBattle() then
+            local firstPartyMon = Tracker.getPokemon(1, true)
+            if firstPartyMon and firstPartyMon.pokemonID == pokemonID and firstPartyMon.personality then
+                altered = RoguemonStreamer.getViewedTypes(firstPartyMon)
+            end
+        end
+        
+        -- 1. Check viewed Pokemon (overworld or fallback)
+        if not altered then
+            local viewed = Tracker.getViewedPokemon()
+            if viewed and viewed.pokemonID == pokemonID and viewed.personality then
+                altered = RoguemonStreamer.getViewedTypes(viewed)
+            end
         end
         
         -- 2. Check player team if not found
@@ -4851,6 +5460,7 @@ wrapGetEffectiveness = function()
         
         return _G.RoguemonStreamer_Backups.getEffectiveness(pokemonID)
     end
+    _G.RoguemonStreamer_Wrappers[RoguemonStreamer.wrappedGetEffectiveness] = true
     PokemonData.getEffectiveness = RoguemonStreamer.wrappedGetEffectiveness
     print("[RogueMon Streamer] Wrapped PokemonData.getEffectiveness (Self-Healed)")
 end
@@ -4859,10 +5469,16 @@ wrapBuildPokemonInfoDisplay = function()
     if not DataHelper or not DataHelper.buildPokemonInfoDisplay then
         return
     end
-    _G.RoguemonStreamer_Backups = _G.RoguemonStreamer_Backups or {}
-    if DataHelper.buildPokemonInfoDisplay ~= RoguemonStreamer.wrappedBuildPokemonInfoDisplay then
-        _G.RoguemonStreamer_Backups.buildPokemonInfoDisplay = DataHelper.buildPokemonInfoDisplay
+    if DataHelper.buildPokemonInfoDisplay == RoguemonStreamer.wrappedBuildPokemonInfoDisplay then
+        return
     end
+    _G.RoguemonStreamer_Wrappers = _G.RoguemonStreamer_Wrappers or {}
+    if _G.RoguemonStreamer_Wrappers[DataHelper.buildPokemonInfoDisplay] then
+        RoguemonStreamer.wrappedBuildPokemonInfoDisplay = DataHelper.buildPokemonInfoDisplay
+        return
+    end
+    _G.RoguemonStreamer_Backups = _G.RoguemonStreamer_Backups or {}
+    _G.RoguemonStreamer_Backups.buildPokemonInfoDisplay = DataHelper.buildPokemonInfoDisplay
     RoguemonStreamer.wrappedBuildPokemonInfoDisplay = function(pokemonID)
         local data = _G.RoguemonStreamer_Backups.buildPokemonInfoDisplay(pokemonID)
         if data and data.p then
@@ -4895,6 +5511,7 @@ wrapBuildPokemonInfoDisplay = function()
         end
         return data
     end
+    _G.RoguemonStreamer_Wrappers[RoguemonStreamer.wrappedBuildPokemonInfoDisplay] = true
     DataHelper.buildPokemonInfoDisplay = RoguemonStreamer.wrappedBuildPokemonInfoDisplay
     print("[RogueMon Streamer] Wrapped DataHelper.buildPokemonInfoDisplay (Self-Healed)")
 end
@@ -4903,10 +5520,16 @@ wrapCheckForGameOver = function()
     if not GameOverScreen or not GameOverScreen.checkForGameOver then
         return
     end
-    _G.RoguemonStreamer_Backups = _G.RoguemonStreamer_Backups or {}
-    if GameOverScreen.checkForGameOver ~= RoguemonStreamer.wrappedCheckForGameOver then
-        _G.RoguemonStreamer_Backups.checkForGameOver = GameOverScreen.checkForGameOver
+    if GameOverScreen.checkForGameOver == RoguemonStreamer.wrappedCheckForGameOver then
+        return
     end
+    _G.RoguemonStreamer_Wrappers = _G.RoguemonStreamer_Wrappers or {}
+    if _G.RoguemonStreamer_Wrappers[GameOverScreen.checkForGameOver] then
+        RoguemonStreamer.wrappedCheckForGameOver = GameOverScreen.checkForGameOver
+        return
+    end
+    _G.RoguemonStreamer_Backups = _G.RoguemonStreamer_Backups or {}
+    _G.RoguemonStreamer_Backups.checkForGameOver = GameOverScreen.checkForGameOver
     RoguemonStreamer.wrappedCheckForGameOver = function(lastBattleStatus, lastTrainerId)
         local isGameOver = _G.RoguemonStreamer_Backups.checkForGameOver(lastBattleStatus, lastTrainerId)
         if isGameOver then
@@ -4915,6 +5538,7 @@ wrapCheckForGameOver = function()
         end
         return isGameOver
     end
+    _G.RoguemonStreamer_Wrappers[RoguemonStreamer.wrappedCheckForGameOver] = true
     GameOverScreen.checkForGameOver = RoguemonStreamer.wrappedCheckForGameOver
     print("[RogueMon Streamer] Wrapped GameOverScreen.checkForGameOver (Self-Healed)")
 end
@@ -5375,11 +5999,12 @@ function RoguemonStreamer.createStatArrowsAnimation(isBuff)
 end
 
 function RoguemonStreamer.checkAndPopQueuedBattleEvents()
+    RoguemonStreamer.lastBattleOutcome = nil
     local p = RoguemonStreamer.settings.persistent
-    if not p then return end
+    if not p then return false end
 
     local activeIdx = getActivePartyIndex()
-    if activeIdx ~= 1 then return end
+    if activeIdx ~= 1 then return false end
 
     -- Initialize fields if they don't exist
     p.queuedOutOfControlTurns = p.queuedOutOfControlTurns or 0
@@ -5403,27 +6028,6 @@ function RoguemonStreamer.checkAndPopQueuedBattleEvents()
     local anyActive = oocActive or dmActive or ohActive or omActive
 
     -- 1. Consolidate carrying-over states
-    -- If No Guard Plus/Minus is carrying over:
-    if p.noGuardPlusActive then
-        local count = p.noGuardPlusActive
-        if type(count) == "number" then
-            table.insert(p.queuedNoGuards, 1, { type = "Plus", count = count })
-        else
-            table.insert(p.queuedNoGuards, 1, "Plus")
-        end
-        p.noGuardPlusActive = nil
-        p.noGuardPlusApplied = nil
-    end
-    if p.noGuardMinusActive then
-        local count = p.noGuardMinusActive
-        if type(count) == "number" then
-            table.insert(p.queuedNoGuards, 1, { type = "Minus", count = count })
-        else
-            table.insert(p.queuedNoGuards, 1, "Minus")
-        end
-        p.noGuardMinusActive = nil
-        p.noGuardMinusApplied = nil
-    end
 
     -- 2. Activate move/status negative event based on strict priority
     if anyActive then
@@ -5480,27 +6084,6 @@ function RoguemonStreamer.checkAndPopQueuedBattleEvents()
     end
 
     -- 3. Activate accuracy-modifying event from queue (if any)
-    if #p.queuedNoGuards > 0 then
-        local nextNG = table.remove(p.queuedNoGuards, 1)
-        local count = 1
-        local suffix = nextNG
-        if type(nextNG) == "table" then
-            suffix = nextNG.type
-            count = nextNG.count or 1
-        end
-
-        if suffix == "Plus" then
-            p.noGuardPlusActive = count
-            p.noGuardPlusApplied = false
-            RoguemonStreamer.addAnimation(RoguemonStreamer.createBannerAnimation("NO GUARD PLUS", "00FF00", false))
-            print(string.format("[RogueMon Streamer] Pop: Activated No Guard Plus from queue for %d battles.", count))
-        elseif suffix == "Minus" then
-            p.noGuardMinusActive = count
-            p.noGuardMinusApplied = false
-            RoguemonStreamer.addAnimation(RoguemonStreamer.createBannerAnimation("NO GUARD MINUS", "FF0000", true))
-            print(string.format("[RogueMon Streamer] Pop: Activated No Guard Minus from queue for %d battles.", count))
-        end
-    end
 
     -- 4. Activate temp type change from queue (if not already active)
     if not p.tempTypeChange and #p.queuedTempTypes > 0 then
@@ -5513,6 +6096,7 @@ function RoguemonStreamer.checkAndPopQueuedBattleEvents()
 
     RoguemonStreamer.saveSettings()
     refreshTracker()
+    return true
 end
 
 function RoguemonStreamer.popNextQueuedBattleEvent()
@@ -5565,6 +6149,44 @@ end
 function RoguemonStreamer.afterEachFrame()
     if not RoguemonStreamer.initialized or not RoguemonStreamer.settings.enabled then
         return
+    end
+
+    -- Dynamically register the battle outcome watch once the ROM is loaded
+    if GameSettings and GameSettings.gBattleOutcome and not RoguemonStreamer.outcomeWatchRegistered then
+        pcall(event.unregisterbyname, "RoguemonStreamer_gBattleOutcome")
+        event.onmemorywrite(function(addr, value, size)
+            if value and value > 0 then
+                RoguemonStreamer.lastBattleOutcome = value
+                RoguemonStreamer.ActiveStatBuffsAppliedThisBattle = false
+                local activeIdx = getActivePartyIndex()
+                if RoguemonStreamer.MovesOverwritten then
+                    RoguemonStreamer.restoreOriginalMoves(activeIdx)
+                end
+
+                -- Decrement final turn for Out of Control if not already done for this turn
+                local currentTurn = Battle.turnCount or 0
+                if RoguemonStreamer.settings and RoguemonStreamer.settings.persistent then
+                    local p = RoguemonStreamer.settings.persistent
+                    if p.outOfControlTurns and p.outOfControlTurns > 0 and RoguemonStreamer.battleIntroFinished then
+                        -- The in-battle decrement always runs 1 turn LATE (at the action selection of turn N+1).
+                        -- So when the battle ends at turn N, the decrement for turn N is always pending.
+                        -- We always need exactly 1 more decrement here, regardless of lastOocDecrementTurn.
+                        p.outOfControlTurns = p.outOfControlTurns - 1
+                        print(string.format("[RogueMon Streamer] Outcome Watch: Decremented Out of Control final turn (remaining: %d).", p.outOfControlTurns))
+                    end
+                    if p.disabledMoveTurns and p.disabledMoveTurns > 0 and RoguemonStreamer.battleIntroFinished then
+                        -- Same logic as Out of Control: decrement for the final turn is always pending.
+                        p.disabledMoveTurns = p.disabledMoveTurns - 1
+                        print(string.format("[RogueMon Streamer] Outcome Watch: Decremented Disable Move final turn (remaining: %d).", p.disabledMoveTurns))
+                    end
+                    RoguemonStreamer.saveSettings()
+                end
+
+                print(string.format("[RogueMon Streamer] Memory Watch: Captured outcome: %d", value))
+            end
+        end, GameSettings.gBattleOutcome, "RoguemonStreamer_gBattleOutcome", "System Bus")
+        RoguemonStreamer.outcomeWatchRegistered = true
+        print("[RogueMon Streamer] Dynamically registered gBattleOutcome memory watch.")
     end
 
     if Battle.inActiveBattle() and isActionSelectionPhaseActive() then
@@ -5787,8 +6409,10 @@ function RoguemonStreamer.afterEachFrame()
         end
     end
 
-    -- Apply permanent type changes in GBA battle RAM for all active player battlers
-    if Battle.inActiveBattle() and isActionSelectionPhaseActive() and RoguemonStreamer.settings and RoguemonStreamer.settings.alteredTypes then
+    -- Apply permanent type changes in GBA battle RAM for all active player battlers.
+    -- Write as soon as Battle.dataReady (not waiting for action selection) to ensure
+    -- the altered type is in RAM before any move immunity check occurs.
+    if Battle.inActiveBattle() and (Battle.dataReady or isActionSelectionPhaseActive()) and RoguemonStreamer.settings and RoguemonStreamer.settings.alteredTypes then
         RoguemonStreamer.appliedAlteredTypes = RoguemonStreamer.appliedAlteredTypes or {}
         local slots = { Battle.Combatants.LeftOwn }
         if Battle.numBattlers == 4 then
@@ -5808,9 +6432,16 @@ function RoguemonStreamer.afterEachFrame()
                             if battleSlot ~= nil then
                                 RoguemonStreamer.writeAlteredTypesToBattle(battleSlot, t1, t2)
                                 logDebug(string.format("[RogueMon Streamer] Applied permanent altered types in Battle RAM for slot %d: %d/%d", slotIdx, t1, t2))
+                                -- Only mark as applied if the write actually succeeded.
+                                -- If battleSlot was nil we do NOT set the flag, so we retry next frame.
+                                RoguemonStreamer.appliedAlteredTypes[slotIdx] = true
+                            else
+                                logDebug(string.format("[RogueMon Streamer] battleSlot nil for slotIdx %d — will retry next frame", slotIdx))
                             end
+                        else
+                            -- No altered type for this mon — nothing to write, mark done anyway
+                            RoguemonStreamer.appliedAlteredTypes[slotIdx] = true
                         end
-                        RoguemonStreamer.appliedAlteredTypes[slotIdx] = true
                     end
                 end
             end
@@ -5825,15 +6456,22 @@ function RoguemonStreamer.afterEachFrame()
         RoguemonStreamer.queuedEventAppliedThisBattle = false
         RoguemonStreamer.queuedBattleEventsChecked = false
         RoguemonStreamer.battlePpSyncedThisCombat = false
-        RoguemonStreamer.lastDecrementTurn = 0
+        RoguemonStreamer.lastDecrementTurn = -1
         RoguemonStreamer.lastOocDecrementTurn = 0
         RoguemonStreamer.appliedBattleAbilities = {}
         RoguemonStreamer.appliedAlteredTypes = {}
+        RoguemonStreamer.trickRoomToggledOff = false
+        RoguemonStreamer.battleIntroFinished = false
+    else
+        if isActionSelectionPhaseActive() then
+            RoguemonStreamer.battleIntroFinished = true
+        end
     end
 
     if inBattle and Battle.dataReady and not RoguemonStreamer.queuedBattleEventsChecked then
-        RoguemonStreamer.checkAndPopQueuedBattleEvents()
-        RoguemonStreamer.queuedBattleEventsChecked = true
+        if RoguemonStreamer.checkAndPopQueuedBattleEvents() then
+            RoguemonStreamer.queuedBattleEventsChecked = true
+        end
     end
 
     local isAnyActive = RoguemonStreamer.isAnyNegativeEventActive()
@@ -5870,6 +6508,10 @@ function RoguemonStreamer.afterEachFrame()
     end
 
     if Battle.inActiveBattle() then
+        -- If the battle has already ended, skip battle updates to prevent state flip-flops during fadeout
+        if RoguemonStreamer.lastBattleOutcome and RoguemonStreamer.lastBattleOutcome > 0 then
+            return
+        end
         -- Track switch-out and restore moves immediately to prevent permanent party overwrite
         if RoguemonStreamer.prevActiveIdx and RoguemonStreamer.prevActiveIdx ~= activeIdx then
             if RoguemonStreamer.MovesOverwritten then
@@ -5884,16 +6526,6 @@ function RoguemonStreamer.afterEachFrame()
             end
         end
         RoguemonStreamer.prevActiveIdx = activeIdx
-
-        -- Track battle outcome and restore moves before copy-back
-        local outcome = Memory.readbyte(GameSettings.gBattleOutcome or 0) or 0
-        if outcome ~= 0 then
-            RoguemonStreamer.ActiveStatBuffsAppliedThisBattle = false
-            if RoguemonStreamer.MovesOverwritten then
-                RoguemonStreamer.restoreOriginalMoves(activeIdx)
-            end
-            RoguemonStreamer.lastBattleOutcome = outcome
-        end
 
         -- Pop next queued event mid-battle if no event is active
         if not RoguemonStreamer.isAnyNegativeEventActive() then
@@ -5926,7 +6558,7 @@ function RoguemonStreamer.afterEachFrame()
         -- Apply active disabled move in GBA battle RAM
         local disabledMoveId = RoguemonStreamer.settings.persistent.disabledMoveId
         local disabledTurns = RoguemonStreamer.settings.persistent.disabledMoveTurns or 0
-        if disabledMoveId and disabledMoveId > 0 and disabledTurns > 0 then
+        if disabledMoveId and disabledMoveId > 0 and disabledTurns > 0 and RoguemonStreamer.battleIntroFinished then
             if activeIdx == 1 then
                 if battleSlot ~= nil then
                     local structSize = GameSettings.disableStructEntrySize
@@ -5949,8 +6581,8 @@ function RoguemonStreamer.afterEachFrame()
         end
 
         -- Decrement active disabled move turn count
-        if activeIdx == 1 and disabledMoveId and disabledMoveId > 0 and disabledTurns > 0 then
-            RoguemonStreamer.lastDecrementTurn = RoguemonStreamer.lastDecrementTurn or 0
+        if activeIdx == 1 and disabledMoveId and disabledMoveId > 0 and disabledTurns > 0 and RoguemonStreamer.battleIntroFinished then
+            RoguemonStreamer.lastDecrementTurn = RoguemonStreamer.lastDecrementTurn or -1
             local currentTurn = Battle.turnCount or 0
             if currentTurn > RoguemonStreamer.lastDecrementTurn then
                 RoguemonStreamer.lastDecrementTurn = currentTurn
@@ -6041,7 +6673,8 @@ function RoguemonStreamer.afterEachFrame()
         if activeIdx == 1 then
             if RoguemonStreamer.settings.persistent.noGuardPlusActive then
                 RoguemonStreamer.settings.persistent.noGuardPlusApplied = true
-            elseif RoguemonStreamer.settings.persistent.noGuardMinusActive then
+            end
+            if RoguemonStreamer.settings.persistent.noGuardMinusActive then
                 RoguemonStreamer.settings.persistent.noGuardMinusApplied = true
             end
         end
@@ -6095,40 +6728,25 @@ function RoguemonStreamer.afterEachFrame()
                 local isTRActive = (Utils.bit_and(fs, 0x02) ~= 0)
                 
                 if not isTRActive then
-                    if RoguemonStreamer.isTrickRoomActivePrev then
-                        -- It was active but now it is false: toggled off by the move Trick Room!
-                        local rem = RoguemonStreamer.settings.persistent.mystificationActive - 1
-                        if rem <= 0 then
-                            RoguemonStreamer.settings.persistent.mystificationActive = nil
-                        else
-                            RoguemonStreamer.settings.persistent.mystificationActive = rem
-                        end
-                        RoguemonStreamer.settings.persistent.mystificationApplied = nil
-                        RoguemonStreamer.isTrickRoomActivePrev = false
-                        RoguemonStreamer.saveSettings()
-                        print("[RogueMon Streamer] Trick Room disabled by move. Mystification cleared/decremented.")
+                    -- Not yet applied: cast it!
+                    fs = Utils.bit_or(fs, 0x02)
+                    Memory.writedword(fsAddr, fs)
+                    -- Targeted write to Trick Room timer to avoid out-of-bounds corruption
+                    if ftOff == 12 then
+                        Memory.writeword(ftAddr + 8, 5)
+                    elseif ftOff == 6 then
+                        Memory.writebyte(ftAddr + 4, 5)
                     else
-                        -- Not yet applied: cast it!
-                        fs = Utils.bit_or(fs, 0x02)
-                        Memory.writedword(fsAddr, fs)
-                        -- Targeted write to Trick Room timer to avoid out-of-bounds corruption
-                        if ftOff == 12 then
-                            Memory.writeword(ftAddr + 8, 5)
-                        elseif ftOff == 6 then
-                            Memory.writebyte(ftAddr + 4, 5)
-                        else
-                            local off16 = ftOff - 4
-                            local off8 = ftOff - 2
-                            if off16 >= 0 then Memory.writebyte(ftAddr + off16, 5) end
-                            if off8 >= 0 then Memory.writebyte(ftAddr + off8, 5) end
-                        end
-                        RoguemonStreamer.isTrickRoomActivePrev = true
-                        if not RoguemonStreamer.settings.persistent.mystificationApplied then
-                            RoguemonStreamer.addAnimation(RoguemonStreamer.createBannerAnimation("MYSTIFICATION", "FF0000", true))
-                            RoguemonStreamer.settings.persistent.mystificationApplied = true
-                            RoguemonStreamer.saveSettings()
-                            print("[RogueMon Streamer] Mystification cast Trick Room (flag & timer set).")
-                        end
+                        local off16 = ftOff - 4
+                        local off8 = ftOff - 2
+                        if off16 >= 0 then Memory.writebyte(ftAddr + off16, 5) end
+                        if off8 >= 0 then Memory.writebyte(ftAddr + off8, 5) end
+                    end
+                    if not RoguemonStreamer.settings.persistent.mystificationApplied then
+                        RoguemonStreamer.addAnimation(RoguemonStreamer.createBannerAnimation("MYSTIFICATION", "FF0000", true))
+                        RoguemonStreamer.settings.persistent.mystificationApplied = true
+                        RoguemonStreamer.saveSettings()
+                        print("[RogueMon Streamer] Mystification cast Trick Room (flag & timer set).")
                     end
                 else
                     -- Keep Trick Room timer at 5 so it lasts all fight (targeted write)
@@ -6142,7 +6760,6 @@ function RoguemonStreamer.afterEachFrame()
                         if off16 >= 0 then Memory.writebyte(ftAddr + off16, 5) end
                         if off8 >= 0 then Memory.writebyte(ftAddr + off8, 5) end
                     end
-                    RoguemonStreamer.isTrickRoomActivePrev = true
                     if not RoguemonStreamer.settings.persistent.mystificationApplied then
                         RoguemonStreamer.addAnimation(RoguemonStreamer.createBannerAnimation("MYSTIFICATION", "FF0000", true))
                         RoguemonStreamer.settings.persistent.mystificationApplied = true
@@ -6156,7 +6773,7 @@ function RoguemonStreamer.afterEachFrame()
 
         -- Handle Out of Control move selection overwrite
         local turnsLeft = RoguemonStreamer.settings.persistent.outOfControlTurns or 0
-        if turnsLeft > 0 then
+        if turnsLeft > 0 and RoguemonStreamer.battleIntroFinished then
             if isActionSelectionPhaseActive() then
                 RoguemonStreamer.OocTurnApplied = false
                 if RoguemonStreamer.MovesOverwritten or RoguemonStreamer.OocFlinched then
@@ -6167,19 +6784,23 @@ function RoguemonStreamer.afterEachFrame()
                     RoguemonStreamer.applyOutOfControlOverwrite(activeIdx)
                     RoguemonStreamer.OocTurnApplied = true
                 end
-                
-                RoguemonStreamer.lastOocDecrementTurn = RoguemonStreamer.lastOocDecrementTurn or 0
-                local currentTurn = Battle.turnCount or 0
-                if currentTurn > RoguemonStreamer.lastOocDecrementTurn then
-                    RoguemonStreamer.lastOocDecrementTurn = currentTurn
-                    RoguemonStreamer.settings.persistent.outOfControlTurns = RoguemonStreamer.settings.persistent.outOfControlTurns - 1
-                    RoguemonStreamer.saveSettings()
-                end
             end
         else
             -- Out of Control expired or not active, make sure original moves are restored!
             if RoguemonStreamer.MovesOverwritten or RoguemonStreamer.OocFlinched then
                 RoguemonStreamer.restoreOriginalMoves(activeIdx)
+            end
+        end
+
+        -- Decrement active Out of Control turn count (exactly like Disable Move!)
+        if activeIdx == 1 and turnsLeft > 0 and RoguemonStreamer.battleIntroFinished then
+            RoguemonStreamer.lastOocDecrementTurn = RoguemonStreamer.lastOocDecrementTurn or 0
+            local currentTurn = Battle.turnCount or 0
+            if currentTurn > RoguemonStreamer.lastOocDecrementTurn then
+                RoguemonStreamer.lastOocDecrementTurn = currentTurn
+                RoguemonStreamer.settings.persistent.outOfControlTurns = RoguemonStreamer.settings.persistent.outOfControlTurns - 1
+                RoguemonStreamer.saveSettings()
+                print(string.format("[RogueMon Streamer] Decremented Out of Control turns (remaining: %d).", RoguemonStreamer.settings.persistent.outOfControlTurns))
             end
         end
     else
@@ -6189,12 +6810,6 @@ function RoguemonStreamer.afterEachFrame()
         if not Battle.inBattleScreen then
             if RoguemonStreamer.MovesOverwritten then
                 RoguemonStreamer.restoreOriginalMoves(activeIdx)
-            end
-
-            -- Update lastBattleOutcome from RAM to ensure escape is detected even if transition was instant
-            local finalOutcome = Memory.readbyte(GameSettings.gBattleOutcome or 0) or 0
-            if finalOutcome ~= 0 then
-                RoguemonStreamer.lastBattleOutcome = finalOutcome
             end
 
             local wasEscape = (RoguemonStreamer.lastBattleOutcome == 3 or RoguemonStreamer.lastBattleOutcome == 4 or RoguemonStreamer.lastBattleOutcome == 5)
@@ -6705,7 +7320,7 @@ function RoguemonStreamer.simulateTwitchRedeem(eventNameKey)
     local request = {
         GUID = guid,
         EventKey = "TwitchChannelPointsEvent",
-        CreatedAt = os.date("!%Y-%m-%dT%H:%M:%SZ"),
+        CreatedAt = os.time(),
         Username = "SimulatedViewer",
         Platform = "Twitch",
         Args = {
@@ -6743,7 +7358,7 @@ function RoguemonStreamer.simulateSubRedeem(eventName, isPositive, subCount)
     local request = {
         GUID = guid,
         EventKey = "TwitchSubEvent",
-        CreatedAt = os.date("!%Y-%m-%dT%H:%M:%SZ"),
+        CreatedAt = os.time(),
         Username = "SimulatedSubber",
         Platform = "Twitch",
         Choice = choice,
@@ -6819,8 +7434,6 @@ function RoguemonStreamer.executeChoice(request, choice)
     local displayName = eventName
     if eventName == "Altera status" or eventName == "Inflict status" or eventName == "Inflict Status" then
         displayName = "Inflict status"
-    elseif eventName == "Danni e status" or eventName == "Status & Damages" or eventName == "Damage and Status" then
-        displayName = "Status & Damages"
     end
     local msg = string.format("%s Choice Milestone Event triggered: %s ( %d subs )", choice, displayName, subCount)
     -- RoguemonStreamer.notifyStreamer(msg) -- Commented out to prevent double popups
@@ -7023,21 +7636,6 @@ function RoguemonStreamer.getActiveEventMessages()
             minusCount = 1
         end
         
-        local qNoGuards = p.queuedNoGuards or {}
-        for _, entry in ipairs(qNoGuards) do
-            local suffix = entry
-            local count = 1
-            if type(entry) == "table" then
-                suffix = entry.type
-                count = entry.count or 1
-            end
-            if suffix == "Plus" then
-                plusCount = plusCount + count
-            elseif suffix == "Minus" then
-                minusCount = minusCount + count
-            end
-        end
-        
         if plusCount > 0 then
             local btlStr = plusCount == 1 and "battle" or "battles"
             table.insert(messages, string.format("No Guard Plus ( %d %s )", plusCount, btlStr))
@@ -7131,7 +7729,7 @@ function RoguemonStreamer.getActiveEventMessages()
         local totalOmni = activeCount + (p.queuedOmnimalusCount or 0)
         if totalOmni > 0 then
             local btlStr = totalOmni == 1 and "battle" or "battles"
-            table.insert(messages, string.format("Omnimalus ( %d %s )", totalOmni, btlStr))
+            table.insert(messages, string.format("Omnimalus -1 ( %d %s )", totalOmni, btlStr))
         end
     end
 
@@ -7286,6 +7884,20 @@ function RoguemonStreamer.applyRuntimeHooks()
         if GameSettings.gBattleScriptingBattler == 0xC000000 or GameSettings.gBattleScriptingBattler == 0 then
             GameSettings.gBattleScriptingBattler = 0x202448B
         end
+        if GameSettings.gBattleOutcome then
+            pcall(event.unregisterbyname, "RoguemonStreamer_gBattleOutcome")
+            event.onmemorywrite(function(addr, value, size)
+                if value and value > 0 then
+                    RoguemonStreamer.lastBattleOutcome = value
+                    RoguemonStreamer.ActiveStatBuffsAppliedThisBattle = false
+                    local activeIdx = getActivePartyIndex()
+                    if RoguemonStreamer.MovesOverwritten then
+                        RoguemonStreamer.restoreOriginalMoves(activeIdx)
+                    end
+                    print(string.format("[RogueMon Streamer] Memory Watch: Captured outcome: %d", value))
+                end
+            end, GameSettings.gBattleOutcome, "RoguemonStreamer_gBattleOutcome", "System Bus")
+        end
     end
 
     logDebug(string.format("GameSettings Addresses Check:\n  gMoveResultFlags: 0x%X\n  gBattleScriptingBattler: 0x%X\n  gSideStatuses: 0x%X\n  gSideTimers: 0x%X\n  fieldStatusesAddr: 0x%X\n  fieldTimersAddr: 0x%X",
@@ -7354,9 +7966,8 @@ function RoguemonStreamer.applyRuntimeHooks()
     local function patchNotificationScreen(screen)
         if not screen then return end
 
-        local IMAGE_SIZE = 50
-
         local WORD_COLORS = {
+            -- Status conditions
             poison = 0xFFB050D0,     -- Purple
             veleno = 0xFFB050D0,
             paralysis = 0xFFD0C000,  -- Yellow
@@ -7373,29 +7984,29 @@ function RoguemonStreamer.applyRuntimeHooks()
             sleep = 0xFF8090A0,      -- Gray-Blue
             sleeping = 0xFF8090A0,
             sonno = 0xFF8090A0,
---            cured = 0xFF00FF00,      -- Green
---            curato = 0xFF00FF00,
---            curati = 0xFF00FF00,
---            cera = 0xFF00FF00,
---            gain = 0xFF00FF00,
             good = 0xFF00FF00,
---            boost = 0xFF00FF00,
---            negative = 0xFFFF0000,   -- Red
---            malus = 0xFFFF0000,
---            debt = 0xFFFF0000,
---            control = 0xFFFF0000,
             bad = 0xFFFF0000,
---            lose = 0xFFFF0000,
---            lost = 0xFFFF0000,
---            remove = 0xFFFF0000,
---            cut = 0xFFFF0000,
---            deplete = 0xFFFF0000,
---            disable = 0xFFFF0000,
---            damage = 0xFFFF0000,
---            ["out of control"] = 0xFFFF0000,
---            ["no guard plus"] = 0xFF00FF00,
---            ["no guard minus"] = 0xFFFF0000,
+            -- Pokemon type colors (override status "poison" with the type shade)
+            normal = 0xFFA8A77A,
+            fire = 0xFFEE8130,
+            water = 0xFF6390F0,
+            electric = 0xFFF7D02C,
+            grass = 0xFF7AC74C,
+            ice = 0xFF96D9D6,
+            fighting = 0xFFC22E28,
+            ground = 0xFFE2BF65,
+            flying = 0xFFA98FF3,
+            psychic = 0xFFF95587,
+            bug = 0xFFA6B91A,
+            rock = 0xFFB6A136,
+            ghost = 0xFF735797,
+            dragon = 0xFF6F35FC,
+            steel = 0xFFB7B7CE,
+            dark = 0xFF705746,
+            fairy = 0xFFD685AD,
         }
+
+        local IMAGE_SIZE = 50
 
         local function calcPixelLengthWithSpaces(str)
             local totalLength = 0
@@ -7620,7 +8231,6 @@ function RoguemonStreamer.applyRuntimeHooks()
             ["disabled move"] = 0xFFFF0000,
             ["temp type change"] = 0xFFFF0000,
             ["temp type"] = 0xFFFF0000,
-            ["status & damages"] = 0xFFFF0000,
             ["inflict status"] = 0xFFFF0000,
             ["debt healing"] = 0xFFFF0000,
             ["debt status"] = 0xFFFF0000,
@@ -7773,7 +8383,6 @@ function RoguemonStreamer.applyRuntimeHooks()
             if isStreamer and stat and paren then
                 local textColor = customColor or (val:find("%+") and 0xFF00FF00 or 0xFFFF0000)
                 local part1 = stat .. (val ~= "" and (" " .. val) or "")
-                local part2 = " " .. paren
                 
                 local startX = Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 1
                 local startY = 140
@@ -7782,8 +8391,8 @@ function RoguemonStreamer.applyRuntimeHooks()
                 end
                 
                 Drawing.drawText(startX, startY, part1, textColor, shadowcolor)
-                local shiftX = startX + Utils.calcWordPixelLength(part1)
-                Drawing.drawText(shiftX, startY, part2, Theme.COLORS["Lower box text"], shadowcolor)
+                local shiftX = startX + Utils.calcWordPixelLength(part1) + 4
+                Drawing.drawText(shiftX, startY, paren, Theme.COLORS["Lower box text"], shadowcolor)
                 
                 if string.find(wrappedText, "%\n") then
                     gui.drawLine(Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN, 155, Constants.SCREEN.WIDTH + Constants.SCREEN.RIGHT_GAP - Constants.SCREEN.MARGIN, 155, Theme.COLORS["Lower box border"])

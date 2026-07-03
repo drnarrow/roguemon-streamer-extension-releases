@@ -27,40 +27,55 @@ SubEventTestScreen = {
 local positive_cum = {
     "Restore PP", "Cure Status", "Restore HP",
     "Give Healing Item", "Give Status Item", "Give PP Item", "Stat Boost",
-    "Power Boost", "Speed Boost", "PP Up", "Let's Dance"
+    "Power Boost", "Speed Boost", "PP Up"
 }
 
 local negative_cum = {
     "Inflict Status", "Disable Move", "Power Debuff", "Speed Debuff",
     "PP Cut", "Stat Debuff", "Temp Type Change",
-    "Remove Healing Item", "Remove Status Item", "Overwhelmed", "Let's Dance"
+    "Remove Healing Item", "Remove Status Item", "Overwhelmed"
 }
 
 local positive_m5 = {
     "Restore PP", "Give Healing Item", "Give Utility Item", "Give PP Item", "Stat Boost",
     "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
-    "Powerhouse Boost", "No Guard Plus", "Full Restore", "Game Changer", "Try Harder", "Let's Dance"
+    "Powerhouse Boost", "No Guard Plus", "Turbo Genetics", "Evolution Power", "Let's Dance",
+    "Full Restore", "Game Changer", "Try Harder"
 }
 
 local negative_m5 = {
-    "Overwhelmed", "Empowered Disable", "Empowered Debuff", "PP Deplete",
+    "Overwhelmed", "Disable Move", "Stat Debuff", "PP Deplete",
     "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
     "Remove Big Healing Item", "Remove Utility Item", "Out of Control",
-    "Omnimalus", "No Guard Minus", "Mystification", "Let's Dance"
+    "No Guard Minus", "Mystification", "Let's Dance"
 }
 
 local positive_m10 = {
-    "Restore PP", "Give Healing Item", "Give Utility Items", "Give PP Item", "Stat Boost",
+    "Give Healing Item", "Give Utility Items", "Give PP Item", "Stat Boost",
     "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
-    "Powerhouse Boost", "No Guard Plus", "Omniboost", "Full Restore",
-    "Increase Healing Limit", "Increase Status Limit", "Evolution Power", "Turbo Genetics", "Let's Dance"
+    "Powerhouse Boost", "No Guard Plus", "Omniboost", "Evolution Power", "Turbo Genetics", "Game Changer", "Try Harder", "Let's Dance",
+    "Full Restore", "Increase Healing Limit", "Increase Status Limit", "Darwinism"
 }
 
 local negative_m10 = {
-    "Overwhelmed", "Empowered Disable", "Empowered Debuff", "PP Deplete",
+    "Disable Move", "Stat Debuff", "PP Deplete",
     "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
-    "Remove Big Healing Item", "No Guard Minus", "Mystification",
-    "Out of Control", "Omnimalus", "Remove Utility Items", "Let's Dance"
+    "Remove Big Healing Item", "Remove Utility Items", "No Guard Minus", "Let's Dance",
+    "Out of Control", "Omnimalus", "Mystification", "Overwhelmed"
+}
+
+local positive_m50 = {
+    "Give Healing Item", "Give Utility Items", "Give PP Item",
+    "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
+    "Powerhouse Boost", "No Guard Plus", "Omniboost", "Game Changer", "Try Harder", "Let's Dance",
+    "Increase Healing Limit", "Increase Status Limit", "Darwinism"
+}
+
+local negative_m50 = {
+    "Disable Move", "Stat Debuff", "PP Deplete",
+    "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
+    "Remove Big Healing Item", "Remove Utility Items", "No Guard Minus", "Overwhelmed",
+    "Out of Control", "Omnimalus", "Mystification"
 }
 
 local function getActiveKeys()
@@ -74,6 +89,8 @@ local function getActiveKeys()
         local isGood = (SubEventTestScreen.currentOutcome == SubEventTestScreen.Outcomes.Good)
         if SubEventTestScreen.currentMilestone == 5 then
             return isGood and positive_m5 or negative_m5
+        elseif SubEventTestScreen.currentMilestone == 50 then
+            return isGood and positive_m50 or negative_m50
         else
             return isGood and positive_m10 or negative_m10
         end

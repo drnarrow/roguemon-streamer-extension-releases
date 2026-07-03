@@ -35,6 +35,7 @@ local positive_keys = {
     "no guard plus",
     "powerhouse boost",
     "turbo genetics",
+    "darwinism",
     "omniboost",
     "evolution power",
     "game changer",
@@ -48,7 +49,6 @@ local positive_keys = {
 local negative_keys = {
     "inflict status",
     "disable move",
-    "empowered disable",
     "power debuff",
     "speed debuff",
     "pp cut",
@@ -58,7 +58,6 @@ local negative_keys = {
     "remove big healing item",
     "remove utility item",
     "stat debuff",
-    "empowered debuff",
     "pp deplete",
     "mystification",
     "omnimalus",
