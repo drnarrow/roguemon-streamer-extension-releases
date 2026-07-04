@@ -42,8 +42,8 @@
     *   *EN*: Grants a +1 stage boost in both Speed and primary offensive stat for multiple battles.
     *   *IT*: Aumenta Velocità e statistica offensiva di +1 stadio per molteplici lotte.
 *   **Omniboost**
-    *   *EN*: Grants a +1 stage boost to all stats for 1 battle.
-    *   *IT*: Aumenta tutte le statistiche del tuo Pokémon di +1 stadio per 1 lotta.
+    *   *EN*: Grants a +1 stage boost to all stats for multiple battles (duration based on Milestone scale).
+    *   *IT*: Aumenta tutte le statistiche del tuo Pokémon di +1 stadio per molteplici lotte (durata variabile in base alle sub).
 *   **PP Up**
     *   *EN*: Increases the maximum PP of one eligible move of your Pokémon.
     *   *IT*: Aumenta i PP massimi di una mossa idonea del tuo Pokémon.
@@ -119,8 +119,8 @@
     *   *EN*: Discards valuable utility items (Rare Candy, Max Elixirs, PP Max) from your bag.
     *   *IT*: Scarta strumenti di utilità preziosi (Caramelle Rare, PP Max, Max Elisir) dalla borsa.
 *   **Overwhelmed**
-    *   *EN*: Reduces your Pokémon's HP by a percentage and triggers a persistent extra PP usage penalty (same as Pressure ability effect).
-    *   *IT*: Riduce gli HP del Pokémon di una percentuale e applica una penalità sul consumo extra di PP (uguale all'effetto dell'abilità Pressione).
+    *   *EN*: Reduces your Pokémon's HP by a percentage of its current HP (without killing, min 1 HP) and triggers a persistent extra PP usage penalty (same as Pressure ability effect).
+    *   *IT*: Riduce gli HP del Pokémon di una percentuale dei suoi HP correnti (senza andare K.O., min 1 HP) e applica una penalità sul consumo extra di PP (uguale all'effetto dell'abilità Pressione).
 *   **PP Deplete**
     *   *EN*: Reduces the PP of all moves of your Pokémon by a percentage (20%, 50%, or 100%).
     *   *IT*: Riduce i PP di tutte le mosse del tuo Pokémon (del 20%, 50% o 100%).
@@ -187,10 +187,10 @@ This section defines which events are grouped in each pool.
     *   *Fallback Extraction / Estrazione Generica (100% total)*: Overwhelmed, Disable Move, Stat Debuff, PP Deplete, Permanent Type Change, Permanent Nature Change, Permanent Ability Change, Remove Big Healing Item, Remove Utility Item, Out of Control, No Guard Minus, Mystification, Let's Dance.
 *   **Advanced Milestones (10, 20 Subs)**:
     *   *Specific / Specifico (10% each/ciascuno)*: Out of Control, Omnimalus, Mystification, Overwhelmed.
-    *   *Fallback Extraction / Estrazione Generica (60% total)*: Disable Move, Stat Debuff, PP Deplete, Permanent Type Change, Permanent Nature Change, Permanent Ability Change, Remove Big Healing Item, Remove Utility Items, No Guard Minus, Let's Dance.
+    *   *Fallback Extraction / Estrazione Generica (60% total)*: Disable Move, Stat Debuff, PP Deplete, Permanent Type Change, Permanent Nature Change, Permanent Ability Change, Remove Big Healing Item, Remove Utility Items, No Guard Minus.
 *   **Milestone 50 (50 Subs)**:
     *   *Specific / Specifico (10% each/ciascuno)*: Out of Control, Omnimalus, Mystification.
-    *   *Fallback Extraction / Estrazione Generica (70% total)*: Disable Move, Stat Debuff, PP Deplete, Permanent Type Change, Permanent Nature Change, Permanent Ability Change, Remove Big Healing Item, Remove Utility Items, No Guard Minus, Overwhelmed.
+    *   *Fallback Extraction / Estrazione Generica (70% total)*: Disable Move, PP Deplete, Permanent Type Change, Permanent Nature Change, Permanent Ability Change, Remove Big Healing Item, Remove Utility Items, No Guard Minus, Overwhelmed.
 
 ### 3. Twitch Channel Points Rewards / Riscatti dei Punti Canale
 > [!IMPORTANT]

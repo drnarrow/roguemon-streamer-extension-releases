@@ -410,7 +410,7 @@ local function pickNegativeMilestoneEvent(subCount)
             return "Mystification"
         else
             local others = {
-                "Disable Move", "Stat Debuff", "PP Deplete",
+                "Disable Move", "PP Deplete",
                 "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
                 "Remove Big Healing Item", "Remove Utility Items", "No Guard Minus", "Overwhelmed"
             }
@@ -430,7 +430,7 @@ local function pickNegativeMilestoneEvent(subCount)
             local others = {
                 "Disable Move", "Stat Debuff", "PP Deplete",
                 "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
-                "Remove Big Healing Item", "Remove Utility Items", "No Guard Minus", "Let's Dance"
+                "Remove Big Healing Item", "Remove Utility Items", "No Guard Minus"
             }
             return others[RoguemonStreamer.random(1, #others)]
         end
@@ -713,9 +713,7 @@ local function getBattleStatus1Offset()
 end
 
 function RoguemonStreamer.initialize(extensionSelf)
-    -- Seed random once on extension load using system time and clock
-    math.randomseed(os.time() + math.floor(os.clock() * 1000000))
-    for i = 1, 10 do math.random() end -- Pop first few values
+    RoguemonStreamer.seed_lcg()
     
     RoguemonStreamer.selfObject = extensionSelf
     RoguemonStreamer.extensionDir = extensionSelf.extensionDir
@@ -947,11 +945,28 @@ function RoguemonStreamer.initialize(extensionSelf)
     end
 end
 
+local lcg_state = 123456789
+
+local function lcg_random()
+    lcg_state = (1103515245 * lcg_state + 12345) % 2147483648
+    return lcg_state
+end
+
+function RoguemonStreamer.seed_lcg()
+    local frame = (emu and emu.framecount) and emu.framecount() or 0
+    lcg_state = (os.time() + math.floor(os.clock() * 1000000) + frame) % 2147483648
+    for i = 1, 10 do
+        lcg_random()
+    end
+end
+
 function RoguemonStreamer.random(min, max)
+    local val = lcg_random()
     if max == nil then
-        return math.random(min)
+        return (val % min) + 1
     else
-        return math.random(min, max)
+        local range = max - min + 1
+        return (val % range) + min
     end
 end
 
@@ -1827,8 +1842,9 @@ function RoguemonStreamer.processChannelPointsRequest(request)
         return true
     end
     
-    -- If there's an active sub choice request we are waiting for, keep channel points in queue
-    if RoguemonStreamer.ActiveChoiceRequest ~= nil then
+    -- If there's an active sub choice request, Let's Dance menu, or active notification, keep channel points in queue
+    local ScreenManager = Roguemon and Roguemon.ScreenManager
+    if RoguemonStreamer.ActiveChoiceRequest ~= nil or RoguemonStreamer.ActiveLetsDanceRequest ~= nil or (ScreenManager and ScreenManager.isNotificationActive()) then
         return false
     end
 
@@ -1888,23 +1904,32 @@ function RoguemonStreamer.processRequest(request)
     local isGift = argsTable.IsGift == true or argsTable.IsGift == "true"
     
     if isGift and request.HitMilestone == nil then
-        local hit = nil
-        local milestonesOrder = { 50, 20, 10, 5 }
-        for _, m in ipairs(milestonesOrder) do
-            local key = tostring(m)
-            if subCount >= m and RoguemonStreamer.settings.milestones[key] == true then
-                hit = m
-                break
-            end
-        end
-        
-        if hit then
+        if subCount >= 40 and subCount <= 49 and RoguemonStreamer.settings.milestones["20"] == true then
+            -- Special 40-49 gift split case: 2 Milestone 20s!
             request.OriginalSubCount = subCount
-            request.HitMilestone = hit
-            request.RemainingCumulative = subCount - hit
-            request.Args.SubCount = hit
+            request.HitMilestone = 20
+            request.Args.SubCount = 20
+            request.RemainingCumulative = subCount - 40
+            request.IsSplitDoubleMilestone = 1 -- State 1: first Milestone 20
         else
-            request.HitMilestone = false
+            local hit = nil
+            local milestonesOrder = { 50, 20, 10, 5 }
+            for _, m in ipairs(milestonesOrder) do
+                local key = tostring(m)
+                if subCount >= m and RoguemonStreamer.settings.milestones[key] == true then
+                    hit = m
+                    break
+                end
+            end
+            
+            if hit then
+                request.OriginalSubCount = subCount
+                request.HitMilestone = hit
+                request.RemainingCumulative = subCount - hit
+                request.Args.SubCount = hit
+            else
+                request.HitMilestone = false
+            end
         end
     end
 
@@ -1912,6 +1937,12 @@ function RoguemonStreamer.processRequest(request)
     local isMilestoneEvent = (request.HitMilestone ~= nil and request.HitMilestone ~= false)
 
     if isMilestoneEvent then
+        -- Postpone if Let's Dance menu or active notification is currently active
+        local ScreenManager = Roguemon and Roguemon.ScreenManager
+        if RoguemonStreamer.ActiveLetsDanceRequest ~= nil or (ScreenManager and ScreenManager.isNotificationActive()) then
+            return false
+        end
+
         if not isGamePlaySafe(request) then
             return false -- Postpone processing completely until gameplay is safe (e.g. valid Pokémon in party)
         end
@@ -1938,12 +1969,23 @@ function RoguemonStreamer.processRequest(request)
 
         -- Execute the milestone event
         RoguemonStreamer.executeChoice(request, choice)
+        if request.IsSplitDoubleMilestone == 2 then
+            -- We just completed the first Milestone 20, but the second one is pending.
+            -- Keep the request active in the processing loop.
+            return false
+        end
         if request.GUID then
             RoguemonStreamer.processedRequestGUIDs[request.GUID] = true
         end
         return true
     else
         -- Cumulative event progress
+        -- Postpone if any interactive screen or notification is active to avoid notification overlapping
+        local ScreenManager = Roguemon and Roguemon.ScreenManager
+        if RoguemonStreamer.ActiveLetsDanceRequest ~= nil or RoguemonStreamer.ActiveChoiceRequest ~= nil or (ScreenManager and ScreenManager.isNotificationActive()) then
+            return false
+        end
+
         if not isGamePlaySafe(request) then
             return false
         end
@@ -1967,44 +2009,11 @@ function RoguemonStreamer.processRequest(request)
             return true
         end
 
-        RoguemonStreamer.executePendingChannelPoints()
-
         RoguemonStreamer.settings.currentProgress = RoguemonStreamer.settings.currentProgress + subCount
         RoguemonStreamer.settings.stats.totalSubs = RoguemonStreamer.settings.stats.totalSubs + subCount
-
-        local eventsTriggered = {}
-        while RoguemonStreamer.settings.currentProgress >= RoguemonStreamer.settings.cumulativeGoal do
-            RoguemonStreamer.settings.currentProgress = RoguemonStreamer.settings.currentProgress - RoguemonStreamer.settings.cumulativeGoal
-            
-            -- Determine Good vs Bad based on probability
-            local randVal = RoguemonStreamer.random(100)
-            local outcome = (randVal <= RoguemonStreamer.settings.goodChance) and "Good" or "Bad"
-            local eventName
-            if outcome == "Good" then
-                eventName = RoguemonStreamer.pickRandomEvent(POSITIVE_EVENTS_CUMULATIVE)
-                RoguemonStreamer.executePositiveEvent(eventName, 1)
-            else
-                eventName = RoguemonStreamer.pickRandomEvent(NEGATIVE_EVENTS_CUMULATIVE)
-                RoguemonStreamer.executeNegativeEvent(eventName, 1)
-            end
-
-            local displayName = eventName
-            if eventName == "Altera status" or eventName == "Inflict status" or eventName == "Inflict Status" then
-                displayName = "Inflict status"
-            end
-            table.insert(eventsTriggered, string.format("%s (%s)", displayName, outcome))
-            RoguemonStreamer.settings.stats.totalEvents = RoguemonStreamer.settings.stats.totalEvents + 1
-        end
-
         RoguemonStreamer.saveSettings()
 
-        if #eventsTriggered > 0 then
-            local msg = "Cumulative goal reached! Triggered: " .. table.concat(eventsTriggered, ", ")
-            -- RoguemonStreamer.notifyStreamer(msg) -- Commented out to prevent double popups
-            request.FulfillmentResult = msg
-        else
-            request.FulfillmentResult = string.format("Added %d subs to progress. Progress: %d/%d", subCount, RoguemonStreamer.settings.currentProgress, RoguemonStreamer.settings.cumulativeGoal)
-        end
+        request.FulfillmentResult = string.format("Added %d subs to progress. Progress: %d/%d", subCount, RoguemonStreamer.settings.currentProgress, RoguemonStreamer.settings.cumulativeGoal)
         if request.GUID then
             RoguemonStreamer.processedRequestGUIDs[request.GUID] = true
         end
@@ -2731,6 +2740,8 @@ function RoguemonStreamer.queueOrActivateNoGuardEvent(eventName, scale)
     local btlCount = 1
     if scale and scale >= 10 then
         btlCount = math.floor(scale / 2)
+    elseif scale and scale >= 5 and scale <= 9 then
+        btlCount = 2 -- Milestone 5: 2 battles fixed
     end
     if RoguemonStreamer.isChannelPointsExecution then
         btlCount = 1
@@ -3175,7 +3186,7 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
         local stat = statKeys[RoguemonStreamer.random(1, #statKeys)]
         local duration = scale
         if scale and scale >= 5 and scale <= 9 then
-            duration = 5
+            duration = 3 -- Milestone 5: 3 battles fixed
         end
         RoguemonStreamer.addStatBuff(stat, 1, duration)
         local statName = STAT_NAMES[stat] or stat
@@ -3212,8 +3223,18 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
         if stats and stats.spa > stats.atk then
             stat = "spa"
         end
-        local duration = math.floor(scale / 2)
-        if duration < 1 then duration = 1 end -- Safety fallback
+        local duration = 1
+        if scale and scale >= 50 then
+            duration = math.floor(scale / 2)
+        elseif scale and scale >= 20 then
+            duration = 5 -- Milestone 20: 5 battles
+        elseif scale and scale >= 10 then
+            duration = 3 -- Milestone 10: 3 battles
+        elseif scale and scale >= 5 then
+            duration = 2 -- Milestone 5: 2 battles
+        else
+            duration = 1
+        end
         if RoguemonStreamer.isChannelPointsExecution then
             duration = 1
         end
@@ -3303,7 +3324,11 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
     elseif eventName == "Omniboost" then
         local duration = 1
         if scale and scale >= 50 then
-            duration = math.floor(scale / 2)
+            duration = math.floor(scale / 2) -- Milestone 50: 25 battles
+        elseif scale and scale >= 20 then
+            duration = 4 -- Milestone 20: 4 battles
+        elseif scale and scale >= 10 then
+            duration = 2 -- Milestone 10: 2 battles
         end
         if RoguemonStreamer.isChannelPointsExecution then
             duration = 1
@@ -3777,10 +3802,12 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
         local btlCount = 1
         if scale and scale >= 50 then
             btlCount = math.floor(scale / 2)
+        elseif scale and scale >= 20 then
+            btlCount = 5 -- Milestone 20: 5 battles
         elseif scale and scale >= 10 then
-            btlCount = 10
+            btlCount = 3 -- Milestone 10: 3 battles
         elseif scale and scale >= 5 and scale <= 9 then
-            btlCount = 3
+            btlCount = 3 -- Milestone 5: 3 battles
         end
         
         local current = RoguemonStreamer.settings.persistent.gameChangerActive or 0
@@ -3793,10 +3820,12 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
         local btlCount = 1
         if scale and scale >= 50 then
             btlCount = math.floor(scale / 2)
+        elseif scale and scale >= 20 then
+            btlCount = 5 -- Milestone 20: 5 battles
         elseif scale and scale >= 10 then
-            btlCount = 10
+            btlCount = 3 -- Milestone 10: 3 battles
         elseif scale and scale >= 5 and scale <= 9 then
-            btlCount = 3
+            btlCount = 3 -- Milestone 5: 3 battles
         end
         
         local current = RoguemonStreamer.settings.persistent.tryHarderActive or 0
@@ -4094,7 +4123,7 @@ generateAbility = function(scale, isGood)
             totalWeight = totalWeight + entry.weight
         end
         if totalWeight > 0 then
-            local randVal = (math.random(1, 100000) / 100000) * totalWeight
+            local randVal = (RoguemonStreamer.random(1, 100000) / 100000) * totalWeight
             local currentSum = 0
             for _, entry in ipairs(pool) do
                 currentSum = currentSum + entry.weight
@@ -4332,8 +4361,6 @@ function RoguemonStreamer.executeNegativeEvent(eventName, scale)
     local detail = nil
     if eventName == "Inflict Status" or eventName == "Altera status" or eventName == "Inflict status" then
         -- Inflict Status (4:sleep, 8:poison, 16:burn, 32:freeze, 64:paralysis)
-        math.randomseed(os.time() + math.floor(os.clock() * 1000000) + math.random(100000))
-        for i = 1, 10 do math.random() end
         local statuses = { 4, 8, 16, 32, 64 } -- sleep, poison, burn, freeze, paralysis
         local randomStatus = statuses[RoguemonStreamer.random(#statuses)]
         local statusNames = { [4] = "Sleep", [8] = "Poison", [16] = "Burn", [32] = "Freeze", [64] = "Paralysis" }
@@ -4661,25 +4688,32 @@ function RoguemonStreamer.executeNegativeEvent(eventName, scale)
         local curHPOffset = GameSettings.pokemonCurHPOffset or 0x56
         local maxHPOffset = GameSettings.offsetPokemonStatsMaxHpAtk or 0x58
         local curHP = Memory.readword(partyAddress + curHPOffset)
-        local maxHP = Memory.readword(partyAddress + maxHPOffset)
         
         local dmgPercent = (scale == 1) and 5 or scale
         local hpDeductPercent = math.min(90, dmgPercent) / 100
-        local newHP = math.max(1, curHP - math.floor(maxHP * hpDeductPercent))
+        local damage = math.floor(curHP * hpDeductPercent)
+        local newHP = math.max(1, curHP - damage)
         Memory.writeword(partyAddress + curHPOffset, newHP)
         if battleMonsAddress ~= nil then
             local hpOffset = GameSettings.pokemonBattleHpOffset or 0x28
             Memory.writeword(battleMonsAddress + hpOffset, newHP)
         end
 
-        local duration
+        local duration = 1
         if RoguemonStreamer.isChannelPointsExecution then
             duration = 1
         elseif scale == 1 then
             duration = 1
+        elseif scale >= 50 then
+            duration = math.floor(scale / 2) -- Milestone 50: 25 battles
+        elseif scale >= 20 then
+            duration = 10 -- Milestone 20: 10 battles
+        elseif scale >= 10 then
+            duration = 5 -- Milestone 10: 5 battles
+        elseif scale >= 5 then
+            duration = 3 -- Milestone 5: 3 battles
         else
-            duration = math.floor(scale / 2)
-            if duration < 1 then duration = 1 end
+            duration = 1
         end
 
         local isAnyActive = RoguemonStreamer.isAnyNegativeEventActive()
@@ -4687,7 +4721,7 @@ function RoguemonStreamer.executeNegativeEvent(eventName, scale)
             p.queuedOverwhelmedCount = (p.queuedOverwhelmedCount or 0) + duration
             RoguemonStreamer.saveSettings()
             print(string.format("[RogueMon Streamer] Queued Overwhelmed: %d battles", duration))
-            detail = string.format("Overwhelmed ( -%d%% HP immediately, PP used +1 for %d battle%s )", dmgPercent, duration, duration == 1 and "" or "s")
+            detail = string.format("Overwhelmed ( -%d%% current HP, PP used +1 for %d battle%s )", dmgPercent, duration, duration == 1 and "" or "s")
         else
             local currentActive = p.overwhelmedActive or 0
             if type(currentActive) ~= "number" then currentActive = currentActive == true and 1 or 0 end
@@ -4695,7 +4729,7 @@ function RoguemonStreamer.executeNegativeEvent(eventName, scale)
             RoguemonStreamer.saveSettings()
             RoguemonStreamer.addAnimation(RoguemonStreamer.createBannerAnimation("OVERWHELMED", "FF0000", true))
             print(string.format("[RogueMon Streamer] Activated Overwhelmed: +1 PP used for %d battles", p.overwhelmedActive))
-            detail = string.format("Overwhelmed ( -%d%% HP, PP used +1 for %d battle%s )", dmgPercent, duration, duration == 1 and "" or "s")
+            detail = string.format("Overwhelmed ( -%d%% current HP, PP used +1 for %d battle%s )", dmgPercent, duration, duration == 1 and "" or "s")
         end
     elseif eventName == "Out of Control" then
         local turns = 3
@@ -4716,9 +4750,17 @@ function RoguemonStreamer.executeNegativeEvent(eventName, scale)
     elseif eventName == "Omnimalus" then
         local inBattle = Battle.inActiveBattle()
         local isAnyActive = RoguemonStreamer.isAnyNegativeEventActive()
-        local duration = 5
+        local duration = 1
         if scale and scale >= 50 then
             duration = math.floor(scale / 2)
+        elseif scale and scale >= 20 then
+            duration = 4 -- Milestone 20: 4 battles
+        elseif scale and scale >= 10 then
+            duration = 2 -- Milestone 10: 2 battles
+        elseif scale and scale >= 5 then
+            duration = 2 -- Milestone 5: 2 battles
+        else
+            duration = 1
         end
         if RoguemonStreamer.isChannelPointsExecution then
             duration = 1
@@ -7223,6 +7265,33 @@ function RoguemonStreamer.afterEachFrame()
         end
     end
 
+    -- Process pending cumulative events frame-by-frame when safe and no overlay/notification is active
+    if isGamePlaySafe() then
+        if RoguemonStreamer.ActiveLetsDanceRequest == nil and RoguemonStreamer.ActiveChoiceRequest == nil then
+            local ScreenManager = Roguemon and Roguemon.ScreenManager
+            if not ScreenManager or not ScreenManager.isNotificationActive() then
+                if RoguemonStreamer.settings and RoguemonStreamer.settings.currentProgress and RoguemonStreamer.settings.cumulativeGoal then
+                    if RoguemonStreamer.settings.currentProgress >= RoguemonStreamer.settings.cumulativeGoal then
+                        RoguemonStreamer.settings.currentProgress = RoguemonStreamer.settings.currentProgress - RoguemonStreamer.settings.cumulativeGoal
+                        
+                        local randVal = RoguemonStreamer.random(100)
+                        local outcome = (randVal <= RoguemonStreamer.settings.goodChance) and "Good" or "Bad"
+                        local eventNameCum
+                        if outcome == "Good" then
+                            eventNameCum = RoguemonStreamer.pickRandomEvent(POSITIVE_EVENTS_CUMULATIVE)
+                            RoguemonStreamer.executePositiveEvent(eventNameCum, 1)
+                        else
+                            eventNameCum = RoguemonStreamer.pickRandomEvent(NEGATIVE_EVENTS_CUMULATIVE)
+                            RoguemonStreamer.executeNegativeEvent(eventNameCum, 1)
+                        end
+                        RoguemonStreamer.settings.stats.totalEvents = RoguemonStreamer.settings.stats.totalEvents + 1
+                        RoguemonStreamer.saveSettings()
+                    end
+                end
+            end
+        end
+    end
+
     RoguemonStreamer.updateAndDrawAnimations()
 end
 
@@ -7529,7 +7598,6 @@ function RoguemonStreamer.simulateSubRedeem(eventName, isPositive, subCount)
 end
 
 function RoguemonStreamer.executeChoice(request, choice)
-    RoguemonStreamer.executePendingChannelPoints()
     local argsTable = request.Args or {}
     local subCount = tonumber(argsTable.SubCount) or 1
     
@@ -7550,28 +7618,25 @@ function RoguemonStreamer.executeChoice(request, choice)
     RoguemonStreamer.settings.stats.totalSubs = RoguemonStreamer.settings.stats.totalSubs + subCount
     RoguemonStreamer.settings.stats.totalEvents = RoguemonStreamer.settings.stats.totalEvents + 1
 
-    -- Process remaining cumulative subs now that choice has been made
-    if request.RemainingCumulative and request.RemainingCumulative > 0 then
-        RoguemonStreamer.settings.currentProgress = RoguemonStreamer.settings.currentProgress + request.RemainingCumulative
-        RoguemonStreamer.settings.stats.totalSubs = RoguemonStreamer.settings.stats.totalSubs + request.RemainingCumulative
-        
-        while RoguemonStreamer.settings.currentProgress >= RoguemonStreamer.settings.cumulativeGoal do
-            RoguemonStreamer.settings.currentProgress = RoguemonStreamer.settings.currentProgress - RoguemonStreamer.settings.cumulativeGoal
-            local randVal = RoguemonStreamer.random(100)
-            local outcome = (randVal <= RoguemonStreamer.settings.goodChance) and "Good" or "Bad"
-            local eventNameCum
-            if outcome == "Good" then
-                eventNameCum = RoguemonStreamer.pickRandomEvent(POSITIVE_EVENTS_CUMULATIVE)
-                RoguemonStreamer.executePositiveEvent(eventNameCum, 1)
-            else
-                eventNameCum = RoguemonStreamer.pickRandomEvent(NEGATIVE_EVENTS_CUMULATIVE)
-                RoguemonStreamer.executeNegativeEvent(eventNameCum, 1)
-            end
-            RoguemonStreamer.settings.stats.totalEvents = RoguemonStreamer.settings.stats.totalEvents + 1
+    if request.IsSplitDoubleMilestone == 1 then
+        request.IsSplitDoubleMilestone = 2
+        request.Choice = nil
+        if request.Args then
+            request.Args.Choice = nil
+        end
+        RoguemonStreamer.saveSettings()
+        print("[RogueMon Streamer] Completed first of two Milestone 20 events. Transitioned to second.")
+    else
+        if request.RemainingCumulative and request.RemainingCumulative > 0 then
+            RoguemonStreamer.settings.currentProgress = RoguemonStreamer.settings.currentProgress + request.RemainingCumulative
+            RoguemonStreamer.settings.stats.totalSubs = RoguemonStreamer.settings.stats.totalSubs + request.RemainingCumulative
+        end
+        RoguemonStreamer.saveSettings()
+        if request.IsSplitDoubleMilestone == 2 then
+            print("[RogueMon Streamer] Completed second of two Milestone 20 events. Added cumulative: " .. tostring(request.RemainingCumulative))
+            request.IsSplitDoubleMilestone = nil
         end
     end
-
-    RoguemonStreamer.saveSettings()
 
     local displayName = eventName
     if eventName == "Altera status" or eventName == "Inflict status" or eventName == "Inflict Status" then
