@@ -303,7 +303,7 @@ local function pickPositiveMilestoneEvent(subCount)
     local leadMon = Battle.getViewedPokemon(true)
     local isFiltered = false
     if leadMon and leadMon.personality then
-        local phex = string.format("0x%X", leadMon.personality)
+        local phex = string.format("0x%X_%d", leadMon.personality, leadMon.pokemonID or 0)
         if RoguemonStreamer.settings.persistent.evolutionFilteredPids and RoguemonStreamer.settings.persistent.evolutionFilteredPids[phex] then
             isFiltered = true
         end
@@ -963,10 +963,10 @@ end
 function RoguemonStreamer.random(min, max)
     local val = lcg_random()
     if max == nil then
-        return (val % min) + 1
+        return math.floor((val / 2147483648) * min) + 1
     else
         local range = max - min + 1
-        return (val % range) + min
+        return math.floor((val / 2147483648) * range) + min
     end
 end
 
@@ -1379,6 +1379,10 @@ function RoguemonStreamer.loadSettings()
         RoguemonStreamer.settings.persistent.queuedStatuses = RoguemonStreamer.settings.persistent.queuedStatuses or {}
         RoguemonStreamer.settings.persistent.queuedOutOfControlTurns = RoguemonStreamer.settings.persistent.queuedOutOfControlTurns or 0
         RoguemonStreamer.settings.persistent.queuedOverwhelmedCount = RoguemonStreamer.settings.persistent.queuedOverwhelmedCount or 0
+        RoguemonStreamer.settings.persistent.hpCapBoost = RoguemonStreamer.settings.persistent.hpCapBoost or 0
+        RoguemonStreamer.settings.persistent.statusCapBoost = RoguemonStreamer.settings.persistent.statusCapBoost or 0
+        RoguemonStreamer.settings.persistent.lastAppliedHpBoost = RoguemonStreamer.settings.persistent.lastAppliedHpBoost or RoguemonStreamer.settings.persistent.hpCapBoost
+        RoguemonStreamer.settings.persistent.lastAppliedStatusBoost = RoguemonStreamer.settings.persistent.lastAppliedStatusBoost or RoguemonStreamer.settings.persistent.statusCapBoost
         RoguemonStreamer.settings.persistent.evolutionFilteredPids = RoguemonStreamer.settings.persistent.evolutionFilteredPids or {}
         RoguemonStreamer.settings.persistent.pendingRemovals = RoguemonStreamer.settings.persistent.pendingRemovals or {
             healing = 0,
@@ -1413,6 +1417,8 @@ function RoguemonStreamer.loadSettings()
             persistent = {
                 hpCapBoost = 0,
                 statusCapBoost = 0,
+                lastAppliedHpBoost = 0,
+                lastAppliedStatusBoost = 0,
                 statBuffs = {},
                 outOfControlTurns = 0,
                 queuedOutOfControlTurns = 0,
@@ -3348,7 +3354,7 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
         local leadMon = Battle.getViewedPokemon(true)
         local alreadyFiltered = false
         if leadMon and leadMon.personality then
-            local phex = string.format("0x%X", leadMon.personality)
+            local phex = string.format("0x%X_%d", leadMon.personality, leadMon.pokemonID or 0)
             if RoguemonStreamer.settings.persistent.evolutionFilteredPids and RoguemonStreamer.settings.persistent.evolutionFilteredPids[phex] then
                 alreadyFiltered = true
             end
@@ -3478,7 +3484,7 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
                     
                     -- Record successful application to prevent future reruns
                     if leadMon and leadMon.personality then
-                        local phex = string.format("0x%X", leadMon.personality)
+                        local phex = string.format("0x%X_%d", leadMon.personality, leadMon.pokemonID or 0)
                         RoguemonStreamer.settings.persistent.evolutionFilteredPids = RoguemonStreamer.settings.persistent.evolutionFilteredPids or {}
                         RoguemonStreamer.settings.persistent.evolutionFilteredPids[phex] = true
                         RoguemonStreamer.saveSettings()
@@ -3540,7 +3546,7 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
         local leadMon = Battle.getViewedPokemon(true)
         local alreadyFiltered = false
         if leadMon and leadMon.personality then
-            local phex = string.format("0x%X", leadMon.personality)
+            local phex = string.format("0x%X_%d", leadMon.personality, leadMon.pokemonID or 0)
             if RoguemonStreamer.settings.persistent.evolutionFilteredPids and RoguemonStreamer.settings.persistent.evolutionFilteredPids[phex] then
                 alreadyFiltered = true
             end
@@ -3555,13 +3561,17 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
                 local options = PokemonRevoData.getEvoOptions(pokemonID)
                 local hasFiltered = false
                 
-                -- Determine viewed species base stats to check offensive profile
+                -- Determine viewed species base stats to check offensive profile and stats upgrades
                 local baseAtk = 0
                 local baseSpa = 0
+                local baseHp = 0
+                local baseSpe = 0
                 local pkData = PokemonData.Pokemon[pokemonID]
                 if pkData and pkData.baseStats then
+                    baseHp = pkData.baseStats.hp or 0
                     baseAtk = pkData.baseStats.atk or 0
                     baseSpa = pkData.baseStats.spa or 0
+                    baseSpe = pkData.baseStats.spe or 0
                 end
                 
                 local P_isPhysical = true
@@ -3570,6 +3580,7 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
                 elseif leadMon.stats and leadMon.stats.atk and leadMon.stats.spa then
                     P_isPhysical = (leadMon.stats.atk >= leadMon.stats.spa)
                 end
+                local myMainAtk = P_isPhysical and baseAtk or baseSpa
                 
                 local function filterDarwinEvoList(evoList)
                     if not evoList or #evoList == 0 then return false end
@@ -3580,6 +3591,7 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
                         if entry.id then
                             local cData = PokemonData.Pokemon[entry.id]
                             local bst = 0
+                            local cHp = 0
                             local cAtk = 0
                             local cSpa = 0
                             local cDef = 0
@@ -3589,6 +3601,7 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
                             if cData then
                                 bst = tonumber(cData.bst) or cData.bstCalculated or 0
                                 if cData.baseStats then
+                                    cHp = cData.baseStats.hp or 0
                                     cAtk = cData.baseStats.atk or 0
                                     cSpa = cData.baseStats.spa or 0
                                     cDef = cData.baseStats.def or 0
@@ -3607,6 +3620,7 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
                                 id = entry.id,
                                 perc = entry.perc or 0,
                                 bst = bst,
+                                hp = cHp,
                                 atk = cAtk,
                                 spa = cSpa,
                                 def = cDef,
@@ -3620,27 +3634,35 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
                     
                     if #tempList == 0 then return false end
                     
-                    -- Calculate Darwinian Score for each candidate
+                    -- Calculate Darwinian Score for each candidate:
+                    -- Focus strictly on maximizing HP, main Attack, and Speed, completely ignoring Defenses.
+                    -- Also apply flexible upgrade priority bonuses:
                     for _, cand in ipairs(tempList) do
-                        local score = cand.bst
+                        local candMainAtk = P_isPhysical and cand.atk or cand.spa
+                        local score = cand.bst + cand.hp + candMainAtk + cand.spe
                         
                         -- Offensive Profile check
                         if matchCount > 0 and not cand.matchesProfile then
                             score = score - 10000
                         end
                         
-                        -- Speed preference
-                        score = score + cand.spe
+                        -- Check upgrade profile
+                        local hpUpgrade = (cand.hp > baseHp)
+                        local atkUpgrade = (candMainAtk > myMainAtk)
+                        local speUpgrade = (cand.spe > baseSpe)
+                        local upgradesCount = (hpUpgrade and 1 or 0) + (atkUpgrade and 1 or 0) + (speUpgrade and 1 or 0)
+                        local sumUpgrade = (cand.hp + candMainAtk + cand.spe) > (baseHp + myMainAtk + baseSpe)
                         
-                        -- Defense balance
-                        local defDiff = math.abs(cand.def - cand.spd)
-                        score = score - (defDiff * 1.5)
-                        
-                        -- Low defense limit penalty
-                        local lowDefPenalty = 0
-                        if cand.def < 50 then lowDefPenalty = lowDefPenalty + (50 - cand.def) * 4 end
-                        if cand.spd < 50 then lowDefPenalty = lowDefPenalty + (50 - cand.spd) * 4 end
-                        score = score - lowDefPenalty
+                        if upgradesCount == 3 then
+                            -- Strict Upgrade: HP, Attack, and Speed are all strictly greater
+                            score = score + 5000
+                        elseif upgradesCount >= 2 or sumUpgrade then
+                            -- Partial Upgrade: at least 2 stats are greater, or the sum of the 3 stats is greater
+                            score = score + 2000
+                        else
+                            -- Downgrade: heavily penalize candidates that are mostly inferior
+                            score = score - 5000
+                        end
                         
                         cand.score = score
                     end
@@ -3740,7 +3762,7 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
                     
                     -- Record successful application to prevent future reruns
                     if leadMon and leadMon.personality then
-                        local phex = string.format("0x%X", leadMon.personality)
+                        local phex = string.format("0x%X_%d", leadMon.personality, leadMon.pokemonID or 0)
                         RoguemonStreamer.settings.persistent.evolutionFilteredPids = RoguemonStreamer.settings.persistent.evolutionFilteredPids or {}
                         RoguemonStreamer.settings.persistent.evolutionFilteredPids[phex] = true
                         RoguemonStreamer.saveSettings()
@@ -5897,6 +5919,12 @@ function RoguemonStreamer.changePokemonPersonality(partyIndex, targetNature, tar
     Memory.writeword(partyAddress + 28, cs)
     print(string.format("[RogueMon Streamer] - Personality modification complete. Checksum written: 0x%X", cs))
 
+    if targetNature then
+        -- Clear any active Nature Mints (bits 3-7 of language byte at 0x12) to prevent double application
+        local langByte = Memory.readbyte(partyAddress + 0x12)
+        Memory.writebyte(partyAddress + 0x12, langByte % 8)
+    end
+
     -- Migrate altered types and abilities if personality changed
     if newPID ~= oldPID then
         local oldHex = string.format("0x%X", oldPID)
@@ -6566,15 +6594,34 @@ function RoguemonStreamer.afterEachFrame()
     wrapGetEffectiveness()
     wrapCheckForGameOver()
 
+    -- Helper to check if the action selection menu is open (excluding FireRed specific hardcoded RAM checks)
+    local function isMenuOpen()
+        if not Battle.inActiveBattle() then
+            return false
+        end
+        -- Delay check during battle transition to avoid premature frame-1 trigger
+        -- when gBattleMainFunc holds the pointer from the previous battle's final frame.
+        if (RoguemonStreamer.battleFrameCount or 0) < 60 then
+            return false
+        end
+        if not GameSettings.gBattleMainFunc or not GameSettings.HandleTurnActionSelectionState then
+            return false
+        end
+        local mainFunc = Memory.readdword(GameSettings.gBattleMainFunc)
+        local target = GameSettings.HandleTurnActionSelectionState
+        return (math.floor(mainFunc / 2) == math.floor(target / 2))
+            or (math.floor(mainFunc / 2) == math.floor(0x806D17C / 2))
+    end
+
     -- Apply custom abilities in GBA battle RAM for all active player battlers
-    if Battle.inActiveBattle() and isActionSelectionPhaseActive() and RoguemonStreamer.settings and RoguemonStreamer.settings.alteredAbilities then
+    if Battle.inActiveBattle() and (RoguemonStreamer.battleTurnCount or 0) == 0 and RoguemonStreamer.settings and RoguemonStreamer.settings.alteredAbilities then
         RoguemonStreamer.appliedBattleAbilities = RoguemonStreamer.appliedBattleAbilities or {}
         local slots = { Battle.Combatants.LeftOwn }
         if Battle.numBattlers == 4 then
             table.insert(slots, Battle.Combatants.RightOwn)
         end
         for _, slotIdx in ipairs(slots) do
-            if slotIdx and slotIdx >= 1 and slotIdx <= 6 and not RoguemonStreamer.appliedBattleAbilities[slotIdx] then
+            if slotIdx and slotIdx >= 1 and slotIdx <= 6 then
                 local bAddr = getBattleMonsAddress(slotIdx)
                 if bAddr then
                     local mon = Tracker.getPokemon(slotIdx, true)
@@ -6584,9 +6631,13 @@ function RoguemonStreamer.afterEachFrame()
                         if altered then
                             local abilityOffset = RoguemonStreamer.getBattleAbilityOffset()
                             Memory.writeword(bAddr + abilityOffset, altered)
-                            logDebug(string.format("[RogueMon Streamer] Applied custom ability in Battle RAM for slot %d: %d", slotIdx, altered))
+                            if not RoguemonStreamer.appliedBattleAbilities[slotIdx] then
+                                logDebug(string.format("[RogueMon Streamer] Applied custom ability in Battle RAM for slot %d: %d", slotIdx, altered))
+                                RoguemonStreamer.appliedBattleAbilities[slotIdx] = true
+                            end
+                        else
+                            RoguemonStreamer.appliedBattleAbilities[slotIdx] = true
                         end
-                        RoguemonStreamer.appliedBattleAbilities[slotIdx] = true
                     end
                 end
             end
@@ -6594,16 +6645,16 @@ function RoguemonStreamer.afterEachFrame()
     end
 
     -- Apply permanent type changes in GBA battle RAM for all active player battlers.
-    -- Write as soon as Battle.dataReady (not waiting for action selection) to ensure
-    -- the altered type is in RAM before any move immunity check occurs.
-    if Battle.inActiveBattle() and (Battle.dataReady or isActionSelectionPhaseActive()) and RoguemonStreamer.settings and RoguemonStreamer.settings.alteredTypes then
+    -- Write only when the action selection menu is open to ensure the GBA engine's
+    -- send-out copy operation has finished, preserving priority for mid-battle modifications (e.g. Soak).
+    if Battle.inActiveBattle() and (RoguemonStreamer.battleTurnCount or 0) == 0 and RoguemonStreamer.settings and RoguemonStreamer.settings.alteredTypes then
         RoguemonStreamer.appliedAlteredTypes = RoguemonStreamer.appliedAlteredTypes or {}
         local slots = { Battle.Combatants.LeftOwn }
         if Battle.numBattlers == 4 then
             table.insert(slots, Battle.Combatants.RightOwn)
         end
         for _, slotIdx in ipairs(slots) do
-            if slotIdx and slotIdx >= 1 and slotIdx <= 6 and not RoguemonStreamer.appliedAlteredTypes[slotIdx] then
+            if slotIdx and slotIdx >= 1 and slotIdx <= 6 then
                 local bAddr = getBattleMonsAddress(slotIdx)
                 if bAddr then
                     local mon = Tracker.getPokemon(slotIdx, true)
@@ -6615,15 +6666,12 @@ function RoguemonStreamer.afterEachFrame()
                             local battleSlot = RoguemonStreamer.getBattleSlot(slotIdx)
                             if battleSlot ~= nil then
                                 RoguemonStreamer.writeAlteredTypesToBattle(battleSlot, t1, t2)
-                                logDebug(string.format("[RogueMon Streamer] Applied permanent altered types in Battle RAM for slot %d: %d/%d", slotIdx, t1, t2))
-                                -- Only mark as applied if the write actually succeeded.
-                                -- If battleSlot was nil we do NOT set the flag, so we retry next frame.
-                                RoguemonStreamer.appliedAlteredTypes[slotIdx] = true
-                            else
-                                logDebug(string.format("[RogueMon Streamer] battleSlot nil for slotIdx %d — will retry next frame", slotIdx))
+                                if not RoguemonStreamer.appliedAlteredTypes[slotIdx] then
+                                    logDebug(string.format("[RogueMon Streamer] Applied permanent altered types in Battle RAM for slot %d: %d/%d", slotIdx, t1, t2))
+                                    RoguemonStreamer.appliedAlteredTypes[slotIdx] = true
+                                end
                             end
                         else
-                            -- No altered type for this mon — nothing to write, mark done anyway
                             RoguemonStreamer.appliedAlteredTypes[slotIdx] = true
                         end
                     end
@@ -6646,10 +6694,20 @@ function RoguemonStreamer.afterEachFrame()
         RoguemonStreamer.appliedAlteredTypes = {}
         RoguemonStreamer.trickRoomToggledOff = false
         RoguemonStreamer.battleIntroFinished = false
+        RoguemonStreamer.battleFrameCount = 0
+        RoguemonStreamer.battleTurnCount = 0
+        RoguemonStreamer.wasMenuOpen = false
     else
+        RoguemonStreamer.battleFrameCount = (RoguemonStreamer.battleFrameCount or 0) + 1
         if isActionSelectionPhaseActive() then
             RoguemonStreamer.battleIntroFinished = true
         end
+
+        local menuOpen = isMenuOpen()
+        if RoguemonStreamer.wasMenuOpen and not menuOpen then
+            RoguemonStreamer.battleTurnCount = (RoguemonStreamer.battleTurnCount or 0) + 1
+        end
+        RoguemonStreamer.wasMenuOpen = menuOpen
     end
 
     if inBattle and Battle.dataReady and not RoguemonStreamer.queuedBattleEventsChecked then
@@ -6708,6 +6766,8 @@ function RoguemonStreamer.afterEachFrame()
             if RoguemonStreamer.appliedAlteredTypes then
                 RoguemonStreamer.appliedAlteredTypes[RoguemonStreamer.prevActiveIdx] = nil
             end
+            RoguemonStreamer.battleTurnCount = 0
+            RoguemonStreamer.wasMenuOpen = false
         end
         RoguemonStreamer.prevActiveIdx = activeIdx
 
@@ -7250,7 +7310,7 @@ function RoguemonStreamer.afterEachFrame()
             end
 
             -- Clean up Out of Control if it was a Channel Point event (1 battle only)
-            if RoguemonStreamer.settings.persistent.outOfControlCP and not wasEscape then
+            if RoguemonStreamer.settings.persistent.outOfControlCP and RoguemonStreamer.lastBattleOutcome and not wasEscape then
                 RoguemonStreamer.settings.persistent.outOfControlTurns = 0
                 RoguemonStreamer.settings.persistent.queuedOutOfControlTurns = 0
                 RoguemonStreamer.settings.persistent.outOfControlCP = nil
@@ -7308,6 +7368,8 @@ function RoguemonStreamer.syncCapModifiers()
                 print("[RogueMon Streamer] New run detected (TrainerID changed and stable). Resetting persistent Twitch boosts.")
                 RoguemonStreamer.settings.persistent.hpCapBoost = 0
                 RoguemonStreamer.settings.persistent.statusCapBoost = 0
+                RoguemonStreamer.settings.persistent.lastAppliedHpBoost = 0
+                RoguemonStreamer.settings.persistent.lastAppliedStatusBoost = 0
                 RoguemonStreamer.settings.persistent.statBuffs = {}
                 RoguemonStreamer.settings.persistent.outOfControlTurns = 0
                 RoguemonStreamer.settings.persistent.pendingRemovals = {
@@ -7347,24 +7409,20 @@ function RoguemonStreamer.syncCapModifiers()
     if segState then
         local hpBoost = RoguemonStreamer.settings.persistent.hpCapBoost or 0
         local statusBoost = RoguemonStreamer.settings.persistent.statusCapBoost or 0
+        local lastAppliedHp = RoguemonStreamer.settings.persistent.lastAppliedHpBoost or 0
+        local lastAppliedStatus = RoguemonStreamer.settings.persistent.lastAppliedStatusBoost or 0
         
-        local currentModHp = segState.hpCapModifier or 0
-        local currentModStatus = segState.statusCapModifier or 0
-
-        local deltaHp = hpBoost - currentModHp
-        local deltaStatus = statusBoost - currentModStatus
-
-        if deltaHp ~= 0 or deltaStatus ~= 0 then
-            print(string.format("[RogueMon Streamer] Cap Sync: Target HP=%d, RAM HP=%d, Delta HP=%d", hpBoost, currentModHp, deltaHp))
-            print(string.format("[RogueMon Streamer] Cap Sync: Target Status=%d, RAM Status=%d, Delta Status=%d", statusBoost, currentModStatus, deltaStatus))
-        end
+        local deltaHp = hpBoost - lastAppliedHp
+        local deltaStatus = statusBoost - lastAppliedStatus
 
         local adjustedAny = false
         if deltaHp ~= 0 then
             if Roguemon.SegmentManager and Roguemon.SegmentManager.adjustHpCapModifier then
-                print(string.format("[RogueMon Streamer] Cap Sync: Adjusting HP Cap Modifier by %d", deltaHp))
+                print(string.format("[RogueMon Streamer] Cap Sync: Applying delta HP boost of %d (Twitch Target: %d, Last Applied: %d)", deltaHp, hpBoost, lastAppliedHp))
                 if Roguemon.SegmentManager.adjustHpCapModifier(deltaHp) then
                     print("[RogueMon Streamer] Cap Sync: HP adjustment SUCCESS")
+                    RoguemonStreamer.settings.persistent.lastAppliedHpBoost = hpBoost
+                    RoguemonStreamer.saveSettings()
                     adjustedAny = true
                 else
                     print("[RogueMon Streamer] Cap Sync: HP adjustment FAILED")
@@ -7373,9 +7431,11 @@ function RoguemonStreamer.syncCapModifiers()
         end
         if deltaStatus ~= 0 then
             if Roguemon.SegmentManager and Roguemon.SegmentManager.adjustStatusCapModifier then
-                print(string.format("[RogueMon Streamer] Cap Sync: Adjusting Status Cap Modifier by %d", deltaStatus))
+                print(string.format("[RogueMon Streamer] Cap Sync: Applying delta Status boost of %d (Twitch Target: %d, Last Applied: %d)", deltaStatus, statusBoost, lastAppliedStatus))
                 if Roguemon.SegmentManager.adjustStatusCapModifier(deltaStatus) then
                     print("[RogueMon Streamer] Cap Sync: Status adjustment SUCCESS")
+                    RoguemonStreamer.settings.persistent.lastAppliedStatusBoost = statusBoost
+                    RoguemonStreamer.saveSettings()
                     adjustedAny = true
                 else
                     print("[RogueMon Streamer] Cap Sync: Status adjustment FAILED")

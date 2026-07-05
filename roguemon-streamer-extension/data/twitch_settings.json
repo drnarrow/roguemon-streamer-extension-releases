@@ -25,8 +25,6 @@
     "statusCapBoost": 0,
     "outOfControlTurns": 0,
     "queuedOutOfControlTurns": 0,
-    "mystificationActive": 0,
-    "mystificationApplied": false,
     "queuedOverwhelmedCount": 0,
     "queuedOmnimalusCount": 0,
     "queuedDisableTurns": [],
