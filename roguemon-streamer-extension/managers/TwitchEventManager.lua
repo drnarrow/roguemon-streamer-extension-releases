@@ -5860,7 +5860,7 @@ function RoguemonStreamer.changePokemonPersonality(partyIndex, targetNature, tar
     local newPID = oldPID
     if targetNature then
         -- Find a new PID that satisfies:
-        -- 1. newPID % 25 == targetNature
+        -- 1. newPID % 25 == 0 (force base nature to Hardy/neutral to prevent ROM double-multiplier bug)
         -- 2. newPID % 24 == oldPID % 24 (preserves substructure order)
         -- 3. preserves gender
         local oldPIDMod24 = oldPID % 24
@@ -5869,7 +5869,7 @@ function RoguemonStreamer.changePokemonPersonality(partyIndex, targetNature, tar
         -- Search forwards
         for attempt = 1, 50000 do
             local pidCandidate = oldPID + attempt
-            if pidCandidate % 24 == oldPIDMod24 and pidCandidate % 25 == targetNature then
+            if pidCandidate % 24 == oldPIDMod24 and pidCandidate % 25 == 0 then
                 if MiscData.getMonGender(species, pidCandidate) == oldGender then
                     newPID = pidCandidate
                     found = true
@@ -5882,7 +5882,7 @@ function RoguemonStreamer.changePokemonPersonality(partyIndex, targetNature, tar
         if not found then
             for attempt = 1, 50000 do
                 local pidCandidate = oldPID - attempt
-                if pidCandidate >= 0 and pidCandidate % 24 == oldPIDMod24 and pidCandidate % 25 == targetNature then
+                if pidCandidate >= 0 and pidCandidate % 24 == oldPIDMod24 and pidCandidate % 25 == 0 then
                     if MiscData.getMonGender(species, pidCandidate) == oldGender then
                         newPID = pidCandidate
                         found = true
@@ -5893,7 +5893,7 @@ function RoguemonStreamer.changePokemonPersonality(partyIndex, targetNature, tar
         end
 
         if found then
-            print(string.format("[RogueMon Streamer] - Found new PID: 0x%X (Nature: %d, order %d matches old %d)", newPID, targetNature, newPID % 24, oldPIDMod24))
+            print(string.format("[RogueMon Streamer] - Found new neutral base PID: 0x%X (Nature: Hardy, order %d matches old %d)", newPID, newPID % 24, oldPIDMod24))
         else
             print("[RogueMon Streamer] - Warning: Could not find new PID matching all criteria. Nature change skipped to prevent corruption.")
         end
@@ -5920,9 +5920,9 @@ function RoguemonStreamer.changePokemonPersonality(partyIndex, targetNature, tar
     print(string.format("[RogueMon Streamer] - Personality modification complete. Checksum written: 0x%X", cs))
 
     if targetNature then
-        -- Clear any active Nature Mints (bits 3-7 of language byte at 0x12) to prevent double application
+        -- Set dynamic nature mint modifier (bits 3-7 of language byte at 0x12) to targetNature
         local langByte = Memory.readbyte(partyAddress + 0x12)
-        Memory.writebyte(partyAddress + 0x12, langByte % 8)
+        Memory.writebyte(partyAddress + 0x12, (langByte % 8) + targetNature * 8)
     end
 
     -- Migrate altered types and abilities if personality changed
