@@ -513,6 +513,19 @@ local generateAbility
 local generateTyping
 local isActionSelectionPhaseActive
 
+local function isTraceAbility(abilityId)
+    if not abilityId or abilityId <= 0 then return false end
+    if abilityId == 36 then return true end
+    local ability = AbilityData.Abilities[abilityId]
+    if ability and ability.name then
+        local cleanName = ability.name:lower():gsub("%s+", ""):gsub("%-+", "")
+        if cleanName == "trace" or cleanName == "traccia" then
+            return true
+        end
+    end
+    return false
+end
+
 function RoguemonStreamer.resetRunState(isSilent)
     RoguemonStreamer.outcomeWatchRegistered = nil
     RoguemonStreamer.lastBattleOutcome = nil
@@ -1195,22 +1208,25 @@ local function readAbilityPools(filepath)
             local abilityName = fields[1]
             if abilityName and abilityName ~= "" and abilityName ~= "Name" then
                 abilityName = abilityName:gsub("^%s*(.-)%s*$", "%1") -- Trim
-                for _, colName in ipairs(poolColumns) do
-                    local idx = columns[colName]
-                    if idx then
-                        local val = fields[idx]
-                        if val then
-                            val = val:gsub("^%s*(.-)%s*$", "%1") -- Trim
-                            if val ~= "" then
-                                local entry = { name = abilityName }
-                                if val:lower() == "x" then
-                                    entry.isX = true
-                                    table.insert(poolCandidates[colName], entry)
-                                else
-                                    local pct = tonumber(string.match(val, "([%d%.]+)%%"))
-                                    if pct then
-                                        entry.explicitPct = pct
+                local clean = abilityName:lower():gsub("%s+", ""):gsub("%-+", "")
+                if clean ~= "trace" and clean ~= "traccia" then
+                    for _, colName in ipairs(poolColumns) do
+                        local idx = columns[colName]
+                        if idx then
+                            local val = fields[idx]
+                            if val then
+                                val = val:gsub("^%s*(.-)%s*$", "%1") -- Trim
+                                if val ~= "" then
+                                    local entry = { name = abilityName }
+                                    if val:lower() == "x" then
+                                        entry.isX = true
                                         table.insert(poolCandidates[colName], entry)
+                                    else
+                                        local pct = tonumber(string.match(val, "([%d%.]+)%%"))
+                                        if pct then
+                                            entry.explicitPct = pct
+                                            table.insert(poolCandidates[colName], entry)
+                                        end
                                     end
                                 end
                             end
@@ -1226,6 +1242,9 @@ local function readAbilityPools(filepath)
 
     local function findAbilityId(name)
         local cleanTarget = name:lower():gsub("%s+", ""):gsub("%-+", "")
+        if cleanTarget == "trace" or cleanTarget == "traccia" then
+            return nil
+        end
         for id = 1, AbilityData.getTotal() do
             local ability = AbilityData.Abilities[id]
             if ability and ability.name then
@@ -1767,7 +1786,7 @@ function RoguemonStreamer.executeRandomChange(changeType, scale)
             
             local maxAbilityId = #AbilityData.Abilities
             local newAbilityId = RoguemonStreamer.random(1, maxAbilityId)
-            while not AbilityData.Abilities[newAbilityId] or AbilityData.Abilities[newAbilityId].name == "???" or AbilityData.Abilities[newAbilityId].name == "None" or AbilityData.Abilities[newAbilityId].name == "" do
+            while not AbilityData.Abilities[newAbilityId] or AbilityData.Abilities[newAbilityId].name == "???" or AbilityData.Abilities[newAbilityId].name == "None" or AbilityData.Abilities[newAbilityId].name == "" or isTraceAbility(newAbilityId) do
                 newAbilityId = RoguemonStreamer.random(1, maxAbilityId)
             end
             
@@ -4127,6 +4146,7 @@ generateAbility = function(scale, isGood)
         RoguemonStreamer.loadAbilityPools()
     end
 
+    local chosenId = nil
     local tier = 5
     if scale >= 50 then
         tier = 50
@@ -4150,90 +4170,105 @@ generateAbility = function(scale, isGood)
             for _, entry in ipairs(pool) do
                 currentSum = currentSum + entry.weight
                 if randVal <= currentSum then
-                    return entry.id
+                    chosenId = entry.id
+                    break
                 end
             end
-            return pool[#pool].id
+            if not chosenId then
+                chosenId = pool[#pool].id
+            end
         end
     end
 
-    -- Fallback to vanilla lists if pool is empty or failed to load
-    local detrimentals = { "Truant", "Slow Start", "Defeatist", "Klutz", "Stall", "Normalize" }
-    local neutrals = {
-        "Run Away", "Honey Gather", "Illuminate", "Ball Fetch", "Forecast",
-        "Minus", "Plus", "Receiver", "Telepathy", "Symbiosis"
-    }
-    local ops = {
-        "Huge Power", "Pure Power", "Wonder Guard", "Speed Boost", "Magic Guard",
-        "Fur Coat", "Ice Scales", "Contrary", "Regenerator", "Simple",
-        "Parental Bond", "As One-SR", "As One-IR", "Chilling Neigh", "Grim Neigh",
-        "Moxie", "Soul-Heart", "Beast Boost", "Intrepid Sword", "Dauntless Shield",
-        "Sword of Ruin", "Beads of Ruin", "Libero", "Protean", "Unaware",
-        "Gale Wings", "Adaptability", "Prankster", "Gorilla Tactics",
-        -- Type Immunities
-        "Levitate", "Flash Fire", "Volt Absorb", "Water Absorb", "Dry Skin",
-        "Storm Drain", "Sap Sipper", "Motor Drive", "Earth Eater", "Well-Baked Body",
-        "Lightning Rod",
-        -- Type Converters (-ate / -ize)
-        "Pixilate", "Aerilate", "Refrigerate", "Galvanize"
-    }
-    local goods = {
-        "Levitate", "Guts", "Technician", "Swift Swim", "Poison Heal",
-        "Toxic Boost", "Quick Feet", "Sheer Force", "Tough Claws", "Sharpness",
-        "Strong Jaw", "Mega Launcher", "Iron Fist", "Multiscale", "Shadow Shield",
-        "Marvel Scale", "Natural Cure", "Sturdy", "Serene Grace", "Clear Body",
-        "White Smoke", "Hyper Cutter", "Infiltrator", "Compound Eyes", "Defiant",
-        "Competitive", "Justified", "Sap Sipper", "Motor Drive", "Volt Absorb",
-        "Lightning Rod", "Flash Fire", "Water Absorb", "Dry Skin", "Storm Drain",
-        "Rain Dish", "Shed Skin", "Overgrow", "Blaze", "Torrent", "Shield Dust",
-        "Scrappy", "Inner Focus", "Tinted Lens", "Super Luck", "Reckless",
-        "Rock Head", "Sand Stream", "Drizzle", "Drought", "Snow Warning", "Cloud Nine",
-        "Pickup", "Damp", "Anticipation", "Forewarn", "Frisk", "Keen Eye",
-        "Steadfast", "Big Pecks", "Gluttony", "Oblivious"
-    }
+    if not chosenId then
+        -- Fallback to vanilla lists if pool is empty or failed to load
+        local detrimentals = { "Truant", "Slow Start", "Defeatist", "Klutz", "Stall", "Normalize" }
+        local neutrals = {
+            "Run Away", "Honey Gather", "Illuminate", "Ball Fetch", "Forecast",
+            "Minus", "Plus", "Receiver", "Telepathy", "Symbiosis"
+        }
+        local ops = {
+            "Huge Power", "Pure Power", "Wonder Guard", "Speed Boost", "Magic Guard",
+            "Fur Coat", "Ice Scales", "Contrary", "Regenerator", "Simple",
+            "Parental Bond", "As One-SR", "As One-IR", "Chilling Neigh", "Grim Neigh",
+            "Moxie", "Soul-Heart", "Beast Boost", "Intrepid Sword", "Dauntless Shield",
+            "Sword of Ruin", "Beads of Ruin", "Libero", "Protean", "Unaware",
+            "Gale Wings", "Adaptability", "Prankster", "Gorilla Tactics",
+            -- Type Immunities
+            "Levitate", "Flash Fire", "Volt Absorb", "Water Absorb", "Dry Skin",
+            "Storm Drain", "Sap Sipper", "Motor Drive", "Earth Eater", "Well-Baked Body",
+            "Lightning Rod",
+            -- Type Converters (-ate / -ize)
+            "Pixilate", "Aerilate", "Refrigerate", "Galvanize"
+        }
+        local goods = {
+            "Levitate", "Guts", "Technician", "Swift Swim", "Poison Heal",
+            "Toxic Boost", "Quick Feet", "Sheer Force", "Tough Claws", "Sharpness",
+            "Strong Jaw", "Mega Launcher", "Iron Fist", "Multiscale", "Shadow Shield",
+            "Marvel Scale", "Natural Cure", "Sturdy", "Serene Grace", "Clear Body",
+            "White Smoke", "Hyper Cutter", "Infiltrator", "Compound Eyes", "Defiant",
+            "Competitive", "Justified", "Sap Sipper", "Motor Drive", "Volt Absorb",
+            "Lightning Rod", "Flash Fire", "Water Absorb", "Dry Skin", "Storm Drain",
+            "Rain Dish", "Shed Skin", "Overgrow", "Blaze", "Torrent", "Shield Dust",
+            "Scrappy", "Inner Focus", "Tinted Lens", "Super Luck", "Reckless",
+            "Rock Head", "Sand Stream", "Drizzle", "Drought", "Snow Warning", "Cloud Nine",
+            "Pickup", "Damp", "Anticipation", "Forewarn", "Frisk", "Keen Eye",
+            "Steadfast", "Big Pecks", "Gluttony", "Oblivious"
+        }
 
-    local function resolveIds(namesList)
-        local resolved = {}
-        local total = AbilityData.getTotal()
-        for id = 1, total do
-            local ability = AbilityData.Abilities[id]
-            if ability and ability.name then
-                local aName = ability.name:lower():gsub("%s+", ""):gsub("%-+", "")
-                for _, target in ipairs(namesList) do
-                    local tName = target:lower():gsub("%s+", ""):gsub("%-+", "")
-                    if aName == tName then
-                        table.insert(resolved, id)
-                        break
+        local function resolveIds(namesList)
+            local resolved = {}
+            local total = AbilityData.getTotal()
+            for id = 1, total do
+                local ability = AbilityData.Abilities[id]
+                if ability and ability.name then
+                    local aName = ability.name:lower():gsub("%s+", ""):gsub("%-+", "")
+                    for _, target in ipairs(namesList) do
+                        local tName = target:lower():gsub("%s+", ""):gsub("%-+", "")
+                        if aName == tName then
+                            table.insert(resolved, id)
+                            break
+                        end
                     end
                 end
             end
+            return resolved
         end
-        return resolved
-    end
 
-    local targetList
-    if isGood then
-        if scale >= 50 then
-            targetList = resolveIds(ops)
+        local targetList
+        if isGood then
+            if scale >= 50 then
+                targetList = resolveIds(ops)
+            else
+                targetList = resolveIds(goods)
+            end
         else
-            targetList = resolveIds(goods)
-        end
-    else
-        if scale >= 50 then
-            targetList = resolveIds(detrimentals)
-        else
-            targetList = resolveIds(neutrals)
-            if #targetList == 0 then
+            if scale >= 50 then
                 targetList = resolveIds(detrimentals)
+            else
+                targetList = resolveIds(neutrals)
+                if #targetList == 0 then
+                    targetList = resolveIds(detrimentals)
+                end
             end
         end
+
+        if #targetList > 0 then
+            chosenId = targetList[RoguemonStreamer.random(#targetList)]
+        else
+            chosenId = RoguemonStreamer.random(1, AbilityData.getTotal())
+        end
     end
 
-    if #targetList > 0 then
-        return targetList[RoguemonStreamer.random(#targetList)]
-    else
-        return RoguemonStreamer.random(1, AbilityData.getTotal())
+    if isTraceAbility(chosenId) then
+        local randId = RoguemonStreamer.random(1, AbilityData.getTotal())
+        while isTraceAbility(randId) do
+            randId = RoguemonStreamer.random(1, AbilityData.getTotal())
+        end
+        return randId
     end
+
+    return chosenId
 end
 
 local function getTypeWeaknesses(t1, t2)
@@ -4298,13 +4333,13 @@ generateTyping = function(scale, isGood)
                 local pureRes  = x025 + x05        -- x0.5 + x0.25 only
                 local totalDef = x0 + x025 + x05   -- all defensive (res + immunity)
                 -- Store _x2 and _x4 for sub-pool filtering at selection time
-                local entry = { t1, t2, _x2 = x2, _x4 = x4 }
+                local entry = { t1, t2, _x2 = x2, _x4 = x4, _res = totalDef }
 
                 if x4 >= 1 then
                     -- badPool: at least 1 x4 weakness
                     table.insert(badPool, entry)
-                elseif x2 <= 2 and pureRes >= 2 and x0 >= 1 then
-                    -- opPool: no x4, max 2 x2, ≥2 resistances (x0.5/x0.25), ≥1 immunity
+                elseif x2 <= 2 and totalDef >= 2 and x0 >= 1 then
+                    -- opPool: no x4, max 2 x2, ≥2 combined defenses (res+imm), ≥1 immunity
                     table.insert(opPool, entry)
                 elseif x2 <= 3 and totalDef >= 3 then
                     -- goodPool: no x4, max 3 x2, ≥3 combined defensive (res+imm)
@@ -4327,9 +4362,14 @@ generateTyping = function(scale, isGood)
     local pool = {}
     if isGood then
         if scale >= 50 then
-            -- Milestone +50: opPool filtered to x2 <= 1 (the absolute best typings)
+            -- Milestone +50: opPool filtered to: (no x4 weaknesses and <= 2 x2 weaknesses and >= 10 total resistances) OR (no x4 weaknesses and <= 1 x2 weakness and >= 5 total resistances)
             for _, e in ipairs(opPool) do
-                if (e._x2 or 0) <= 1 then table.insert(pool, e) end
+                local x4 = e._x4 or 0
+                local x2 = e._x2 or 0
+                local res = e._res or 0
+                if (x4 == 0 and x2 <= 2 and res >= 10) or (x4 == 0 and x2 <= 1 and res >= 5) then
+                    table.insert(pool, e)
+                end
             end
             if #pool == 0 then pool = opPool end  -- fallback if filter too strict
         elseif scale >= 10 then
