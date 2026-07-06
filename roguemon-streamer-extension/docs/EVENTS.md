@@ -59,12 +59,6 @@
 *   **Evolution Power**
     *   *EN*: Gifts 1 Roguestone directly to your bag to evolve your Pokémon.
     *   *IT*: Regala 1 Pietra Roguestone in borsa per far evolvere il tuo Pokémon.
-*   **Increase Healing Limit**
-    *   *EN*: Increases the carrying limit of HP healing items in your bag.
-    *   *IT*: Aumenta il limite massimo di strumenti di cura HP trasportabili.
-*   **Increase Status Limit**
-    *   *EN*: Increases the carrying limit of status-curing items in your bag.
-    *   *IT*: Aumenta il limite massimo di strumenti cura stato trasportabili.
 *   **Game Changer**
     *   *EN*: Grants +2 critical hit stage for multiple battles.
     *   *IT*: Attiva Messa a Fuoco (+2 stadi di brutto colpo) per molteplici lotte.
@@ -176,18 +170,17 @@ This section defines which events are grouped in each pool.
     *   *Specific / Specifico (5% each/ciascuno)*: Full Restore, Game Changer, Try Harder.
     *   *Fallback Extraction / Estrazione Generica (85% total)*: Restore PP, Give Healing Item, Give Utility Item, Give PP Item, Stat Boost, Permanent Type Change, Permanent Nature Change, Permanent Ability Change, Powerhouse Boost, No Guard Plus, Turbo Genetics, Evolution Power, Let's Dance.
 *   **Advanced Milestones (10, 20 Subs)**:
-    *   *Specific / Specifico*: Full Restore (7%), Increase Healing Limit (3%), Increase Status Limit (3%), Darwinism (5%).
-    *   *Fallback Extraction / Estrazione Generica (82% total)*: Give Healing Item, Give Utility Items, Give PP Item, Stat Boost, Permanent Type Change, Permanent Nature Change, Permanent Ability Change, Powerhouse Boost, No Guard Plus, Omniboost, Evolution Power, Turbo Genetics, Game Changer, Try Harder, Let's Dance.
+    *   *Specific / Specifico*: Full Restore (10%), Darwinism (5%).
+    *   *Fallback Extraction / Estrazione Generica (85% total)*: Give Healing Item, Give Utility Items, Give PP Item, Stat Boost, Permanent Type Change, Permanent Nature Change, Permanent Ability Change, Powerhouse Boost, No Guard Plus, Omniboost, Evolution Power, Turbo Genetics, Game Changer, Try Harder, Let's Dance.
 *   **Milestone 50 (50 Subs)**:
-    *   *Specific / Specifico*: Increase Healing Limit (5%), Increase Status Limit (5%), Darwinism (10%).
-    *   *Fallback Extraction / Estrazione Generica (80% total)*: Give Healing Item, Give Utility Items, Give PP Item, Permanent Type Change, Permanent Nature Change, Permanent Ability Change, Powerhouse Boost, No Guard Plus, Omniboost, Game Changer, Try Harder, Let's Dance.
+    *   *Fallback Extraction / Estrazione Generica (100% total)*: Give Healing Item, Give Utility Items, Give PP Item, Permanent Type Change, Permanent Nature Change, Permanent Ability Change, Omniboost, Game Changer, Try Harder, Darwinism.
 
 #### 🔴 Negative Pools / Pool Negativi
 *   **Standard Milestones (5 Subs)**:
     *   *Fallback Extraction / Estrazione Generica (100% total)*: Overwhelmed, Disable Move, Stat Debuff, PP Deplete, Permanent Type Change, Permanent Nature Change, Permanent Ability Change, Remove Big Healing Item, Remove Utility Item, Out of Control, No Guard Minus, Mystification, Let's Dance.
 *   **Advanced Milestones (10, 20 Subs)**:
-    *   *Specific / Specifico (10% each/ciascuno)*: Out of Control, Omnimalus, Mystification, Overwhelmed.
-    *   *Fallback Extraction / Estrazione Generica (60% total)*: Disable Move, Stat Debuff, PP Deplete, Permanent Type Change, Permanent Nature Change, Permanent Ability Change, Remove Big Healing Item, Remove Utility Items, No Guard Minus.
+    *   *Specific / Specifico (10% each/ciascuno)*: Out of Control, Omnimalus, Mystification.
+    *   *Fallback Extraction / Estrazione Generica (70% total)*: Disable Move, Stat Debuff, PP Deplete, Permanent Type Change, Permanent Nature Change, Permanent Ability Change, Remove Big Healing Item, Remove Utility Items, No Guard Minus, Overwhelmed.
 *   **Milestone 50 (50 Subs)**:
     *   *Specific / Specifico (10% each/ciascuno)*: Out of Control, Omnimalus, Mystification.
     *   *Fallback Extraction / Estrazione Generica (70% total)*: Disable Move, PP Deplete, Permanent Type Change, Permanent Nature Change, Permanent Ability Change, Remove Big Healing Item, Remove Utility Items, No Guard Minus, Overwhelmed.
@@ -205,7 +198,7 @@ This section defines which events are grouped in each pool.
 > * Tutti gli effetti **Negativi** durano al **massimo per 1 lotta** (con **Disable Move** che dura esattamente **3 turni** in lotta).
 >
 *   **🟢 Positive Options / Opzioni Positive**:
-    *   Restore HP, Restore PP, Cure Status, Full Restore, Give Healing Item, Give Status Item, Give PP Item, Give Utility Item, Stat Boost, Power Boost, Speed Boost, PP Up, No Guard Plus, Powerhouse Boost, Turbo Genetics, Darwinism, Omniboost, Evolution Power, Increase Healing Limit, Increase Status Limit, Game Changer, Try Harder, Let's Dance.
+    *   Restore HP, Restore PP, Cure Status, Full Restore, Give Healing Item, Give Status Item, Give PP Item, Give Utility Item, Stat Boost, Power Boost, Speed Boost, PP Up, No Guard Plus, Powerhouse Boost, Turbo Genetics, Darwinism, Omniboost, Evolution Power, Game Changer, Try Harder, Let's Dance.
 *   **🔴 Negative Options / Opzioni Negative**:
     *   Inflict Status, Disable Move, Power Debuff, Speed Debuff, PP Cut, Temp Type Change, Remove Healing Item, Remove Status Item, Remove Big Healing Item, Remove Utility Item, Stat Debuff, PP Deplete, Mystification, Omnimalus, No Guard Minus, Out of Control, Overwhelmed, Let's Dance.
 *   **🔵 Exclusive Random Options / Opzioni Casuali Esclusive**:

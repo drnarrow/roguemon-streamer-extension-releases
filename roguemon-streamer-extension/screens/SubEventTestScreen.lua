@@ -54,25 +54,25 @@ local positive_m10 = {
     "Give Healing Item", "Give Utility Items", "Give PP Item", "Stat Boost",
     "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
     "Powerhouse Boost", "No Guard Plus", "Omniboost", "Evolution Power", "Turbo Genetics", "Game Changer", "Try Harder", "Let's Dance",
-    "Full Restore", "Increase Healing Limit", "Increase Status Limit", "Darwinism"
+    "Full Restore", "Darwinism"
 }
 
 local negative_m10 = {
     "Disable Move", "Stat Debuff", "PP Deplete",
     "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
-    "Remove Big Healing Item", "Remove Utility Items", "No Guard Minus", "Let's Dance",
+    "Remove Big Healing Item", "Remove Utility Items", "No Guard Minus",
     "Out of Control", "Omnimalus", "Mystification", "Overwhelmed"
 }
 
 local positive_m50 = {
     "Give Healing Item", "Give Utility Items", "Give PP Item",
     "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
-    "Powerhouse Boost", "No Guard Plus", "Omniboost", "Game Changer", "Try Harder", "Let's Dance",
-    "Increase Healing Limit", "Increase Status Limit", "Darwinism"
+    "Omniboost", "Game Changer", "Try Harder",
+    "Darwinism"
 }
 
 local negative_m50 = {
-    "Disable Move", "Stat Debuff", "PP Deplete",
+    "Disable Move", "PP Deplete",
     "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
     "Remove Big Healing Item", "Remove Utility Items", "No Guard Minus", "Overwhelmed",
     "Out of Control", "Omnimalus", "Mystification"

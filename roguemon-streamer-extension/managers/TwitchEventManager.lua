@@ -310,39 +310,20 @@ local function pickPositiveMilestoneEvent(subCount)
     end
 
     if subCount >= 50 then
-        local roll = RoguemonStreamer.random(1, 100)
-        if roll <= 5 then
-            return "Increase Healing Limit"
-        elseif roll <= 10 then
-            return "Increase Status Limit"
-        elseif roll <= 20 then
-            if isFiltered then
-                local others = {
-                    "Give Healing Item", "Give Utility Items", "Give PP Item",
-                    "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
-                    "Powerhouse Boost", "No Guard Plus", "Omniboost", "Game Changer", "Try Harder", "Let's Dance"
-                }
-                return others[RoguemonStreamer.random(1, #others)]
-            else
-                return "Darwinism"
-            end
-        else
-            local others = {
-                "Give Healing Item", "Give Utility Items", "Give PP Item",
-                "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
-                "Powerhouse Boost", "No Guard Plus", "Omniboost", "Game Changer", "Try Harder", "Let's Dance"
-            }
-            return others[RoguemonStreamer.random(1, #others)]
+        local others = {
+            "Give Healing Item", "Give Utility Items", "Give PP Item",
+            "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
+            "Omniboost", "Game Changer", "Try Harder"
+        }
+        if not isFiltered then
+            table.insert(others, "Darwinism")
         end
+        return others[RoguemonStreamer.random(1, #others)]
     elseif subCount >= 10 then
         local roll = RoguemonStreamer.random(1, 100)
-        if roll <= 7 then
+        if roll <= 10 then
             return "Full Restore"
-        elseif roll <= 10 then
-            return "Increase Healing Limit"
-        elseif roll <= 13 then
-            return "Increase Status Limit"
-        elseif roll <= 18 then
+        elseif roll <= 20 then
             if isFiltered then
                 local others = {
                     "Give Healing Item", "Give Utility Items", "Give PP Item", "Stat Boost",
@@ -424,13 +405,11 @@ local function pickNegativeMilestoneEvent(subCount)
             return "Omnimalus"
         elseif roll <= 30 then
             return "Mystification"
-        elseif roll <= 40 then
-            return "Overwhelmed"
         else
             local others = {
                 "Disable Move", "Stat Debuff", "PP Deplete",
                 "Permanent Type Change", "Permanent Nature Change", "Permanent Ability Change",
-                "Remove Big Healing Item", "Remove Utility Items", "No Guard Minus"
+                "Remove Big Healing Item", "Remove Utility Items", "No Guard Minus", "Overwhelmed"
             }
             return others[RoguemonStreamer.random(1, #others)]
         end
@@ -574,8 +553,6 @@ function RoguemonStreamer.resetRunState(isSilent)
     RoguemonStreamer.settings.persistent.tryHarderApplied = nil
     RoguemonStreamer.settings.persistent.mystificationActive = nil
     RoguemonStreamer.settings.persistent.mystificationApplied = nil
-    RoguemonStreamer.settings.persistent.hpCapBoost = 0
-    RoguemonStreamer.settings.persistent.statusCapBoost = 0
     RoguemonStreamer.settings.persistent.outOfControlCP = nil
 
     if LetsDanceScreen and type(LetsDanceScreen.close) == "function" and (LetsDanceScreen.ActiveRequest or Program.currentScreen == LetsDanceScreen) then
@@ -920,8 +897,6 @@ function RoguemonStreamer.initialize(extensionSelf)
 
     RoguemonStreamer.initialized = true
     print("[RogueMon Streamer] Standalone Extension Initialized.")
-
-    RoguemonStreamer.syncCapModifiers()
 
     if Roguemon and Roguemon.Leaderboard then
         -- Back up original functions if not already backed up
@@ -1398,10 +1373,6 @@ function RoguemonStreamer.loadSettings()
         RoguemonStreamer.settings.persistent.queuedStatuses = RoguemonStreamer.settings.persistent.queuedStatuses or {}
         RoguemonStreamer.settings.persistent.queuedOutOfControlTurns = RoguemonStreamer.settings.persistent.queuedOutOfControlTurns or 0
         RoguemonStreamer.settings.persistent.queuedOverwhelmedCount = RoguemonStreamer.settings.persistent.queuedOverwhelmedCount or 0
-        RoguemonStreamer.settings.persistent.hpCapBoost = RoguemonStreamer.settings.persistent.hpCapBoost or 0
-        RoguemonStreamer.settings.persistent.statusCapBoost = RoguemonStreamer.settings.persistent.statusCapBoost or 0
-        RoguemonStreamer.settings.persistent.lastAppliedHpBoost = RoguemonStreamer.settings.persistent.lastAppliedHpBoost or RoguemonStreamer.settings.persistent.hpCapBoost
-        RoguemonStreamer.settings.persistent.lastAppliedStatusBoost = RoguemonStreamer.settings.persistent.lastAppliedStatusBoost or RoguemonStreamer.settings.persistent.statusCapBoost
         RoguemonStreamer.settings.persistent.evolutionFilteredPids = RoguemonStreamer.settings.persistent.evolutionFilteredPids or {}
         RoguemonStreamer.settings.persistent.pendingRemovals = RoguemonStreamer.settings.persistent.pendingRemovals or {
             healing = 0,
@@ -1434,10 +1405,6 @@ function RoguemonStreamer.loadSettings()
             milestones = { ["5"] = true, ["10"] = true, ["20"] = true, ["50"] = true },
             stats = { totalSubs = 0, totalEvents = 0 },
             persistent = {
-                hpCapBoost = 0,
-                statusCapBoost = 0,
-                lastAppliedHpBoost = 0,
-                lastAppliedStatusBoost = 0,
                 statBuffs = {},
                 outOfControlTurns = 0,
                 queuedOutOfControlTurns = 0,
@@ -1692,8 +1659,6 @@ local cp_event_mapping = {
     ["darwinism"] = { fn = "executePositiveEvent", name = "Darwinism", scale = 10 },
     ["omniboost"] = { fn = "executePositiveEvent", name = "Omniboost", scale = 10 },
     ["evolution power"] = { fn = "executePositiveEvent", name = "Evolution Power", scale = 10 },
-    ["increase healing limit"] = { fn = "executePositiveEvent", name = "Increase Healing Limit", scale = 1 },
-    ["increase status limit"] = { fn = "executePositiveEvent", name = "Increase Status Limit", scale = 1 },
     ["game changer"] = { fn = "executePositiveEvent", name = "Game Changer", scale = 1 }, -- 1 battle
     ["try harder"] = { fn = "executePositiveEvent", name = "Try Harder", scale = 1 }, -- 1 battle
     ["let's dance"] = { fn = "executePositiveEvent", name = "Let's Dance", scale = 1 },
@@ -3089,28 +3054,6 @@ function RoguemonStreamer.executePositiveEvent(eventName, scale)
         refreshTracker()
 
         detail = "Full Restore ( All negative effects cured! )"
-    elseif eventName == "Increase Healing Limit" then
-        local capAdd = (scale == 1) and 50 or 100
-        RoguemonStreamer.settings.persistent.hpCapBoost = (RoguemonStreamer.settings.persistent.hpCapBoost or 0) + capAdd
-        RoguemonStreamer.saveSettings()
-        print(string.format("[RogueMon Streamer] - Increased HP cap boost by %d. New total boost: %d", capAdd, RoguemonStreamer.settings.persistent.hpCapBoost))
-        
-        -- Also force immediate state reload and sync to GBA RAM
-        if Roguemon and Roguemon.TrackerDataManager and Roguemon.TrackerDataManager.readState then
-            Roguemon.TrackerDataManager.readState()
-        end
-        detail = string.format("Increase Healing Limit ( +%d HP )", capAdd)
-    elseif eventName == "Increase Status Limit" then
-        local capAdd = (scale == 1) and 1 or 2
-        RoguemonStreamer.settings.persistent.statusCapBoost = (RoguemonStreamer.settings.persistent.statusCapBoost or 0) + capAdd
-        RoguemonStreamer.saveSettings()
-        print(string.format("[RogueMon Streamer] - Increased Status limit cap boost by %d. New total boost: %d", capAdd, RoguemonStreamer.settings.persistent.statusCapBoost))
-        
-        -- Also force immediate state reload and sync to GBA RAM
-        if Roguemon and Roguemon.TrackerDataManager and Roguemon.TrackerDataManager.readState then
-            Roguemon.TrackerDataManager.readState()
-        end
-        detail = string.format("Increase Status Limit ( +%d status )", capAdd)
     elseif eventName == "Give Healing Item" then
         local itemId
         if scale == 1 then
@@ -7395,103 +7338,7 @@ function RoguemonStreamer.afterEachFrame()
     RoguemonStreamer.updateAndDrawAnimations()
 end
 
-function RoguemonStreamer.syncCapModifiers()
-    if not RoguemonStreamer.initialized or not RoguemonStreamer.settings.enabled then
-        return
-    end
-
-    -- 1. Check for a new run
-    if Tracker and Tracker.Data and Tracker.Data.trainerID and Tracker.Data.trainerID ~= 0 and not Battle.inActiveBattle() then
-        if RoguemonStreamer.settings.persistent.lastTrainerID ~= Tracker.Data.trainerID then
-            RoguemonStreamer.trainerIdDiffFrames = (RoguemonStreamer.trainerIdDiffFrames or 0) + 1
-            if RoguemonStreamer.trainerIdDiffFrames >= 30 then
-                print("[RogueMon Streamer] New run detected (TrainerID changed and stable). Resetting persistent Twitch boosts.")
-                RoguemonStreamer.settings.persistent.hpCapBoost = 0
-                RoguemonStreamer.settings.persistent.statusCapBoost = 0
-                RoguemonStreamer.settings.persistent.lastAppliedHpBoost = 0
-                RoguemonStreamer.settings.persistent.lastAppliedStatusBoost = 0
-                RoguemonStreamer.settings.persistent.statBuffs = {}
-                RoguemonStreamer.settings.persistent.outOfControlTurns = 0
-                RoguemonStreamer.settings.persistent.pendingRemovals = {
-                    healing = 0,
-                    utility_status = 0,
-                    big_healing = 0,
-                    utility_valuable = 0,
-                }
-                RoguemonStreamer.settings.alteredTypes = {}
-                RoguemonStreamer.settings.alteredAbilities = {}
-                RoguemonStreamer.settings.persistent.tempTypeChange = nil
-                RoguemonStreamer.settings.persistent.tempTypeApplied = nil
-                RoguemonStreamer.settings.persistent.queuedTempTypes = {}
-                RoguemonStreamer.settings.persistent.queuedDisableTurns = {}
-                RoguemonStreamer.settings.persistent.queuedDamageAndStatus = {}
-                RoguemonStreamer.settings.persistent.queuedStatuses = {}
-                RoguemonStreamer.settings.persistent.overwhelmedActive = nil
-                RoguemonStreamer.settings.persistent.queuedOverwhelmedCount = 0
-
-                RoguemonStreamer.settings.persistent.queuedNoGuards = {}
-                RoguemonStreamer.settings.persistent.lastTrainerID = Tracker.Data.trainerID
-                RoguemonStreamer.saveSettings()
-                RoguemonStreamer.trainerIdDiffFrames = 0
-            end
-        else
-            RoguemonStreamer.trainerIdDiffFrames = 0
-        end
-    else
-        RoguemonStreamer.trainerIdDiffFrames = 0
-    end
-
-    local segState = nil
-    if Roguemon and Roguemon.SegmentManager and Roguemon.SegmentManager.readSegmentState then
-        segState = Roguemon.SegmentManager.readSegmentState()
-    end
-
-    if segState then
-        local hpBoost = RoguemonStreamer.settings.persistent.hpCapBoost or 0
-        local statusBoost = RoguemonStreamer.settings.persistent.statusCapBoost or 0
-        local lastAppliedHp = RoguemonStreamer.settings.persistent.lastAppliedHpBoost or 0
-        local lastAppliedStatus = RoguemonStreamer.settings.persistent.lastAppliedStatusBoost or 0
-        
-        local deltaHp = hpBoost - lastAppliedHp
-        local deltaStatus = statusBoost - lastAppliedStatus
-
-        local adjustedAny = false
-        if deltaHp ~= 0 then
-            if Roguemon.SegmentManager and Roguemon.SegmentManager.adjustHpCapModifier then
-                print(string.format("[RogueMon Streamer] Cap Sync: Applying delta HP boost of %d (Twitch Target: %d, Last Applied: %d)", deltaHp, hpBoost, lastAppliedHp))
-                if Roguemon.SegmentManager.adjustHpCapModifier(deltaHp) then
-                    print("[RogueMon Streamer] Cap Sync: HP adjustment SUCCESS")
-                    RoguemonStreamer.settings.persistent.lastAppliedHpBoost = hpBoost
-                    RoguemonStreamer.saveSettings()
-                    adjustedAny = true
-                else
-                    print("[RogueMon Streamer] Cap Sync: HP adjustment FAILED")
-                end
-            end
-        end
-        if deltaStatus ~= 0 then
-            if Roguemon.SegmentManager and Roguemon.SegmentManager.adjustStatusCapModifier then
-                print(string.format("[RogueMon Streamer] Cap Sync: Applying delta Status boost of %d (Twitch Target: %d, Last Applied: %d)", deltaStatus, statusBoost, lastAppliedStatus))
-                if Roguemon.SegmentManager.adjustStatusCapModifier(deltaStatus) then
-                    print("[RogueMon Streamer] Cap Sync: Status adjustment SUCCESS")
-                    RoguemonStreamer.settings.persistent.lastAppliedStatusBoost = statusBoost
-                    RoguemonStreamer.saveSettings()
-                    adjustedAny = true
-                else
-                    print("[RogueMon Streamer] Cap Sync: Status adjustment FAILED")
-                end
-            end
-        end
-
-        if adjustedAny then
-            refreshTracker()
-        end
-    end
-end
-
 function RoguemonStreamer.afterProgramDataUpdate()
-    RoguemonStreamer.syncCapModifiers()
-
     RoguemonStreamer.updateDynamicNatures()
 
     -- Process pending item removals (persistent debt)
@@ -7904,7 +7751,7 @@ function RoguemonStreamer.getActiveEventMessages()
             for _, stat in ipairs(orderedStats) do
                 local data = grouped[stat]
                 local leftoverVal = data.value - (sign * minAbsVal)
-                local leftoverRem = data.totalRemaining - minRemaining
+                local leftoverRem = data.totalRemaining
                 if leftoverVal ~= 0 and leftoverRem > 0 then
                     local leftoverSign = leftoverVal >= 0 and "+" or ""
                     local statName = statLabels[stat] or stat

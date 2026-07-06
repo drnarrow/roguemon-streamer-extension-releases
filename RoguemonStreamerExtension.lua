@@ -5,7 +5,7 @@ local function RoguemonStreamerExtension()
     self.name = "RogueMon Streamer"
     self.author = "DrNarrow"
     self.description = "Integrate Twitch subs, gifts and channel points into Roguemon to trigger in-game events."
-    self.version = "3.0.8"
+    self.version = "3.0.9"
     self.url = "https://github.com/drnarrow/roguemon-streamer-extension-releases"
     self.github = "drnarrow/roguemon-streamer-extension-releases"
     self.requiredExtKeys = { "RoguemonExpansion" }
