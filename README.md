@@ -16,23 +16,6 @@ Un'estensione interattiva e ricca di funzionalità creata per rendere la chat di
 
 ---
 
-> [!IMPORTANT]
-> ### 🇬🇧 Public Beta Notice
-> This extension is currently in **Public Beta** and was developed entirely as a solo project.
-> *   **Twitch Limitations**: Due to not holding Twitch Affiliate/Partner status, testing custom channel point redemptions or sub gifts in a live stream environment was not possible.
-> *   **Expect Potential Bugs**: Some event execution edge cases or bugs may occur during play.
-> *   **Help Me Test**: If you are a streamer or just want to help me test or provide feedback, please contact **DrNarrow** directly on Discord at **`@DrNarrow`**.
-> 
-> ---
-> 
-> ### 🇮🇹 Avviso Beta Pubblica
-> Questa estensione è attualmente in **Beta Pubblica** ed è stata sviluppata interamente da una persona sola.
-> *   **Limiti di Twitch**: A causa della mancanza dello stato di Affiliato/Partner di Twitch, non è stato possibile testare i riscatti dei punti canale o sub twitch in un vero ambiente live di streaming.
-> *   **Possibili Bug**: Potrebbero verificarsi bug imprevisti durante l'esecuzione di alcuni eventi.
-> *   **Aiutami nei Test**: Se sei uno streamer o vuoi semplicemente aiutarmi a testare o condividere suggerimenti o bug, contatta direttamente **DrNarrow** su Discord **`@DrNarrow`**.
-
----
-
 ## 🇬🇧 English Guide
 
 ### ⚙️ Prerequisites & Setup Guide
